@@ -11,10 +11,34 @@ Matrícula:
 */
 
 public class Token {
-    private int line, column;
-    private TokenType type;
-    private Object lexeme;
+    private int line, column; // Marcadores de linhas e colunas
+    private TokenType type; // Tipo do token
+    private String lexeme; // Lexema
+    private Object value; // Valor Atribuido
 
+    public Token (TokenType type, String lexeme, Object obj, int line, int column){
+        this.type = type;
+        this.lexeme = lexeme;
+        this.value = obj;
+        this.line = line;
+        this.column = column;
+    }
+
+    public Token (TokenType type, String lexeme, int line, int column){
+        this.type = type;
+        this.lexeme = lexeme;
+        this.value = null;
+        this.line = line;
+        this.column = column;
+    }
+
+    public Token (TokenType type, Object obj, int line, int column ){
+        this.type = type;
+        this.lexeme = null;
+        this.value = obj;
+        this.line = line;
+        this.column = column;
+    }
 
     public int getLine(){
         return line;
@@ -28,11 +52,19 @@ public class Token {
         return type;
     }
 
-    public Object getLexeme(){
+    public String getLexeme(){
         return lexeme;
     }
 
+    public Object getValue(){
+        return value;
+    }
+
     @Override public String toString(){
-        return "("+ line +","+ column + ")\t<" + type + ">" + (lexeme==null ? "" : ": \"" + lexeme + "\"");
+        //Saída com linha e columa
+        //return "(" + line + "," + column + ") " + (lexeme == null ? type.name(): lexeme) + (value == null ? "" : " : " + value.toString());
+
+        //Saída padrão
+        return (lexeme == null ? type.name(): lexeme) + (value == null ? "" : ": " + value.toString());
     }
 }

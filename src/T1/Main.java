@@ -15,18 +15,19 @@ import java.io.IOException;
 
 public class Main{
 
-    public static void main( String args[] ) throws IOException {
+    public static void main (String args[]) {
+        try {
 
-        LexicalText lx = new LexicalText(new FileReader( args[0] ));
-        Token token = lx.nextToken(); // Busca pelo primeiro token
+            Lexical lx = new Lexical(new FileReader( args[0] )); // Abre o arquivo
+            Token token = lx.nextToken(); // Busca pelo primeiro token
 
-        while( token != null ) { // Enquanto existir tokens
-
-            System.out.println( token.toString() );  // Chama analisador léxico
-            token = lx.nextToken(); // Busca próximo token
-
+            while (token != null) { // Enquanto existir tokens
+                System.out.println( token.toString() );  // Chama analisador léxico
+                token = lx.nextToken(); // Busca próximo token
+            }
+        
+        } catch (IOException e) {
+            System.out.println("Error: " + e);
         }
-
-        System.out.println("Total de tokens lidos " + lx.readedTokens());
     }
 }
