@@ -1,0 +1,163 @@
+group java;
+
+and_op(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
+
+assign_op(value, exp) ::= "<value> = <exp>;"
+
+call_cmd(name, args, exp) ::= <<
+<if(exp)>
+<name>(<args; separator=", ">);
+<exp : {exp | <exp.lValue> = (<exp.type>) _vReturnables.get(0);
+_vReturnables.remove(0);
+}>
+<else>
+<name>(<args; separator=", ">);
+_vReturnables.clear();
+<endif>
+>>
+
+call_expr(name, args, expr, type) ::= <<
+((<type>)<name>(String.valueOf(<expr>)<if(args)>, <endif><args; separator=", ">))
+>>
+
+caracter_value(value) ::= "'<value>'"
+
+cmd_array(cmds) ::= << 
+<cmds; separator="\n">
+>>
+
+data(name, decl_exps) ::= <<
+static class <name> {
+	<decl_exps; separator="\n">
+}
+>> 
+
+decl_op(name, type) ::= "<type> <name>;"
+
+div_op(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
+
+double_value(value) ::= "<value>f"
+
+eq_op(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
+
+
+
+func_op( name, params, decl, stmt, key, returnable) ::= <<
+static void <name>(<params; separator=", ">) {
+    <if(returnable)> ArrayList\<Object> _retAux = new ArrayList\<Object>();<endif>
+    <if(decl)><decl; separator=";\n">;<endif>
+    <stmt; separator="\n">
+}
+<if(returnable)> 
+static Object <name>(String _i<if(params)>, <endif><params; separator=", ">) {
+    <name>(<key; separator=", ">); 
+    Object _retAux = _vReturnables.get(Integer.parseInt(_i));
+    _vReturnables.clear();
+    return _retAux
+}
+<endif>
+>>
+
+key(value) ::= "<value>"
+
+func_decl(type, name) ::= <<
+<type.tp> <name> = <type.default>
+>>
+
+if_op(exp, the, els) ::= 
+<<
+	if(<exp>) {
+		<the>
+	} <if(els)>else {
+		<els>
+	}
+	<endif>
+>>
+
+integer_value(value) ::= "<value>"
+
+iterate_op(exp, cmd, unique) ::= <<
+for(int _i<unique> = 0; _i<unique> \< <exp>; _i<unique>++){
+	<cmd>
+}
+>>
+
+less_op(left_expr, right_expr) ::= "(<left_expr> \< <right_expr>)"
+
+lvalue(name, value) ::= "<name><value>"
+
+minus_op(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
+
+module_op(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
+
+mult_op(left_expr, right_expr) ::= "(<left_expr> * <right_expr>)"
+
+neg_op(value) ::= "-<value>"
+
+neq_op(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
+
+new_array_exp_op(type, exp, bracket) ::= "new <type>[<exp>]<bracket>"
+new_array_op(type, bracket) ::= "new <type>[1]<bracket>"
+new_type_op(type) ::= "new <type>()"
+new_op(value) ::= "<value>"
+
+not_op(value) ::= "!<value>"
+
+null_value() ::= "null" 	
+
+params_op(type, name) ::= "<type> <name>"
+
+plus_op(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
+
+print_op(value) ::= "System.out.println(<value>);"
+
+prog(name, datas, funcs) ::= <<
+
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class <name> {
+
+	private static ArrayList\<Object> _vReturnables = new ArrayList\<Object>();
+
+    <datas; separator="\n\n">
+    <funcs; separator="\n\n">
+  
+    public static void main(String args[]) {
+        main();
+    }
+}
+>> 
+
+read_op(value) ::= " <value> = Integer.parseInt((new Scanner(System.in)).next());"
+
+return_op(return_aux) ::= << 
+<return_aux; separator="\n">
+for(Object o : _retAux){
+	_vReturnables.add(o);
+}
+return;
+>>
+
+return_aux(value) ::= "_retAux.add(<value>);"
+
+array_selector_access(exp) ::= "[<exp>]"
+
+data_selector_access(exp) ::= ".<exp>"
+
+boolean_value(value) ::= "<value>"
+
+type_value(type, braces) ::= "<type> <braces>"
+
+boolean_type() ::= "boolean"
+
+char_type() ::= "char"
+
+float_type() ::= "float" 
+
+id_data_type(value) ::= "<value>"
+
+int_type() ::= "int"	 			
+
+array_type(type) ::= "<type>[]"

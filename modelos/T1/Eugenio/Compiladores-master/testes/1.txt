@@ -1,0 +1,20 @@
+data Teste{
+  i::Int;
+  j::Float;
+}
+
+main(){
+    i=0;
+    j=12.2;
+    k=true;
+    l = new Int[2];
+    m = new Teste;
+    n = new Teste[3];
+}
+
+main1():Int[],Float{
+  i = new Int[3];
+  return i, 1.1;
+  i = new Int[5]; 
+  return i, 1.1;
+}
