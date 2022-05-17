@@ -34,9 +34,9 @@ public class Token {
 
     @Override public String toString(){
         //Saída com linha e columa
-        return "(" + line + "," + column + ") " + (lexeme == null ? type.name(): lexeme) + (value == null ? "" : " : " + value.toString());
+        //return "(" + line + "," + column + ") " + (lexeme == null ? type.name(): lexeme) + (value == null ? "" : " : " + value.toString());
 
         //Saída padrão
-        //return (lexeme == null ? type.name(): lexeme) + (value == null ? "" : ": " + value.toString());
+        return (lexeme == null ? type.name(): lexeme) + (value == null ? "" : ": " + value.toString());
     }
 }
