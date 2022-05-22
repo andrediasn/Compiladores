@@ -24,6 +24,7 @@ public class Token {
         this.column = column;
     }
 
+    // Caso seja do tipo Int, Float, Char, Caracter: Receve o valor da informação
     public Token (TokenType type, Object obj, int line, int column ){
         this.type = type;
         this.lexeme = null;

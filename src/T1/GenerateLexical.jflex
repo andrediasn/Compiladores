@@ -20,7 +20,6 @@ Matrícula: 201435031
 %function nextToken
 %type Token
 
-/* Código que será inserido diretamente no analisador. */
 %{
     private Token symbol (TokenType type) {
         return new Token (type, yytext(), yyline+1, yycolumn+1);
@@ -31,14 +30,13 @@ Matrícula: 201435031
     }
 %}
 
-/* Expressões reguladores */
+/* Expressões regulares */
 empty = {endLine} | [ \t\f]
 endLine = \r|\n|\r\n
 identificador = [:letter:] + ([:letter:] | [:digit:] | "_")*
 inteiro = [:digit:]+
 decimal = [:digit:]* + "." + [:digit:]+
-caracter = "\'" [^\\'] "\'" | "\'\\n\'" | "\'\\t\'" | "\'\\b\'" | "\'\\r\'" | "\'\\\\\'" | "\'\\\'\'" 
-string = "\'" + [:letter:]* + "\'"
+caracter = "\'" + [:letter:]* + "\'" | "\'" [^\\'] "\'" | "\'\\n\'" | "\'\\t\'" | "\'\\b\'" | "\'\\r\'" | "\'\\\\\'" | "\'\\\'\'" 
 
 %state SINGLELINECOMMENT
 %state MULTLINECOMMENT
@@ -56,10 +54,10 @@ string = "\'" + [:letter:]* + "\'"
     "null"  {return symbol(TokenType.NULL); }
     "("  {return symbol(TokenType.LEFTPARENT); }
     ")"  {return symbol(TokenType.RIGHTPARENT); }
-    "["  {return symbol(TokenType.LEFTBRACE); }
-    "]"  {return symbol(TokenType.RIGHTBRACE); }
-    "{"  {return symbol(TokenType.LEFTBRACKET); }
-    "}"  {return symbol(TokenType.RIGHTBRACKET); }
+    "["  {return symbol(TokenType.LEFTBRACKET); }
+    "]"  {return symbol(TokenType.RIGHTBRACKET); }
+    "{"  {return symbol(TokenType.LEFTCURLY); }
+    "}"  {return symbol(TokenType.RIGHTCURLY); }
     ">"  {return symbol(TokenType.GREATER); }
     "<"  {return symbol(TokenType.LESS); }
     "."  {return symbol(TokenType.DOT); }
@@ -74,7 +72,7 @@ string = "\'" + [:letter:]* + "\'"
     "-"  {return symbol(TokenType.MINUS); }
     "*"  {return symbol(TokenType.MULT); }
     "/"  {return symbol(TokenType.DIV); }
-    "%"  {return symbol(TokenType.MODULE); }
+    "%"  {return symbol(TokenType.MOD); }
     "&&"  {return symbol(TokenType.AND); }
     "!"  {return symbol(TokenType.NOT); }
     "if" {return symbol(TokenType.IF); }
@@ -86,8 +84,7 @@ string = "\'" + [:letter:]* + "\'"
     "new"  {return symbol(TokenType.NEW); }
     {inteiro}  {return symbol(TokenType.INT, Integer.parseInt(yytext())); }
     {decimal}  {return symbol(TokenType.FLOAT, Float.parseFloat(yytext())); }
-    {caracter}  {return symbol(TokenType.CARACTER, yytext().substring(1,yytext().length()-1)); }
-    {string} {return symbol(TokenType.CHAR, yytext().substring(1,yytext().length()-1)); }
+    {caracter}  {return symbol(TokenType.CHAR, yytext().substring(1,yytext().length()-1)); }
     {identificador}  { return symbol(TokenType.ID, yytext()); }
     "--"  { yybegin(SINGLELINECOMMENT); }
     "{-"  { yybegin(MULTLINECOMMENT); }
