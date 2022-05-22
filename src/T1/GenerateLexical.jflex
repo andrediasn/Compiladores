@@ -38,6 +38,7 @@ identificador = [:letter:] + ([:letter:] | [:digit:] | "_")*
 inteiro = [:digit:]+
 decimal = [:digit:]* + "." + [:digit:]+
 caracter = "\'" [^\\'] "\'" | "\'\\n\'" | "\'\\t\'" | "\'\\b\'" | "\'\\r\'" | "\'\\\\\'" | "\'\\\'\'" 
+string = "\'" + [:letter:]* + "\'"
 
 %state SINGLELINECOMMENT
 %state MULTLINECOMMENT
@@ -46,9 +47,9 @@ caracter = "\'" [^\\'] "\'" | "\'\\n\'" | "\'\\t\'" | "\'\\b\'" | "\'\\r\'" | "\
 
 <YYINITIAL>
 {
-    "Int"  {return symbol(TokenType.INTEGER); }
-    "Float" {return symbol(TokenType.DOUBLE); }
-    "Char" {return symbol(TokenType.CHAR); }
+    "Int"  {return symbol(TokenType.IDINT); }
+    "Float" {return symbol(TokenType.IDFLOAT); }
+    "Char" {return symbol(TokenType.IDCHAR); }
     "Bool" {return symbol(TokenType.BOOL); }
     "true" {return symbol(TokenType.TRUE); }
     "false" {return symbol(TokenType.FALSE); }
@@ -85,7 +86,8 @@ caracter = "\'" [^\\'] "\'" | "\'\\n\'" | "\'\\t\'" | "\'\\b\'" | "\'\\r\'" | "\
     "new"  {return symbol(TokenType.NEW); }
     {inteiro}  {return symbol(TokenType.INT, Integer.parseInt(yytext())); }
     {decimal}  {return symbol(TokenType.FLOAT, Float.parseFloat(yytext())); }
-    {caracter}  {return symbol(TokenType.CARACTER,yytext().substring(1,yytext().length()-1)); }
+    {caracter}  {return symbol(TokenType.CARACTER, yytext().substring(1,yytext().length()-1)); }
+    {string} {return symbol(TokenType.CHAR, yytext().substring(1,yytext().length()-1)); }
     {identificador}  { return symbol(TokenType.ID, yytext()); }
     "--"  { yybegin(SINGLELINECOMMENT); }
     "{-"  { yybegin(MULTLINECOMMENT); }
