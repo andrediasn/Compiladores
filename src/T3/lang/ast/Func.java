@@ -18,12 +18,12 @@ public class Func extends SuperNode {
 
   private int line, column;
   private String id;
-  //private Params[] params;
-  //private Type[] returnFunction; 
-  //private Cmd[] cmds;
+  private Params[] params;
+  private Type[] returnFunction; 
+  private Cmd[] cmds;
 
 
-  /*public Func(int line, int column, String id, Type[] returnFunction, Params[] params,  Cmd[] cmds) {
+  public Func(int line, int column, String id, Type[] returnFunction, Params[] params,  Cmd[] cmds) {
     
 	this.line = line;
     this.column = column;
@@ -32,7 +32,7 @@ public class Func extends SuperNode {
     this.params = params;
     this.cmds = cmds;
 
-  }*/
+  }
 
   public int getLine() {
     return line;
@@ -46,8 +46,8 @@ public class Func extends SuperNode {
     return id;
   }
 
-  /*public Type[] getReturnFunction() {
-    return typeReturn;
+  public Type[] getReturnFunction() {
+    return returnFunction;
   }
 
   public Params[] getParams() {
@@ -55,8 +55,8 @@ public class Func extends SuperNode {
   }
 
   public Cmd[] getCmds() {
-    return body;
-  }*/
+    return cmds;
+  }
 
   public void accept(Visitor v) 
   {

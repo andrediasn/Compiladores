@@ -17,15 +17,15 @@ import lang.ASTVisitor.Visitor;
 public class Data extends SuperNode
 {
   private int line, column;
-  /*private String id;
-  private Decl[] recordDataTypes;*/
+  private String id;
+  private Decl[] recordDataTypes;
 
   public Data(int line, int column/*, String id, Decl[] recordDataTypes*/)
   {
     this.line = line;
     this.column = column;
-    /*this.id = id;
-    this.types = recordDataTypes;*/
+    this.id = id;
+    this.recordDataTypes = recordDataTypes;
   }
 
   public int getLine()
@@ -38,7 +38,7 @@ public class Data extends SuperNode
     return column;
   }
 
-  /*public String getId()
+  public String getId()
   {
     return id;
   }
@@ -51,5 +51,5 @@ public class Data extends SuperNode
   public void accept(Visitor v) 
   { 
 	v.visit(this); 
-  }*/
+  }
 }
