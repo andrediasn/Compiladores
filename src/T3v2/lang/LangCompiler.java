@@ -14,6 +14,7 @@ package lang;
 
 import java.io.*;
 import lang.parser.*;
+import lang.visitor.*;
 import lang.ast.*;
 
 public class LangCompiler{
@@ -50,7 +51,7 @@ public class LangCompiler{
               return;
           } if(args[0].equals("-bsm") ){
               System.out.println("Executando bateria de testes sintáticos:");
-              // TestParser tp = new TestParser(langParser); 
+              TestInterpretator tp = new TestInterpretator(langParser); 
               return;
           }
           if(args.length != 2){

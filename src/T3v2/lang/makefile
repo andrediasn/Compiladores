@@ -15,6 +15,5 @@ clean:
 	rm -R parser/lang.tokens
 	rm -R parser/langListener.java
 	rm -R parser/langBaseListener.java
-	rm -R parser/langLexer.java
 	rm -R parser/langBaseVisitor.java
 	rm -R parser/langVisitor.java

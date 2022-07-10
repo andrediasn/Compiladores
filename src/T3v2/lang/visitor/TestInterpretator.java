@@ -19,12 +19,12 @@ import java.util.List;
 
 // Adaptador para classe de parser. a Função parseFile deve retornar null caso o parser resulte em erro. 
 
-public class TestVisitorInterpretator {
+public class TestInterpretator {
     private ParseAdaptor adp;
     private String okSrcs = "testes/sintaxe/certo/";
     private File f;
    
-    public TestVisitorInterpretator(ParseAdaptor adp){
+    public TestInterpretator(ParseAdaptor adp){
         this.adp = adp;
         f = new File(okSrcs);
         runOkTests();
