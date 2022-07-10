@@ -62,31 +62,23 @@ public class LangAdapter implements ParseAdaptor {
 
 	public SuperNode parseFile(String path) {
         try  {
-
 			langLexer lexer;
-        	langParser parser;
+			langParser parser;
 
 			CharStream stream = CharStreams.fromFileName(path);
-        	lexer = new langLexer(stream);
-        	CommonTokenStream tokenStream = new CommonTokenStream(lexer) ;
-        	parser = new langParser(tokenStream);
-
+			lexer = new langLexer(stream);
+			CommonTokenStream tokenStream = new CommonTokenStream(lexer) ;
+			parser = new langParser(tokenStream);
 			ParseTree tree = parser.prog();	
-
-           /*  lexer.removeErrorListeners();
-            lexer.addErrorListener(new BaseErrorListener()  {
-                @Override
-                public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-                    throw new RuntimeException(e.getCause());
-                }
-            }); */
 			
-			if(parser.getNumberOfSyntaxErrors()==0) {
+			if( parser.getNumberOfSyntaxErrors()==0 ) {
 				ASTVisitorConstruct vis = new ASTVisitorConstruct();
 				return tree.accept(vis);
 			}
-			return null;
+			
 		}	
-        catch(RuntimeException e) { return null;}       
+        catch(IOException e) { e.printStackTrace();}     
+
+		return null;  
     }
 }

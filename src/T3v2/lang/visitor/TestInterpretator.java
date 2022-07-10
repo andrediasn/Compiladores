@@ -21,7 +21,7 @@ import java.util.List;
 
 public class TestInterpretator {
     private ParseAdaptor adp;
-    private String okSrcs = "testes/sintaxe/certo/";
+    private String okSrcs = "testes/semantica/certo/";
     private File f;
    
     public TestInterpretator(ParseAdaptor adp){
@@ -52,10 +52,10 @@ public class TestInterpretator {
                     if(node != null){
 					    Visitor v = new VisitorInterpretator();
 					    node.accept(v);
-						System.out.println(" CERTO ");
+						System.out.println("[ OK ]");
                        	flips++;
                     } else { 
-                        System.out.println(" FALHOU ");
+                        System.out.println("[ FALHOU ]");
                         flops++;
                     }
 					System.out.println("----------------------------");

@@ -1,11 +1,11 @@
 compile: genparser
-	javac -cp .:antlr-4.10.1-complete.jar ast/*.java parser/*.java visitor/*.java LangCompiler.java
+	javac -cp .:antlr-4.10.1-complete.jar ast/*.java parser/*.java visitor/*.java LangCompiler.java -d .
 
 genparser: parser/lang.g4
 	java -jar antlr-4.10.1-complete.jar parser/lang.g4 -visitor
 	
 run: 
-	java -cp .:antlr-4.10.1-complete.jar lang.LangCompiler $(COMMAND) $(ARQ)
+	java -cp .:antlr-4.10.1-complete.jar lang.LangCompiler -bsm $(ARQ)
 	
 clean: 
 	rm -rf lang

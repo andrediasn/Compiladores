@@ -24,94 +24,67 @@ grammar lang;
 
 /* Regra da gramática */
 
-/* start */
-prog: ( data )* ( func )*;
-
-/* data */
-data: DATA IDTYPE LEFTBRACKET ( decl )* RIGHTBRACKET;
-decl: (ID|IDTYPE) DOUBLECOLON type SEMICOLON;
-
-/* func */
-func: (ID|IDTYPE) LEFTPARENT (params)? RIGHTPARENT (COLON type (COMMA type)*)? LEFTBRACKET ( cmd )* RIGHTBRACKET;
-params: (ID|IDTYPE) DOUBLECOLON type (COMMA (ID|IDTYPE) DOUBLECOLON type)*;
-
-/* type */
-type: type LEFTBRACE RIGHTBRACE
-	| btype
+prog: ( data )* ( func )+;																									
+data: DATA IDTYPE LEFTBRACKET ( decl )+ RIGHTBRACKET; 																		
+decl: (ID|IDTYPE) DOUBLECOLON type SEMICOLON; 																				
+func: (ID|IDTYPE) LEFTPARENT (params)? RIGHTPARENT (COLON type (COMMA type)*)? LEFTBRACKET ( cmd )* RIGHTBRACKET; 			
+params: param (COMMA param)*; 
+param: (ID|IDTYPE) DOUBLECOLON type;									
+type: btype (brace)*;		
+brace: LEFTBRACE RIGHTBRACE;																						
+btype: INT 																													#typeInt
+	| CHAR 																													#typeChar
+	| BOOL	 																												#typeBool
+	| FLOAT	 																												#typeFloat
+	| IDTYPE 																												#typeIDType
 	;
-
-/* btype */		
-btype: INT # typeInt
-	| CHAR # typeChar
-	| BOOL #typeBool
-	| FLOAT #typeFloat
-	| IDTYPE #typeIDType
+cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET 																						#cmdArray
+	| IF LEFTPARENT exp RIGHTPARENT cmd 																					#if
+	| IF LEFTPARENT exp RIGHTPARENT cmd ELSE cmd 																			#ifElse										
+	| ITERATE LEFTPARENT exp RIGHTPARENT cmd																				#iterate
+	| READ lvalue SEMICOLON																									#read
+	| PRINT exp SEMICOLON 																									#print
+	| RETURN exp ( COMMA exp )* SEMICOLON 																					#return
+	| lvalue ASSIGN exp SEMICOLON 																							#assign
+	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LESS lvalue ( COMMA lvalue )* GREATER)? SEMICOLON							#callCMD
 	;
-
-/* cmd */	
-cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET #cmdArray
-	| IF LEFTPARENT exp RIGHTPARENT cmd #if
-	| IF LEFTPARENT exp RIGHTPARENT cmd ELSE cmd #ifElse	
-	| ITERATE LEFTPARENT exp RIGHTPARENT cmd #iterate
-	| READ lvalue SEMICOLON #read
-	| PRINT exp SEMICOLON #print
-	| RETURN exp ( COMMA exp )* SEMICOLON #return
-	| lvalue ASSIGN exp SEMICOLON #assign
-	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LESS lvalue ( COMMA lvalue )* GREATER)? SEMICOLON #callCMD
+exp: exp AND exp																											#and
+	| rexp																													#rex
 	;
-	
-/* exp */	
-exp: exp AND exp #and
-	| rexp #rex
+rexp: aexp LESS aexp 																										#less
+	| rexp EQ aexp																											#eq
+	| rexp NEQ aexp																											#neq
+	| aexp 																													#aex
 	;
-
-/* rexp */	
-rexp: aexp LESS aexp #less
-	| rexp EQ aexp #eq
-	| rexp NEQ aexp #neq
-	| aexp #aex
+aexp: aexp PLUS mexp																										#plus
+	| aexp MINUS mexp																										#minus
+	| mexp 																													#mex
 	;
-	
-/* aexp */	
-aexp: aexp PLUS mexp #plus 
-	| aexp MINUS mexp #minus
-	| mexp #mex
+mexp: mexp MULT sexp																										#mult
+	| mexp DIV sexp																											#div
+	| mexp MODULE sexp																										#module
+	| sexp 																													#sex
 	;
-
-/* mexp */	
-mexp: mexp MULT sexp #mult
-	| mexp DIV sexp #div
-	| mexp MODULE sexp #module
-	| sexp #sex
+sexp: NOT sexp																												#not
+	| MINUS sexp																											#neg
+	| TRUE																													#true
+	| FALSE																													#false
+	| NULL																													#null
+	| INTEGER																												#integer
+	| DOUBLE																												#double
+	| CARACTER																												#caracter
+	| pexp					 																								#pex																																													
+	;																																																
+pexp: lvalue 																												#lvalues																								
+	| LEFTPARENT exp RIGHTPARENT 																							#expression
+	| NEW type (LEFTBRACE exp RIGHTBRACE)? 																					#new
+	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT LEFTBRACE exp RIGHTBRACE 													#callExp
 	;
-
-/* sexp */	
-sexp: NOT sexp #not
-	| MINUS sexp #neg
-	| TRUE #true
-	| FALSE #false
-	| NULL #null
-	| INTEGER #integer 
-	| DOUBLE #double
-	| CARACTER #caracter
-	| pexp #pex	
+lvalue: (ID|IDTYPE) 																										#lvalueIds
+	| lvalue LEFTBRACE exp RIGHTBRACE 																						#selectorArray
+	| lvalue DOT (ID|IDTYPE) 																								#selectorData
 	;
-
-/* pexp */	
-pexp: lvalue 	#lvalues
-	| LEFTPARENT exp RIGHTPARENT #expression
-	| NEW type (LEFTBRACE exp RIGHTBRACE)? #new
-	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT LEFTBRACE exp RIGHTBRACE #callExp
-	;
-
-/* lvalue */	
-lvalue: (ID|IDTYPE) #lvalueIds
-	| lvalue LEFTBRACE exp RIGHTBRACE #selectorArray
-	| lvalue DOT (ID|IDTYPE) #selectorData
-	;
-
-/* exps */	
-exps: exp ( COMMA exp )*;
+exps: exp ( COMMA exp )*; 																									
 
 
 /* Regras léxicas */

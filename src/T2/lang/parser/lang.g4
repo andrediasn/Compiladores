@@ -25,10 +25,10 @@ grammar lang;
 /* Regra da gramática */
 
 /* start */
-prog: ( data )* ( func )*;
+prog: ( data )* ( func )+;
 
 /* data */
-data: DATA IDTYPE LEFTBRACKET ( decl )* RIGHTBRACKET;
+data: DATA IDTYPE LEFTBRACKET ( decl )+ RIGHTBRACKET;
 decl: (ID|IDTYPE) DOUBLECOLON type SEMICOLON;
 
 /* func */
