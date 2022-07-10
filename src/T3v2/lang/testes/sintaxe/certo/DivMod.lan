@@ -1,0 +1,13 @@
+main(){
+  x = 4;
+  y = 2;
+  divmod(x,y)<x,y>;
+  print x;
+  print y;
+}
+
+divmod (num :: Int , div :: Int ) : Int , Int {
+q = num / div ;
+r = num % div ;
+return q , r ;
+}
