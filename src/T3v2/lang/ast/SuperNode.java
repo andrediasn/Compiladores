@@ -1,9 +1,16 @@
-/* Eduardo Vieira Marques Pereira do Valle 201665554C
- * Matheus Brinati Altomar 201665564C
- */
-package lang.ast;
+/*
 
-import lang.visitors.Visitor;
+Grupo
+
+Nome: André Dias Nunes
+Matrícula: 201665570C
+
+Nome: Guilherme Barbosa
+Matrícula: 201435031
+
+*/
+
+package lang.ast;
 
 public abstract class SuperNode {
    
@@ -11,9 +18,6 @@ public abstract class SuperNode {
    
     public abstract int getLine();
     public abstract int getColumn();
-
-    public abstract void accept(Visitor v);
-
 }
 
 

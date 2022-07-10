@@ -1,10 +1,22 @@
-/* Eduardo Vieira Marques Pereira do Valle 201665554C
- * Matheus Brinati Altomar 201665564C
- */
+/*
+
+Grupo
+
+Nome: André Dias Nunes
+Matrícula: 201665570C
+
+Nome: Guilherme Barbosa
+Matrícula: 201435031
+
+*/
+
 package lang.parser;
 
 import java.io.*;
-import lang.ast.*;
+import lang.ast.SuperNode;
+import lang.parser.*;
+import java.util.List;
+
 // Adaptador para classe de parser. a Função parseFile deve retornar null caso o parser resulte em erro. 
 
 public class TestParser {
@@ -36,8 +48,7 @@ public class TestParser {
                for(File s : inst){
                    pth = s.getPath();
                    System.out.print("Testando " + pth + filler(50 -pth.length()) + "[");
-                   SuperNode aux = adp.parseFile(s.getPath());
-                   if(aux != null){
+                   if(adp.parseFile(s.getPath()) != null){
                        System.out.println("  OK  ]");
                        flips++;
                    }else{ 

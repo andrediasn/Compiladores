@@ -1,7 +1,15 @@
-/* Eduardo Vieira Marques Pereira do Valle 201665554C
- * Matheus Brinati Altomar 201665564C
- */
- 
+/*
+
+Grupo
+
+Nome: André Dias Nunes
+Matrícula: 201665570C
+
+Nome: Guilherme Barbosa
+Matrícula: 201435031
+
+*/
+
 grammar lang;
 
 @parser::header
@@ -14,145 +22,156 @@ grammar lang;
     package lang.parser;
 }
 
-/*Regras da Gramatica*/
+/* Regra da gramática */
 
-prog : ( data )* ( func )*;
-data : DATA IDtype LBRACE ( decl )* RBRACE;
-decl : (ID|IDtype) COLONCOLON type SEMI;
-func : (ID|IDtype) LPAREN (params)? RPAREN (COLON type (COMMA type)*)? LBRACE ( cmd )* RBRACE;
-params : param (COMMA param)*;
-param : (ID|IDtype) COLONCOLON type;
-type : btype (bracks)*;
-bracks : LBRACK RBRACK;
-btype : INT # intType
-    | CHAR # charType
-    | BOOL # boolType
-    | FLOAT # floatType
-    | IDtype # idType
-    ;
-cmd : LBRACE ( cmd )* RBRACE # cmdList
-    | IF LPAREN exp RPAREN cmd # if
-    | IF LPAREN exp RPAREN cmd ELSE cmd # ifElse
-    | ITERATE LPAREN exp RPAREN cmd # iterate
-    | READ lvalue SEMI # read
-    | PRINT exp SEMI # print
-    | RETURN exp (COMMA exp)* SEMI # return
-    | lvalue ASSIGN exp SEMI # atribuir
-    | (ID|IDtype) LPAREN (exps)? RPAREN (LT lvalue (COMMA lvalue)* CRETURN)? SEMI # callCmd
-    ;
-exp : exp AND exp # and
-    | rexp # rex
-    ;
-rexp : aexp LT aexp # lt 
-    | rexp EQUAL aexp # equal
-    | rexp NOTEQUAL aexp # notEqual
-    | aexp # aex
-    ;
-aexp : aexp ADD mexp # add
-    | aexp SUB mexp # sub
-    | mexp # mex
-    ;
-mexp : mexp MUL sexp # mul 
-    | mexp DIV sexp # div 
-    | mexp MOD sexp # mod 
-    | sexp # sex
-    ;
-sexp : BANG sexp # not
-    | SUB sexp # neg
-    | TRUE # true
-    | FALSE # false
-    | NULL_LITERAL # null
-    | INT_LITERAL # int
-    | FLOAT_LITERAL # float
-    | CHAR_LITERAL # char 
-    | pexp # pex
-    ;
-pexp : lvalue # lval
-    | LPAREN exp RPAREN  # ex 
-    | NEW type (LBRACK exp RBRACK)? # new
-    | (ID|IDtype) LPAREN (exps)? RPAREN LBRACK exp RBRACK # callExp 
-    ;
-lvalue : (ID|IDtype) # lvalueID
-    | lvalue LBRACK exp RBRACK # seletorArray
-    | lvalue DOT (ID|IDtype) # seletorData
-    ;
-exps : exp ( COMMA exp )*;
+/* start */
+prog: ( data )* ( func )*;
 
-/*Regras lexicas*/
+/* data */
+data: DATA IDTYPE LEFTBRACKET ( decl )* RIGHTBRACKET;
+decl: (ID|IDTYPE) DOUBLECOLON type SEMICOLON;
 
-// Keywords
+/* func */
+func: (ID|IDTYPE) LEFTPARENT (params)? RIGHTPARENT (COLON type (COMMA type)*)? LEFTBRACKET ( cmd )* RIGHTBRACKET;
+params: (ID|IDTYPE) DOUBLECOLON type (COMMA (ID|IDTYPE) DOUBLECOLON type)*;
 
-BOOL:               'Bool';
-DATA:               'data';
-CHAR:               'Char';
-ELSE:               'else';
-FLOAT:              'Float';
-IF:                 'if';
-INT:                'Int';
-NEW:                'new';
-RETURN:             'return';
-ITERATE:            'iterate';
-PRINT:              'print';
-READ:               'read';
+/* type */
+type: type LEFTBRACE RIGHTBRACE
+	| btype
+	;
 
-// Literals
+/* btype */		
+btype: INT
+	| CHAR
+	| BOOL
+	| FLOAT
+	| IDTYPE
+	;
 
-INT_LITERAL : ('0'..'9')+ ;
-FLOAT_LITERAL : ('0'..'9')* '.' ('0'..'9')+ ;
-CHAR_LITERAL : '\'' (~['\\\r\n] | EscapeSequence) '\'';
-NULL_LITERAL : 'null';
-TRUE : 'true';
-FALSE : 'false';
+/* cmd */	
+cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET
+	| IF LEFTPARENT exp RIGHTPARENT cmd
+	| IF LEFTPARENT exp RIGHTPARENT cmd ELSE cmd
+	| ITERATE LEFTPARENT exp RIGHTPARENT cmd
+	| READ lvalue SEMICOLON
+	| PRINT exp SEMICOLON
+	| RETURN exp ( COMMA exp )* SEMICOLON
+	| lvalue ASSIGN exp SEMICOLON
+	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LESS lvalue ( COMMA lvalue )* GREATER)? SEMICOLON
+	;
+	
+/* exp */	
+exp: exp AND exp
+	| rexp
+	;
 
-// Separators
+/* rexp */	
+rexp: aexp LESS aexp
+	| rexp EQ aexp
+	| rexp NEQ aexp
+	| aexp
+	;
+	
+/* aexp */	
+aexp: aexp PLUS mexp
+	| aexp MINUS mexp
+	| mexp
+	;
 
-LPAREN:             '(';
-RPAREN:             ')';
-LBRACE:             '{';
-RBRACE:             '}';
-LBRACK:             '[';
-RBRACK:             ']';
-SEMI:               ';';
-COMMA:              ',';
-DOT:                '.';
-COLONCOLON:         '::';
-COLON:              ':';
-CRETURN:            '>';
+/* mexp */	
+mexp: mexp MULT sexp
+	| mexp DIV sexp
+	| mexp MODULE sexp
+	| sexp
+	;
 
-// Operators
+/* sexp */	
+sexp: NOT sexp
+	| MINUS sexp
+	| TRUE
+	| FALSE
+	| NULL
+	| INTEGER
+	| DOUBLE
+	| CARACTER
+	| pexp
+	;
 
-ASSIGN:             '=';
-LT:                 '<';
-BANG:               '!';
-QUESTION:           '¿';
-EQUAL:              '==';
-NOTEQUAL:           '!=';
-AND:                '&&';
-ADD:                '+';
-SUB:                '-';
-MUL:                '*';
-DIV:                '/';
-MOD:                '%';
+/* pexp */	
+pexp: lvalue
+	| LEFTPARENT exp RIGHTPARENT
+	| NEW type (LEFTBRACE exp RIGHTBRACE)?
+	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT LEFTBRACE exp RIGHTBRACE
+	;
 
-// Whitespace and comments
+/* lvalue */	
+lvalue: (ID|IDTYPE)
+	| lvalue LEFTBRACE exp RIGHTBRACE
+	| lvalue DOT (ID|IDTYPE)
+	;
 
-WS:                 [ \t\r\n\u000C]+ -> channel(HIDDEN);
-COMMENT:            '{-' .*? '-}'    -> channel(HIDDEN);
-LINE_COMMENT:       '--' ~[\r\n]*    -> channel(HIDDEN);
+/* exps */	
+exps: exp ( COMMA exp )*;
 
-// Identifiers
 
-ID : [a-z] [a-zA-Z0-9_]* ;
-IDtype : [A-Z] [a-zA-Z0-9_]* ;
+/* Regras léxicas */
 
-// Auxiliaries
+//
+INT: 			'Int';
+FLOAT: 			'Float';
+DATA: 			'data';
+CHAR: 			'Char';
+BOOL: 			'Bool';
+TRUE: 			'true';
+FALSE: 			'false';
+NULL: 			'null';
+//
+LEFTPARENT: 	'(';
+RIGHTPARENT:	')';
+LEFTBRACE: 		'[';
+RIGHTBRACE: 	']';
+LEFTBRACKET: 	'{';
+RIGHTBRACKET: 	'}';
+//
+GREATER: 		'>';
+LESS: 			'<';
+//
+DOT: 			'.';
+COMMA: 			',';
+COLON: 			':';
+SEMICOLON: 		';';
+DOUBLECOLON: 	'::';
+//
+ASSIGN: 		'=';
+EQ: 			'==';
+NEQ:			'!=';
+//
+PLUS: 			'+';
+MINUS: 			'-';
+MULT: 			'*';
+DIV: 			'/';
+MODULE: 		'%';
+//
+AND: 			'&&';
+NOT: 			'!';
+//
+IF: 			'if';
+ELSE: 			'else';
+ITERATE: 		'iterate';
+READ: 			'read';
+PRINT: 			'print';
+RETURN: 		'return';
+NEW: 			'new';
+//
 
-fragment EscapeSequence
-    : '\\' [btnfr"'\\]
-    | '\\' ([0-3]? [0-7])? [0-7]
-    | '\\' 'u'+ HexDigit HexDigit HexDigit HexDigit
-    ;
+INTEGER: 		('0'..'9')+;
+DOUBLE: 		('0'..'9')* '.'('0'..'9')+;
+CARACTER: 		'\'' ( ~[\\'] | '\\n' | '\\t' | '\\b' | '\\r' | '\\\\' | '\\\'' ) '\'' ;
 
-fragment HexDigit
-    : [0-9a-fA-F]
-    ;
+FIMDELINHA: 	        '\r'? '\n' -> skip;
+BRANCOS: 		        [ \t]+ -> skip;
+SINGLELINECOMMENT :     '--' ~[\r\n]* -> channel(HIDDEN);
+MULTIPLELINESCOMMENT:   '{-' .*? '-}' -> channel(HIDDEN);
+
+ID: 			[a-z] [a-zA-Z0-9_]* ;
+IDTYPE: 		[A-Z] [a-zA-Z0-9_]* ;

@@ -1,11 +1,20 @@
-/* Eduardo Vieira Marques Pereira do Valle 201665554C
- * Matheus Brinati Altomar 201665564C
- */
+/*
+
+Grupo
+
+Nome: André Dias Nunes
+Matrícula: 201665570C
+
+Nome: Guilherme Barbosa
+Matrícula: 201435031
+
+*/
+
 package lang;
 
+import java.io.*;
 import lang.parser.*;
 import lang.ast.*;
-import lang.visitors.*;
 
 public class LangCompiler{
    // Recupera o nome base (sem extensão) de um arquivo.
@@ -29,7 +38,7 @@ public class LangCompiler{
           
        }
        try{
-	   ParseAdaptor langParser = new ControlParser();
+	   ParseAdaptor langParser = new LangAdapter();
           
           if(args[0].equals("-bs") ){
               System.out.println("Executando bateria de testes sintáticos:");
@@ -40,14 +49,15 @@ public class LangCompiler{
               // TestParser tp = new TestParser(langParser); ;
               return;
           } if(args[0].equals("-bsm") ){
-              System.out.println("Executando bateria de testes de interpretador:");
-              TestInterpretador in = new TestInterpretador(langParser); 
+              System.out.println("Executando bateria de testes sintáticos:");
+              // TestParser tp = new TestParser(langParser); 
               return;
           }
           if(args.length != 2){
-              System.out.println("Para usar essa opção, especifique um nome de arquivo");
+			  System.out.println("Para usar essa opção, especifique um nome de arquivo");
               return; 
           }
+		  
           SuperNode result = langParser.parseFile(args[1]);
           if(result == null){
                System.err.println("Aborting due to syntax error(s)");

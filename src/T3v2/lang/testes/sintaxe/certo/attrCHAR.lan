@@ -1,4 +1,3 @@
 main(){
   x = 'a';
-  print x;
 }

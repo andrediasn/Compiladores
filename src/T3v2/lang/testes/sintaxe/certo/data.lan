@@ -3,6 +3,11 @@ data Ponto {
    y :: Float;
 }
 
+f(d :: Int ) : Int, Char{
+    return 0, '\n';
+}
+
 main(x :: Ponto){
    print x.x;
+   z = f(0)[0] + 2;
 }
