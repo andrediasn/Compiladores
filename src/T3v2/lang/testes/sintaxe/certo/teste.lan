@@ -1,0 +1,4 @@
+main () {
+    print fat (10) [0] ;
+    return num;
+}

@@ -16,7 +16,7 @@ import java.util.List;
 
 public class TestVisitorInterpretator {
    private ParseAdaptor adp;
-   private String okSrcs = "testes/sintaxe/certo/";
+   private String okSrcs = "testes/sintaxe/errado/";
    private File f;
    
    public TestVisitorInterpretator(ParseAdaptor adp){

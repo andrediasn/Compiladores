@@ -5,7 +5,7 @@ genparser: parser/lang.g4
 	java -jar antlr-4.10.1-complete.jar parser/lang.g4
 	
 run: 
-	java -cp .:antlr-4.10.1-complete.jar lang.LangCompiler $(COMMAND) $(ARQ)
+	java -cp .:antlr-4.10.1-complete.jar lang.LangCompiler -bs $(ARQ)
 	
 clean: 
 	rm -rf lang

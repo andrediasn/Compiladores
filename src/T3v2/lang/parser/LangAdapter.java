@@ -13,13 +13,9 @@ Matrícula: 201435031
 
 package lang.parser;
 
-
-import org.antlr.v4.runtime.CommonTokenStream;
-
 import java.io.IOException;
 
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 import lang.ast.*;
@@ -70,6 +66,14 @@ public class LangAdapter implements ParseAdaptor {
 			CommonTokenStream tokenStream = new CommonTokenStream(lexer) ;
 			parser = new langParser(tokenStream);
 			ParseTree tree = parser.prog();	
+
+			lexer.removeErrorListeners();
+            lexer.addErrorListener(new BaseErrorListener()  {
+                @Override
+                public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+                    throw new RuntimeException(e.getCause());
+                }
+            });
 			
 			if( parser.getNumberOfSyntaxErrors()==0 ) {
 				ASTVisitorConstruct vis = new ASTVisitorConstruct();
