@@ -136,7 +136,7 @@ public class ASTVisitorConstruct extends langBaseVisitor {
     }
 
 	@Override 
-	public SuperNode visitParam(langParser.ParamContext ctx) { 
+	public SuperNode visitParam(langParser.ParamsContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
         Type type = (Type) ctx.type().accept(this);
@@ -149,7 +149,7 @@ public class ASTVisitorConstruct extends langBaseVisitor {
         return nodeParam;
 	}
 
-	@Override public SuperNode visitBrace(langParser.BraceContext ctx) { 
+	@Override public SuperNode visitBrace(langParser.TypeContext ctx) { 
         return visitChildren(ctx); 
     }
 	

@@ -41,73 +41,73 @@ type: type LEFTBRACE RIGHTBRACE
 	;
 
 /* btype */		
-btype: INT
-	| CHAR
-	| BOOL
-	| FLOAT
-	| IDTYPE
+btype: INT # typeInt
+	| CHAR # typeChar
+	| BOOL #typeBool
+	| FLOAT #typeFloat
+	| IDTYPE #typeIDType
 	;
 
 /* cmd */	
-cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET
-	| IF LEFTPARENT exp RIGHTPARENT cmd
-	| IF LEFTPARENT exp RIGHTPARENT cmd ELSE cmd
-	| ITERATE LEFTPARENT exp RIGHTPARENT cmd
-	| READ lvalue SEMICOLON
-	| PRINT exp SEMICOLON
-	| RETURN exp ( COMMA exp )* SEMICOLON
-	| lvalue ASSIGN exp SEMICOLON
-	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LESS lvalue ( COMMA lvalue )* GREATER)? SEMICOLON
+cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET #cmdArray
+	| IF LEFTPARENT exp RIGHTPARENT cmd #if
+	| IF LEFTPARENT exp RIGHTPARENT cmd ELSE cmd #ifElse	
+	| ITERATE LEFTPARENT exp RIGHTPARENT cmd #iterate
+	| READ lvalue SEMICOLON #read
+	| PRINT exp SEMICOLON #print
+	| RETURN exp ( COMMA exp )* SEMICOLON #return
+	| lvalue ASSIGN exp SEMICOLON #assign
+	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LESS lvalue ( COMMA lvalue )* GREATER)? SEMICOLON #callCMD
 	;
 	
 /* exp */	
-exp: exp AND exp
-	| rexp
+exp: exp AND exp #and
+	| rexp #rex
 	;
 
 /* rexp */	
-rexp: aexp LESS aexp
-	| rexp EQ aexp
-	| rexp NEQ aexp
-	| aexp
+rexp: aexp LESS aexp #less
+	| rexp EQ aexp #eq
+	| rexp NEQ aexp #neq
+	| aexp #aex
 	;
 	
 /* aexp */	
-aexp: aexp PLUS mexp
-	| aexp MINUS mexp
-	| mexp
+aexp: aexp PLUS mexp #plus 
+	| aexp MINUS mexp #minus
+	| mexp #mex
 	;
 
 /* mexp */	
-mexp: mexp MULT sexp
-	| mexp DIV sexp
-	| mexp MODULE sexp
-	| sexp
+mexp: mexp MULT sexp #mult
+	| mexp DIV sexp #div
+	| mexp MODULE sexp #module
+	| sexp #sex
 	;
 
 /* sexp */	
-sexp: NOT sexp
-	| MINUS sexp
-	| TRUE
-	| FALSE
-	| NULL
-	| INTEGER
-	| DOUBLE
-	| CARACTER
-	| pexp
+sexp: NOT sexp #not
+	| MINUS sexp #neg
+	| TRUE #true
+	| FALSE #false
+	| NULL #null
+	| INTEGER #integer 
+	| DOUBLE #double
+	| CARACTER #caracter
+	| pexp #pex	
 	;
 
 /* pexp */	
-pexp: lvalue
-	| LEFTPARENT exp RIGHTPARENT
-	| NEW type (LEFTBRACE exp RIGHTBRACE)?
-	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT LEFTBRACE exp RIGHTBRACE
+pexp: lvalue 	#lvalues
+	| LEFTPARENT exp RIGHTPARENT #expression
+	| NEW type (LEFTBRACE exp RIGHTBRACE)? #new
+	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT LEFTBRACE exp RIGHTBRACE #callExp
 	;
 
 /* lvalue */	
-lvalue: (ID|IDTYPE)
-	| lvalue LEFTBRACE exp RIGHTBRACE
-	| lvalue DOT (ID|IDTYPE)
+lvalue: (ID|IDTYPE) #lvalueIds
+	| lvalue LEFTBRACE exp RIGHTBRACE #selectorArray
+	| lvalue DOT (ID|IDTYPE) #selectorData
 	;
 
 /* exps */	
