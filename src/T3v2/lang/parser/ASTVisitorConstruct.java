@@ -14,7 +14,7 @@ package lang.parser;
 import lang.ast.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-public class ASTVisitorConstruct extends langBaseVisitor {
+public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 
     @Override 
 	public SuperNode visitProg(langParser.ProgContext ctx) {

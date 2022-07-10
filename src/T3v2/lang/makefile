@@ -17,3 +17,5 @@ clean:
 	rm -R parser/langBaseListener.java
 	rm -R parser/langBaseVisitor.java
 	rm -R parser/langVisitor.java
+
+all: clean compile
