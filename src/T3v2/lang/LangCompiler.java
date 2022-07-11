@@ -51,7 +51,7 @@ public class LangCompiler{
               return;
           } if(args[0].equals("-bsm") ){
               System.out.println("Executando bateria de testes sintáticos:");
-              TestInterpretator tp = new TestInterpretator(langParser); 
+              TestVisitor tp = new TestVisitor(langParser);
               return;
           }
           if(args.length != 2){
