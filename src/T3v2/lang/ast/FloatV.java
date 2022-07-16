@@ -13,12 +13,12 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class DoubleT extends Exp {
+public class FloatV extends Exp {
 	
 	private int line, column;
   private float value;
 
-  public DoubleT(int line, int column, float value) {
+  public FloatV(int line, int column, float value) {
     this.value = value;
     this.line = line;
     this.column = column;

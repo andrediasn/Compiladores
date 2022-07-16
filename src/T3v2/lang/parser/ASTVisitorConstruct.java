@@ -497,19 +497,19 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitInteger(langParser.IntegerContext ctx) { 
+	public SuperNode visitInt(langParser.IntContext ctx) { 
 		int line = ctx.getStart().getLine();
 		int column = ctx.getStart().getCharPositionInLine();
-        IntegerT nodeInteger = new IntegerT( line, column, Integer.parseInt(ctx.INTEGER().getText()));
-        return nodeInteger; 
+        Int nodeInt = new Int( line, column, Integer.parseInt(ctx.INT().getText()));
+        return nodeInt; 
 	}
 	
 	@Override 
-	public SuperNode visitDouble(langParser.DoubleContext ctx) { 
+	public SuperNode visitFloat(langParser.FloatContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        DoubleT nodeDouble = new DoubleT( line,column,Float.parseFloat(ctx.DOUBLE().getText()));
-        return nodeDouble;
+        FloatV nodeFloat = new FloatV( line,column,Float.parseFloat(ctx.FLOAT().getText()));
+        return nodeFloat;
 	}
 
 	@Override 

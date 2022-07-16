@@ -13,12 +13,12 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class IntegerT extends Exp {
+public class Int extends Exp {
 
   private int line, column;
   private int value;
 
-	public IntegerT(int line, int column, int value) {
+	public Int(int line, int column, int value) {
     this.value = value;
     this.line = line;
     this.column = column;
@@ -35,7 +35,6 @@ public class IntegerT extends Exp {
   public int getValue() {
     return value;
   }
-
 
   public void accept(Visitor v) {
     v.visit(this);

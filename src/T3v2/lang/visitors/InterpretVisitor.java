@@ -221,7 +221,7 @@ public class InterpretVisitor extends Visitor{
         }
     }
 
-    public void visit(DoubleT doub) {
+    public void visit(FloatV doub) {
         try {
             operands.push(Float.valueOf(doub.getValue()));
         } catch (ValException exception) {
@@ -290,7 +290,7 @@ public class InterpretVisitor extends Visitor{
         }
     }
 
-    public void visit(IntegerT integer) {
+    public void visit(Int integer) {
         try {
             operands.push(Integer.valueOf(integer.getValue()));
         } catch (ValException exception) {

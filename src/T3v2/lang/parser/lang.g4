@@ -41,11 +41,11 @@ type: btype (brace)*;
 brace: LEFTBRACE RIGHTBRACE;	
 
 /* btype */	
-btype: INT 		#tyInt
-	| CHAR 		#tyChar
-	| BOOL 		#tyBool
-	| FLOAT 	#tyFloat
-	| IDTYPE 	#tyID
+btype: TYPEINT 		#tyInt
+	| TYPECHAR 		#tyChar
+	| TYPEBOOL 		#tyBool
+	| TYPEFLOAT 	#tyFloat
+	| IDTYPE 		#tyID
 	;
 
 /* cmd */
@@ -84,8 +84,8 @@ sexp: NOT sexp			#not
 	| TRUE				#true
 	| FALSE				#false
 	| NULL				#null
-	| INTEGER			#integer
-	| DOUBLE			#double
+	| INT				#int
+	| FLOAT				#float
 	| CARACTER			#caracter
 	| pexp				#pex																																													
 	;																																																
@@ -104,12 +104,11 @@ var: (ID|IDTYPE) 							#varIds
 
 
 /* Lexic Rules */
-
-INT: 			'Int';
-FLOAT: 			'Float';
-DATA: 			'data';
-CHAR: 			'Char';
-BOOL: 			'Bool';
+DATA: 			'data'; 
+TYPEINT: 		'Int';
+TYPEFLOAT: 		'Float';
+TYPECHAR: 		'Char';
+TYPEBOOL: 		'Bool';
 TRUE: 			'true';
 FALSE: 			'false';
 NULL: 			'null';
@@ -143,8 +142,8 @@ READ: 			'read';
 PRINT: 			'print';
 RETURN: 		'return';
 NEW: 			'new';
-INTEGER: 		('0'..'9')+;
-DOUBLE: 		('0'..'9')* '.'('0'..'9')+;
+INT: 			('0'..'9')+;
+FLOAT: 			('0'..'9')* '.'('0'..'9')+;
 CARACTER: 		'\'' ( ~[\\'] | '\\n' | '\\t' | '\\b' | '\\r' | '\\\\' | '\\\'' ) '\'' ;
 
 ENDLINE: 	        '\r'? '\n' -> skip;

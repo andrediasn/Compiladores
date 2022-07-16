@@ -24,12 +24,12 @@ public abstract class Visitor
     public abstract void visit(Cmds e); // CmdArray - Lista de comandos
 		public abstract void visit(Data e);
 
-    public abstract void visit(IntegerT e);
+    public abstract void visit(Int e);
+    public abstract void visit(FloatV e);
     public abstract void visit(Caracter e);
     public abstract void visit(Iterate e);
-  	public abstract void visit(Decl e);
+  	public abstract void visit(Decl e); // informações dos tipo de data
     public abstract void visit(Div e);
-    public abstract void visit(DoubleT e);
     
 		public abstract void visit(If e);
     public abstract void visit(Var e); // lvalue -  armazenar ID e seus seletores
