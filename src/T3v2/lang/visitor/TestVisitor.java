@@ -21,7 +21,7 @@ import java.util.List;
 
 public class TestVisitor {
     private ParseAdaptor adp;
-    private String okSrcs = "testes/sintaxe/errado/";
+    private String okSrcs = "testes/semantica/certo/";
     private File f;
    
     public TestVisitor(ParseAdaptor adp){
@@ -47,9 +47,10 @@ public class TestVisitor {
                 inst = f.listFiles();
                 for(File s : inst){
                     pth = s.getPath();
-                    System.out.print("Testando " + pth + filler(50 -pth.length()) + " Output: ");
+                    System.out.println("Testando: " + pth + filler(50 -pth.length()));
 					SuperNode node = adp.parseFile(s.getPath());
                     if(node != null){
+                        System.out.println("Output: ");
 					    Visitor v = new VisitorInterpretator();
 					    node.accept(v);
 						System.out.println("[  OK  ]");

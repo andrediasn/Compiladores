@@ -28,7 +28,7 @@ public class VisitorInterpretator extends Visitor{
         env.push(new HashMap<String, Object>());
         operands = new Stack<Object>();
         funcs = new HashMap<String, Func>();
-				types = new HashMap<String, Data>();
+		types = new HashMap<String, Data>();
         returnables = new ArrayList<Object>();
         retMode = false;
         debug = false;
@@ -269,7 +269,7 @@ public class VisitorInterpretator extends Visitor{
             System.out.println("-------------- Memoria ----------------");
 
             for (int i = 0; i < obj.length; i++) {
-                System.out.println(((String) obj[i]) + " : " + env.peek().get(obj[i]).toString());
+                System.out.print(((String) obj[i]) + " : " + env.peek().get(obj[i]).toString());
             }
 
         }
@@ -574,14 +574,14 @@ public class VisitorInterpretator extends Visitor{
     public void visit(Print pri) {
         try {
             pri.getExpression().accept(this);
-            System.out.println(operands.pop());
+            System.out.print(operands.pop());
         } catch (ValException exception) {
             throw new RuntimeException(" (" + pri.getLine() + ", " + pri.getColumn() + ") " + exception.getMessage());
         }
     }
 
     public void visit(Prog prog) {
-        Func funcs2 = null;
+        Func main = null;
         if (prog.getDatas() != null) {
             for (Data data : prog.getDatas()) {
                 types.put(data.getId(), data);
@@ -590,13 +590,13 @@ public class VisitorInterpretator extends Visitor{
         for (Func func : prog.getFuncs()) {
             funcs.put(func.getID(), func);
             if (func.getID().equals("main")) {
-                funcs2 = func;
+                main = func;
             }
         }
-        if (funcs2 == null) {
+        if (main == null) {
             throw new RuntimeException("Main não existe");
         }
-        funcs2.accept(this);
+        main.accept(this);
     }
 
     public void visit(Read read) {
