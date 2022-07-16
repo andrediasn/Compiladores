@@ -49,15 +49,15 @@ btype: INT 		#tyInt
 	;
 
 /* cmd */
-cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET				#cmdArray
+cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET				#cmds
 	| IF LEFTPARENT exp RIGHTPARENT cmd 			#if
 	| IF LEFTPARENT exp RIGHTPARENT cmd ELSE cmd 	#ifElse										
 	| ITERATE LEFTPARENT exp RIGHTPARENT cmd		#iterate
-	| READ lvalue SEMICOLON							#read
+	| READ var SEMICOLON							#read
 	| PRINT exp SEMICOLON 							#print
 	| RETURN exp ( COMMA exp )* SEMICOLON 			#return
-	| lvalue ATTR exp SEMICOLON 					#attr
-	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LESS lvalue ( COMMA lvalue )* GREATER)? SEMICOLON		#callCMD
+	| var ATTR exp SEMICOLON 					#attr
+	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LESS var ( COMMA var )* GREATER)? SEMICOLON		#callCMD
 	;
 
 /* exp */	
@@ -89,16 +89,16 @@ sexp: NOT sexp			#not
 	| CARACTER			#caracter
 	| pexp				#pex																																													
 	;																																																
-pexp: lvalue 																	#lvalues																								
+pexp: var 																	#vars																								
 	| LEFTPARENT exp RIGHTPARENT 												#expression
 	| NEW type (LEFTBRACE exp RIGHTBRACE)? 										#new
 	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT LEFTBRACE exp RIGHTBRACE 		#callExp
 	;
 
-/* lvalue */	
-lvalue: (ID|IDTYPE) 							#lvalueIds
-	| lvalue LEFTBRACE exp RIGHTBRACE 			#accessArray
-	| lvalue DOT (ID|IDTYPE) 					#accessData
+/* var */	
+var: (ID|IDTYPE) 							#varIds
+	| var LEFTBRACE exp RIGHTBRACE 			#accessArray
+	| var DOT (ID|IDTYPE) 					#accessData
 	;
 																									
 

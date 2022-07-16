@@ -206,7 +206,7 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitCmdArray(langParser.CmdArrayContext ctx) { 
+	public SuperNode visitCmds(langParser.CmdsContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
         Cmd[] cmds = null;
@@ -220,8 +220,8 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
                 cmds[i] = (Cmd) this.aggregateResult(result, childResult);
             }
         }
-        CmdArray nodeCmdArray = new CmdArray(line,column,cmds);
-        return nodeCmdArray;
+        Cmds nodeCmds = new Cmds(line,column,cmds);
+        return nodeCmds;
 	}
 	
 	@Override 
@@ -259,8 +259,8 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 	public SuperNode visitRead(langParser.ReadContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        Lvalue value = (Lvalue) ctx.lvalue().accept(this);
-        Read nodeRead = new Read(line, column, value);
+        Var var = (Var) ctx.var().accept(this);
+        Read nodeRead = new Read(line, column, var);
         return nodeRead;
 	}
 	
@@ -296,9 +296,9 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 	public SuperNode visitAttr(langParser.AttrContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        Lvalue value = (Lvalue) ctx.lvalue().accept(this);
+        Var var = (Var) ctx.var().accept(this);
         Exp expression = (Exp) ctx.exp().accept(this);
-        Attr nodeAttr = new Attr(line, column, value, expression);
+        Attr nodeAttr = new Attr(line, column, var, expression);
         return nodeAttr;
 	}
 
@@ -308,7 +308,7 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
         Exp[] expressions = null;
-        Lvalue[] values = null;
+        Var[] vars = null;
         SuperNode result = this.defaultResult();
         if(ctx.exps()!= null) {
             int n = ctx.exps().exp().size();
@@ -322,24 +322,24 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
             }
         }
         result = this.defaultResult();
-        if(ctx.lvalue() != null) {
-            int n = ctx.lvalue().size();
+        if(ctx.var() != null) {
+            int n = ctx.var().size();
             if (n != 0) {
-                values = new Lvalue[n];
+                vars = new Var[n];
                 for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
-                    ParseTree c = ctx.lvalue(i);
+                    ParseTree c = ctx.var(i);
                     SuperNode childResult = c.accept(this);
-                    values[i] = (Lvalue) this.aggregateResult(result, childResult);
+                    vars[i] = (Var) this.aggregateResult(result, childResult);
                 }
             }
         }
         
         CallCmd nodeCall = null;
         if (ctx.ID().getText() != null) {
-            nodeCall = new CallCmd(line,column,ctx.ID().getText(), expressions, values);
+            nodeCall = new CallCmd(line,column,ctx.ID().getText(), expressions, vars);
         }
         else {
-            nodeCall = new CallCmd(line,column,ctx.IDTYPE().getText(), expressions, values);
+            nodeCall = new CallCmd(line,column,ctx.IDTYPE().getText(), expressions, vars);
         }
         return nodeCall;
 	}
@@ -533,7 +533,7 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
         return visitChildren(ctx); 
     }
 
-	@Override public SuperNode visitLvalues(langParser.LvaluesContext ctx) { 
+	@Override public SuperNode visitVars(langParser.VarsContext ctx) { 
         return visitChildren(ctx);
     }
 	
@@ -585,23 +585,23 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitLvalueIds(langParser.LvalueIdsContext ctx) { 
+	public SuperNode visitVarIds(langParser.VarIdsContext ctx) { 
         int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        Lvalue nodeLvalue = null;
+        Var nodeVar = null;
         if (ctx.ID().getText() != null) {
-            nodeLvalue = new Lvalue(line, column, ctx.ID().getText());
+            nodeVar = new Var(line, column, ctx.ID().getText());
         } else {
-            nodeLvalue = new Lvalue(line, column, ctx.IDTYPE().getText());
+            nodeVar = new Var(line, column, ctx.IDTYPE().getText());
         }
-        return nodeLvalue; 
+        return nodeVar; 
 	}
 
 	@Override 
 	public SuperNode visitAccessData(langParser.AccessDataContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        Lvalue nodeAccessData = (Lvalue) ctx.lvalue().accept(this);
+        Var nodeAccessData = (Var) ctx.var().accept(this);
         if (ctx.ID().getText() != null) {
             nodeAccessData.add(new AccessData(line, column, ctx.ID().getText()));
         } else {
@@ -614,7 +614,7 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 	public SuperNode visitAccessArray(langParser.AccessArrayContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        Lvalue nodeAccessArray = (Lvalue) ctx.lvalue().accept(this);
+        Var nodeAccessArray = (Var) ctx.var().accept(this);
         Exp expression = (Exp) ctx.exp().accept(this);
         nodeAccessArray.add(new AccessArray(line, column, expression));
         return nodeAccessArray; 

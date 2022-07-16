@@ -13,14 +13,14 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class CmdArray extends Cmd{
+public class Cmds extends Cmd{
 	private int line, column;
-  private Cmd[] array;
+  private Cmd[] cmds;
 
-  public CmdArray(int line , int column, Cmd[] array)	{
+  public Cmds(int line , int column, Cmd[] cmds)	{
     this.line = line;
     this.column = column;
-    this.array = array;
+    this.cmds = cmds;
   }
 
   public int getLine() {
@@ -31,8 +31,8 @@ public class CmdArray extends Cmd{
     return column;
   }
 
-  public Cmd[] getArray() { 
-	return array; 
+  public Cmd[] getList() { 
+	  return cmds; 
 	}
 
 

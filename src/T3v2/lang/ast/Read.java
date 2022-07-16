@@ -16,12 +16,12 @@ import lang.visitors.Visitor;
 public class Read extends Cmd{
 
   private int line, column;
-  private Lvalue value;
+  private Var var;
 
-  public Read(int line, int column, Lvalue value)	{
+  public Read(int line, int column, Var var)	{
     this.line = line;
     this.column = column;
-    this.value = value;
+    this.var = var;
   }
 
   public int getLine() {
@@ -32,8 +32,8 @@ public class Read extends Cmd{
     return column;
   }
 
-  public Lvalue getValue() {
-    return value;
+  public Var getValue() {
+    return var;
   }
 
   public void accept(Visitor v) { 

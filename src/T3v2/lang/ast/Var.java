@@ -14,13 +14,13 @@ package lang.ast;
 import lang.visitors.Visitor;
 import java.util.*;
 
-public class Lvalue extends Exp {
+public class Var extends Exp {
 
   private int line, column;
   private String id;
   private ArrayList<Selector> selectors;
 
-  public Lvalue(int line, int column, String id) {
+  public Var(int line, int column, String id) {
     this.id = id;
     this.selectors = new ArrayList<Selector>();
     this.line = line;

@@ -18,9 +18,9 @@ public class CallCmd extends Cmd {
   private int line, column;
   private String name;
   private Exp[] expressions;
-  private Lvalue[] returnable;
+  private Var[] returnable;
 
-  public CallCmd(int line, int column, String name, Exp[] expressions, Lvalue[] returnable)	{
+  public CallCmd(int line, int column, String name, Exp[] expressions, Var[] returnable)	{
     this.name = name;
     this.expressions = expressions;
     this.returnable = returnable;
@@ -44,7 +44,7 @@ public class CallCmd extends Cmd {
     return expressions;
   }
 
-  public Lvalue[] getReturnable() {
+  public Var[] getReturnable() {
     return returnable;
   }
 

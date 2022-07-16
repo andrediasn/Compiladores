@@ -17,11 +17,11 @@ public abstract class Visitor
 {
 	  
     public abstract void visit(Program p); 
-    public abstract void visit(Attr e);  // Assign - Atribuições de variáveis
-    public abstract void visit(Func f); // Definição de funções;
+    public abstract void visit(Attr e); // Assign - Atribuições de variáveis
+    public abstract void visit(Func f); // Definição de funções
     public abstract void visit(CallCmd e);
     public abstract void visit(CallExp e);
-    public abstract void visit(CmdArray e);
+    public abstract void visit(Cmds e); // CmdArray - Lista de comandos
 		public abstract void visit(Data e);
 
     public abstract void visit(IntegerT e);
@@ -33,8 +33,8 @@ public abstract class Visitor
     
     
 		public abstract void visit(If e);
-    public abstract void visit(Lvalue e);
-    public abstract void visit(CModule e); // ModuleT - 
+    public abstract void visit(Var e); // lvalue -  armazenar ID e seus seletores
+    public abstract void visit(CModule e); // ModuleT
     
     public abstract void visit(Mult e);
     public abstract void visit(Plus e);

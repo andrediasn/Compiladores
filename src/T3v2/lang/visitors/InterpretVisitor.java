@@ -54,7 +54,7 @@ public class InterpretVisitor extends Visitor{
 
 	public void visit(Attr attr) {
         try {
-            Lvalue var = attr.getValue();
+            Var var = attr.getValue();
             attr.getExpression().accept(this);
             Object val = operands.pop();
             Object obj = null;
@@ -101,11 +101,11 @@ public class InterpretVisitor extends Visitor{
                 }
                 f.accept(this);
                 if (callCmd.getReturnable() != null) {
-                    Lvalue[] s = callCmd.getReturnable();
+                    Var[] s = callCmd.getReturnable();
 
                     for (int i = 0; i < s.length; i++) {
                         Object val = returnables.get(i);
-                        Lvalue var = s[i];
+                        Var var = s[i];
                         Object obj = env.peek().get(var.getId());
                         ArrayList<Selector> selectors = var.getSelectors();
 
@@ -174,12 +174,12 @@ public class InterpretVisitor extends Visitor{
         }
     }
 
-    public void visit(CmdArray cmdArray) {
+    public void visit(Cmds cmds) {
         if (retMode) {
             return;
         }
         try {
-            for (Cmd cmd : cmdArray.getArray()) {
+            for (Cmd cmd : cmds.getList()) {
 
                 cmd.accept(this);
                 if (retMode) {
@@ -187,7 +187,7 @@ public class InterpretVisitor extends Visitor{
                 }
             }
         } catch (ValException exception) {
-            throw new RuntimeException(" (" + cmdArray.getLine() + ", " + cmdArray.getColumn() + ") " + exception.getMessage());
+            throw new RuntimeException(" (" + cmds.getLine() + ", " + cmds.getColumn() + ") " + exception.getMessage());
         }
     }
 
@@ -342,12 +342,12 @@ public class InterpretVisitor extends Visitor{
         }
     }
     
-    public void visit(Lvalue lValue) {
+    public void visit(Var var) {
         try {
-            if (env.peek().containsKey(lValue.getId())) {
-                Object obj = env.peek().get(lValue.getId());
-                if (lValue.getSelectors().size() != 0) {
-                    for (Selector lv : lValue.getSelectors()) {
+            if (env.peek().containsKey(var.getId())) {
+                Object obj = env.peek().get(var.getId());
+                if (var.getSelectors().size() != 0) {
+                    for (Selector lv : var.getSelectors()) {
                         lv.accept(this);
                         if (lv instanceof AccessData) {
                             obj = ((HashMap<String, Object>) obj).get((String) operands.pop());
@@ -358,10 +358,10 @@ public class InterpretVisitor extends Visitor{
                 }
                 operands.push(obj);
             } else {
-                throw new RuntimeException(" (" + lValue.getLine() + ", " + lValue.getColumn() + ") não declarado " + lValue.getId());
+                throw new RuntimeException(" (" + var.getLine() + ", " + var.getColumn() + ") não declarado " + var.getId());
             }
         } catch (ValException exception) {
-            throw new RuntimeException(" (" + lValue.getLine() + ", " + lValue.getColumn() + ") " + exception.getMessage());
+            throw new RuntimeException(" (" + var.getLine() + ", " + var.getColumn() + ") " + exception.getMessage());
         }
     }
 
@@ -603,21 +603,21 @@ public class InterpretVisitor extends Visitor{
         try {
             Scanner scan = new Scanner(System.in);
             Object Input = scan.nextLine();
-            Lvalue value = read.getValue();
-            if (!value.getSelectors().isEmpty()) {
-                Object obj = (Object) env.peek().get(value.getId());
-                for (int k = 0; k < value.getSelectors().size() - 1; k++) {
-                    value.getSelectors().get(k).accept(this);
+            Var var = read.getValue();
+            if (!var.getSelectors().isEmpty()) {
+                Object obj = (Object) env.peek().get(var.getId());
+                for (int k = 0; k < var.getSelectors().size() - 1; k++) {
+                    var.getSelectors().get(k).accept(this);
                     Object s = operands.pop();
-                    if (value.getSelectors().get(k) instanceof AccessData) {
+                    if (var.getSelectors().get(k) instanceof AccessData) {
                         obj = ((HashMap<String, Object>) obj).get(s);
                     } else {
                         obj = ((ArrayList) obj).get((Integer) s);
                     }
                 }
-                value.getSelectors().get(value.getSelectors().size() - 1).accept(this);
+                var.getSelectors().get(var.getSelectors().size() - 1).accept(this);
                 Object s = operands.pop();
-                if (value.getSelectors().get(value.getSelectors().size() - 1) instanceof AccessData) {
+                if (var.getSelectors().get(var.getSelectors().size() - 1) instanceof AccessData) {
                     ((HashMap<String, Object>) obj).put((String) s, Input);
                 } else {
                     ((ArrayList) obj).set((Integer) s, Input);
