@@ -69,7 +69,7 @@ public class InterpretVisitor extends Visitor{
                 for (int k = 0; k < selectors.size() - 1; k++) {
                     selectors.get(k).accept(this);
                     Object select = operands.pop();
-                    if (selectors.get(k) instanceof SelectorData) {
+                    if (selectors.get(k) instanceof AccessData) {
                         obj = ((HashMap<String, Object>) obj).get(select);
                     } else {
                         obj = ((ArrayList) obj).get((Integer) select);
@@ -78,7 +78,7 @@ public class InterpretVisitor extends Visitor{
                 selectors.get(selectors.size() - 1).accept(this);
                 Object select = operands.pop();
 
-                if (selectors.get(selectors.size() - 1) instanceof SelectorData) {
+                if (selectors.get(selectors.size() - 1) instanceof AccessData) {
                     ((HashMap<String, Object>) obj).put((String) select, val);
                 } else {
                     ((ArrayList) obj).set((Integer) select, val);
@@ -113,7 +113,7 @@ public class InterpretVisitor extends Visitor{
                             for (int k = 0; k < selectors.size() - 1; k++) {
                                 selectors.get(k).accept(this);
                                 Object select = operands.pop();
-                                if (selectors.get(k) instanceof SelectorData) {
+                                if (selectors.get(k) instanceof AccessData) {
                                     obj = ((HashMap<String, Object>) obj).get(select);
                                 } else {
                                     obj = ((ArrayList) obj).get((Integer) select);
@@ -121,7 +121,7 @@ public class InterpretVisitor extends Visitor{
                             }
                             selectors.get(selectors.size() - 1).accept(this);
                             Object select = operands.pop();
-                            if (selectors.get(selectors.size() - 1) instanceof SelectorData) {
+                            if (selectors.get(selectors.size() - 1) instanceof AccessData) {
                                 ((HashMap<String, Object>) obj).put((String) select, val);
                             } else {
                                 ((ArrayList) obj).set((Integer) select, val);
@@ -349,9 +349,9 @@ public class InterpretVisitor extends Visitor{
                 if (lValue.getSelectors().size() != 0) {
                     for (Selector lv : lValue.getSelectors()) {
                         lv.accept(this);
-                        if (lv instanceof SelectorData) {
+                        if (lv instanceof AccessData) {
                             obj = ((HashMap<String, Object>) obj).get((String) operands.pop());
-                        } else if (lv instanceof SelectorArray) {
+                        } else if (lv instanceof AccessArray) {
                             obj = ((ArrayList) obj).get((Integer) operands.pop());
                         }
                     }
@@ -609,7 +609,7 @@ public class InterpretVisitor extends Visitor{
                 for (int k = 0; k < value.getSelectors().size() - 1; k++) {
                     value.getSelectors().get(k).accept(this);
                     Object s = operands.pop();
-                    if (value.getSelectors().get(k) instanceof SelectorData) {
+                    if (value.getSelectors().get(k) instanceof AccessData) {
                         obj = ((HashMap<String, Object>) obj).get(s);
                     } else {
                         obj = ((ArrayList) obj).get((Integer) s);
@@ -617,7 +617,7 @@ public class InterpretVisitor extends Visitor{
                 }
                 value.getSelectors().get(value.getSelectors().size() - 1).accept(this);
                 Object s = operands.pop();
-                if (value.getSelectors().get(value.getSelectors().size() - 1) instanceof SelectorData) {
+                if (value.getSelectors().get(value.getSelectors().size() - 1) instanceof AccessData) {
                     ((HashMap<String, Object>) obj).put((String) s, Input);
                 } else {
                     ((ArrayList) obj).set((Integer) s, Input);
@@ -642,7 +642,7 @@ public class InterpretVisitor extends Visitor{
         retMode = true;
     }
 
-    public void visit(SelectorArray selector) {
+    public void visit(AccessArray selector) {
         try {
             Exp exp = selector.getIndex();
             exp.accept(this);
@@ -651,7 +651,7 @@ public class InterpretVisitor extends Visitor{
         }
     }
 
-    public void visit(SelectorData selector) {
+    public void visit(AccessData selector) {
         try {
             operands.push(selector.getIndex());
         } catch (ValException exception) {

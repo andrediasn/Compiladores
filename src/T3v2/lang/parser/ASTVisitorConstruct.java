@@ -598,26 +598,26 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitSelectorData(langParser.SelectorDataContext ctx) { 
+	public SuperNode visitAccessData(langParser.AccessDataContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        Lvalue nodeSelectorData = (Lvalue) ctx.lvalue().accept(this);
+        Lvalue nodeAccessData = (Lvalue) ctx.lvalue().accept(this);
         if (ctx.ID().getText() != null) {
-            nodeSelectorData.add(new SelectorData(line, column, ctx.ID().getText()));
+            nodeAccessData.add(new AccessData(line, column, ctx.ID().getText()));
         } else {
-            nodeSelectorData.add(new SelectorData(line, column, ctx.IDTYPE().getText()));
+            nodeAccessData.add(new AccessData(line, column, ctx.IDTYPE().getText()));
         }
-        return nodeSelectorData; 
+        return nodeAccessData; 
 	}
 
 	@Override 
-	public SuperNode visitSelectorArray(langParser.SelectorArrayContext ctx) { 
+	public SuperNode visitAccessArray(langParser.AccessArrayContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        Lvalue nodeSelectorArray = (Lvalue) ctx.lvalue().accept(this);
+        Lvalue nodeAccessArray = (Lvalue) ctx.lvalue().accept(this);
         Exp expression = (Exp) ctx.exp().accept(this);
-        nodeSelectorArray.add(new SelectorArray(line, column, expression));
-        return nodeSelectorArray; 
+        nodeAccessArray.add(new AccessArray(line, column, expression));
+        return nodeAccessArray; 
 	}
 
 	@Override public SuperNode visitExps(langParser.ExpsContext ctx) { return visitChildren(ctx); }

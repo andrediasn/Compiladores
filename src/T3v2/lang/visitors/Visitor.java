@@ -53,16 +53,14 @@ public abstract class Visitor
 
     public abstract void visit(Null e);
 		public abstract void visit(Params e);
-    
 	  public abstract void visit(Print e);
-    
     public abstract void visit(Read e);
     public abstract void visit(Return e);
-    public abstract void visit(SelectorArray e);
-    public abstract void visit(SelectorData e);
+
+    public abstract void visit(AccessArray e); //SelectorArray - para demonstrar o acesso a um elemento de array em determinada posição;
+    public abstract void visit(AccessData e);  //SelectorData - para demonstrar o acesso a um elemento de data com determinado identificador
 		
     public abstract void visit(Type t);
-
     public abstract void visit(TyBool t);
 		public abstract void visit(TyChar t);
     public abstract void visit(TyFloat t);

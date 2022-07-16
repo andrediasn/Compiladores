@@ -81,8 +81,8 @@ pexp: lvalue 																												#lvalues
 	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT LEFTBRACE exp RIGHTBRACE 													#callExp
 	;
 lvalue: (ID|IDTYPE) 																										#lvalueIds
-	| lvalue LEFTBRACE exp RIGHTBRACE 																						#selectorArray
-	| lvalue DOT (ID|IDTYPE) 																								#selectorData
+	| lvalue LEFTBRACE exp RIGHTBRACE 																						#accessArray
+	| lvalue DOT (ID|IDTYPE) 																								#accessData
 	;
 exps: exp ( COMMA exp )*; 																									
 

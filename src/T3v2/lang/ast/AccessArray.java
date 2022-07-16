@@ -13,12 +13,12 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class SelectorArray extends Selector {
+public class AccessArray extends Selector {
 
 	private int line, column;
   private Exp index;
 
-  public SelectorArray(int line, int column, Exp index) {
+  public AccessArray(int line, int column, Exp index) {
     this.index = index;
     this.line = line;
     this.column = column;
