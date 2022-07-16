@@ -293,13 +293,13 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 	}
 	
 	@Override 
-	public SuperNode visitAssign(langParser.AssignContext ctx) { 
+	public SuperNode visitAttr(langParser.AttrContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
         Lvalue value = (Lvalue) ctx.lvalue().accept(this);
         Exp expression = (Exp) ctx.exp().accept(this);
-        Assign nodeAssign = new Assign(line, column, value, expression);
-        return nodeAssign;
+        Attr nodeAttr = new Attr(line, column, value, expression);
+        return nodeAttr;
 	}
 
 

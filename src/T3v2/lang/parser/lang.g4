@@ -45,7 +45,7 @@ cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET 																						#cmdArray
 	| READ lvalue SEMICOLON																									#read
 	| PRINT exp SEMICOLON 																									#print
 	| RETURN exp ( COMMA exp )* SEMICOLON 																					#return
-	| lvalue ASSIGN exp SEMICOLON 																							#assign
+	| lvalue ATTR exp SEMICOLON 																							#attr
 	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LESS lvalue ( COMMA lvalue )* GREATER)? SEMICOLON							#callCMD
 	;
 exp: exp AND exp																											#and
@@ -115,7 +115,7 @@ COLON: 			':';
 SEMICOLON: 		';';
 DOUBLECOLON: 	'::';
 //
-ASSIGN: 		'=';
+ATTR: 		'=';
 EQ: 			'==';
 NEQ:			'!=';
 //

@@ -10,7 +10,7 @@ Matrícula: 201435031
 
 */
 
-package lang.visitor;
+package lang.visitors;
 
 import java.io.*;
 import lang.ast.*;
@@ -51,13 +51,9 @@ public class TestVisitor {
 					SuperNode node = adp.parseFile(s.getPath());
                     if(node != null){
                         System.out.println("Output: ");
-					    Visitor v = new VisitorInterpretator();
+					    Visitor v = new InterpretVisitor();
 					    node.accept(v);
-						System.out.println("[  OK  ]");
                        	flips++;
-                    } else { 
-                        System.out.println("[ FALHOU ]");
-                        flops++;
                     }
 					System.out.println("----------------------------");
                 }

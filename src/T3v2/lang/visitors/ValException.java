@@ -1,4 +1,4 @@
-package lang.visitor;
+package lang.visitors;
 
 import java.util.Stack;
 

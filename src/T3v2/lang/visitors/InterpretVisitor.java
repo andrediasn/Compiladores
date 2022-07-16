@@ -9,12 +9,12 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-package lang.visitor;
+package lang.visitors;
 
 import lang.ast.*;
 import java.util.*;
 
-public class VisitorInterpretator extends Visitor{
+public class InterpretVisitor extends Visitor{
 
   	private Stack<HashMap<String, Object>> env;
 	private Stack<Object> operands;
@@ -23,7 +23,7 @@ public class VisitorInterpretator extends Visitor{
     private ArrayList<Object> returnables;
     private boolean retMode, debug;
 
-    public VisitorInterpretator() {
+    public InterpretVisitor() {
         env = new Stack<HashMap<String, Object>>();
         env.push(new HashMap<String, Object>());
         operands = new Stack<Object>();
@@ -34,7 +34,7 @@ public class VisitorInterpretator extends Visitor{
         debug = false;
     }
 
-    public VisitorInterpretator(boolean debug) {
+    public InterpretVisitor(boolean debug) {
         this();
         this.debug = debug;
     }
@@ -52,10 +52,10 @@ public class VisitorInterpretator extends Visitor{
         }
     }
 
-	public void visit(Assign assign) {
+	public void visit(Attr attr) {
         try {
-            Lvalue var = assign.getValue();
-            assign.getExpression().accept(this);
+            Lvalue var = attr.getValue();
+            attr.getExpression().accept(this);
             Object val = operands.pop();
             Object obj = null;
 
@@ -88,7 +88,7 @@ public class VisitorInterpretator extends Visitor{
             }
 
         } catch (ValException exception) {
-            throw new RuntimeException(" (" + assign.getLine() + ", " + assign.getColumn() + ") " + exception.getMessage());
+            throw new RuntimeException(" (" + attr.getLine() + ", " + attr.getColumn() + ") " + exception.getMessage());
         }
     }
 

@@ -11,15 +11,15 @@ Matrícula: 201435031
 */
 package lang.ast;
 
-import lang.visitor.Visitor;
+import lang.visitors.Visitor;
 
-public class Assign extends Cmd{
+public class Attr extends Cmd{
 
   private int line, column;
   private Lvalue value;
   private Exp expression;
 
-  public Assign(int line, int column, Lvalue value, Exp expression)	{
+  public Attr(int line, int column, Lvalue value, Exp expression)	{
     this.line = line;
     this.column = column;
     this.value = value;

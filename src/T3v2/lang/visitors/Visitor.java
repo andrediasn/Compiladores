@@ -9,14 +9,14 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-package lang.visitor;
+package lang.visitors;
 
 import lang.ast.*;
 
 public abstract class Visitor
 {
 	  public abstract void visit(And and);
-		public abstract void visit(Assign assign);
+		public abstract void visit(Attr attr);
     public abstract void visit(CallCmd callCmd);
     public abstract void visit(CallExp callExp);
     public abstract void visit(Caracter caract);

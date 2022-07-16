@@ -14,7 +14,7 @@ package lang;
 
 import java.io.*;
 import lang.parser.*;
-import lang.visitor.*;
+import lang.visitors.*;
 import lang.ast.*;
 
 public class LangCompiler{

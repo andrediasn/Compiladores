@@ -11,7 +11,7 @@ Matrícula: 201435031
 */
 package lang.ast;
 
-import lang.visitor.Visitor;
+import lang.visitors.Visitor;
 import java.util.*;
 
 public class Lvalue extends Exp {

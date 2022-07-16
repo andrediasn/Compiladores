@@ -12,7 +12,7 @@ Matrícula: 201435031
 
 package lang.ast;
 
-import lang.visitor.Visitor;
+import lang.visitors.Visitor;
 
 public abstract class SuperNode {
    

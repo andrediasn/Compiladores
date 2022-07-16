@@ -13,7 +13,7 @@ Matrícula: 201435031
 package lang.ast;
 
 import org.antlr.v4.runtime.tree.*;
-import lang.visitor.Visitor;
+import lang.visitors.Visitor;
 
 public class Node extends SuperNode{
 
