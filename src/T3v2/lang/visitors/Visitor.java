@@ -21,7 +21,7 @@ public abstract class Visitor
     public abstract void visit(Func f); // Definição de funções
     public abstract void visit(CallCmd e);
     public abstract void visit(CallExp e);
-    public abstract void visit(Cmds e); // CmdArray - Lista de comandos
+    public abstract void visit(StmtList e); // CmdArray - Lista de comandos
 		public abstract void visit(Data e);
 
     public abstract void visit(Int e);

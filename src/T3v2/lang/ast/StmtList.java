@@ -13,14 +13,14 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class Cmds extends Cmd{
+public class StmtList extends Cmd{
 	private int line, column;
-  private Cmd[] cmds;
+  private Cmd[] stmtList;
 
-  public Cmds(int line , int column, Cmd[] cmds)	{
+  public StmtList(int line , int column, Cmd[] stmtList)	{
     this.line = line;
     this.column = column;
-    this.cmds = cmds;
+    this.stmtList = stmtList;
   }
 
   public int getLine() {
@@ -32,7 +32,7 @@ public class Cmds extends Cmd{
   }
 
   public Cmd[] getList() { 
-	  return cmds; 
+	  return stmtList; 
 	}
 
 

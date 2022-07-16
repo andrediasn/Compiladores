@@ -12,13 +12,13 @@ Matrícula: 201435031
 
 package lang.ast;
 
-import lang.visitors.Visitor;
+import lang.visitors.Visitable;
+import java.util.HashMap;
 
-public abstract class SuperNode {
-   
+public abstract class SuperNode implements Visitable {
+    public SuperNode() { }
     public abstract int getLine();
     public abstract int getColumn();
-		public abstract void accept(Visitor v);
 }
 
 

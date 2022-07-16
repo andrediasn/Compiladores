@@ -36,7 +36,7 @@ public class LangAdapter implements ParseAdaptor {
 			ParseTree tree = parser.program();	
 
 			if( parser.getNumberOfSyntaxErrors()==0 ) {
-				ASTVisitorConstruct vis = new ASTVisitorConstruct();
+				BuildASTVisitors vis = new BuildASTVisitors();
 				return tree.accept(vis);
 			}
 			

@@ -174,12 +174,12 @@ public class InterpretVisitor extends Visitor{
         }
     }
 
-    public void visit(Cmds cmds) {
+    public void visit(StmtList stmtList) {
         if (retMode) {
             return;
         }
         try {
-            for (Cmd cmd : cmds.getList()) {
+            for (Cmd cmd : stmtList.getList()) {
 
                 cmd.accept(this);
                 if (retMode) {
@@ -187,7 +187,7 @@ public class InterpretVisitor extends Visitor{
                 }
             }
         } catch (ValException exception) {
-            throw new RuntimeException(" (" + cmds.getLine() + ", " + cmds.getColumn() + ") " + exception.getMessage());
+            throw new RuntimeException(" (" + stmtList.getLine() + ", " + stmtList.getColumn() + ") " + exception.getMessage());
         }
     }
 

@@ -14,7 +14,7 @@ package lang.parser;
 import lang.ast.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
+public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 
     @Override 
 	public SuperNode visitProgram(langParser.ProgramContext ctx) {
@@ -206,22 +206,22 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitCmds(langParser.CmdsContext ctx) { 
+	public SuperNode visitStmtList(langParser.StmtListContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        Cmd[] cmds = null;
+        Cmd[] stmtList = null;
         SuperNode result = this.defaultResult();
         int n = ctx.cmd().size();
         if (n != 0) {
-            cmds = new Cmd[n];
+            stmtList = new Cmd[n];
             for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
                 ParseTree c = ctx.cmd(i);
                 SuperNode childResult = c.accept(this);
-                cmds[i] = (Cmd) this.aggregateResult(result, childResult);
+                stmtList[i] = (Cmd) this.aggregateResult(result, childResult);
             }
         }
-        Cmds nodeCmds = new Cmds(line,column,cmds);
-        return nodeCmds;
+        StmtList nodeStmtList = new StmtList(line,column,stmtList);
+        return nodeStmtList;
 	}
 	
 	@Override 

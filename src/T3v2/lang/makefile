@@ -4,10 +4,10 @@ compile: genparser
 genparser: parser/lang.g4
 	java -jar antlr-4.10.1-complete.jar parser/lang.g4 -visitor
 	
-run: 
+r: compile
 	java -cp .:antlr-4.10.1-complete.jar lang.LangCompiler -bsm
 	
-clean: 
+c: 
 	rm -rf lang
 	rm -R parser/langParser.java
 	rm -R parser/langLexer*
@@ -18,4 +18,4 @@ clean:
 	rm -R parser/langBaseVisitor.java
 	rm -R parser/langVisitor.java
 
-all: clean compile run
+all: c r

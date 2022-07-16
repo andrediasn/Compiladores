@@ -49,7 +49,7 @@ btype: TYPEINT 		#tyInt
 	;
 
 /* cmd */
-cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET				#cmds
+cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET				#stmtList
 	| IF LEFTPARENT exp RIGHTPARENT cmd 			#if
 	| IF LEFTPARENT exp RIGHTPARENT cmd ELSE cmd 	#ifElse										
 	| ITERATE LEFTPARENT exp RIGHTPARENT cmd		#iterate
