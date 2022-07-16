@@ -13,12 +13,12 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class Neg extends Exp {
+public class SMinus extends Exp {
 
   private int line, column;
   private Exp expression;
 
-  public Neg(int line, int column, Exp expression) {
+  public SMinus(int line, int column, Exp expression) {
     this.line = line;
   	this.column = column;
     this.expression = expression;

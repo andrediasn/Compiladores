@@ -86,18 +86,18 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 	public SuperNode visitFunc(langParser.FuncContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        Params[] params = null;
+        Param[] params = null;
         Type[] returnable = null;
         Cmd[] comand = null;
         SuperNode result = this.defaultResult();
         if(ctx.params()!= null) {
             int n = ctx.params().param().size();
             if (n != 0) {
-                params = new Params[n];
+                params = new Param[n];
                 for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
                     ParseTree c = ctx.params().param(i);
                     SuperNode childResult = c.accept(this);
-                    params[i] = (Params) this.aggregateResult(result, childResult);
+                    params[i] = (Param) this.aggregateResult(result, childResult);
                 }
             }
         }
@@ -140,11 +140,11 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
         Type type = (Type) ctx.type().accept(this);
-        Params nodeParam = null;
+        Param nodeParam = null;
         if (ctx.ID().getText() != null) {
-            nodeParam = new Params(line, column, ctx.ID().getText(), type);
+            nodeParam = new Param(line, column, ctx.ID().getText(), type);
         } else {
-            nodeParam = new Params(line, column, ctx.IDTYPE().getText(), type);
+            nodeParam = new Param(line, column, ctx.IDTYPE().getText(), type);
         }
         return nodeParam;
 	}
@@ -445,13 +445,13 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
     }
 
 	@Override 
-	public SuperNode visitModule(langParser.ModuleContext ctx) { 
+	public SuperNode visitMod(langParser.ModContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
         Exp left = (Exp) ctx.mexp().accept(this);
         Exp right = (Exp) ctx.sexp().accept(this);
-        ModuleT nodeModule = new ModuleT(line, column, left, right);
-        return nodeModule;
+        CModule nodeCModule = new CModule(line, column, left, right);
+        return nodeCModule;
 	}
 	
 	@Override 
@@ -464,12 +464,12 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 	}
 	
 	@Override 
-	public SuperNode visitNeg(langParser.NegContext ctx) { 
+	public SuperNode visitSMinus(langParser.SMinusContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
         Exp expression = (Exp) ctx.sexp().accept(this);
-        Neg nodeNeg= new Neg(line, column, expression);
-        return nodeNeg;
+        SMinus nodeSMinus= new SMinus(line, column, expression);
+        return nodeSMinus;
 	}
 
 	@Override 

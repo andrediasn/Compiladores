@@ -249,9 +249,9 @@ public class InterpretVisitor extends Visitor{
     
     public void visit(Func func) {
         HashMap<String, Object> lv = new HashMap<String, Object>();
-        if (func.getParams() != null) {
-            for (int i = func.getParams().length - 1; i >= 0; i--) {
-                lv.put(func.getParams()[i].getID(), operands.pop());
+        if (func.getParam() != null) {
+            for (int i = func.getParam().length - 1; i >= 0; i--) {
+                lv.put(func.getParam()[i].getID(), operands.pop());
             }
         }
         env.push(lv);
@@ -388,10 +388,10 @@ public class InterpretVisitor extends Visitor{
         }
     }
     
-    public void visit(ModuleT module) {
+    public void visit(CModule cModule) {
         try {
-            module.getLeft().accept(this);
-            module.getRight().accept(this);
+            cModule.getLeft().accept(this);
+            cModule.getRight().accept(this);
             Object left, right;
             right = operands.pop();
             left = operands.pop();
@@ -408,7 +408,7 @@ public class InterpretVisitor extends Visitor{
 			}
 
         } catch (ValException exception) {
-            throw new RuntimeException(" (" + module.getLine() + ", " + module.getColumn() + ") " + exception.getMessage());
+            throw new RuntimeException(" (" + cModule.getLine() + ", " + cModule.getColumn() + ") " + exception.getMessage());
         }
     }
 
@@ -435,9 +435,9 @@ public class InterpretVisitor extends Visitor{
         }
     }
     
-    public void visit(Neg neg) {
+    public void visit(SMinus sMinus) {
         try {
-            neg.getExpression().accept(this);
+            sMinus.getExpression().accept(this);
             Number exp;
             exp = (Number) operands.pop();
             if (exp.getClass() == Integer.class) {
@@ -448,7 +448,7 @@ public class InterpretVisitor extends Visitor{
                 throw new RuntimeException("Inválido");
             }
         } catch (ValException exception) {
-            throw new RuntimeException(" (" + neg.getLine() + ", " + neg.getColumn() + ") " + exception.getMessage());
+            throw new RuntimeException(" (" + sMinus.getLine() + ", " + sMinus.getColumn() + ") " + exception.getMessage());
         }
     }
 
@@ -546,7 +546,7 @@ public class InterpretVisitor extends Visitor{
         }
     }
 
-    public void visit(Params params) { }
+    public void visit(Param param) { }
 
     public void visit(Plus plus) {
         try {

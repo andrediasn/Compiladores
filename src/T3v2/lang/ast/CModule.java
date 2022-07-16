@@ -13,9 +13,9 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class ModuleT extends BinOp {
+public class CModule extends BinOp {
 
-  public ModuleT(int line, int column, Exp left, Exp right) {
+  public CModule(int line, int column, Exp left, Exp right) {
     super(line, column, left, right);
   }
 

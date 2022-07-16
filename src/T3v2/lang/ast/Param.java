@@ -13,13 +13,13 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class Params extends SuperNode {
+public class Param extends SuperNode {
 
   private int line, column;
   private String id;
   private Type type;
 
-  public Params(int line, int column, String id, Type type) {
+  public Param(int line, int column, String id, Type type) {
     this.id = id;
     this.type = type;
     this.line = line;
