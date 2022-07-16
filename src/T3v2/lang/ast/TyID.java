@@ -13,11 +13,11 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class TyIDType extends BType {
+public class TyID extends BType {
   private int line, column;
   private String idType;
 
-  public TyIDType(int line, int column, String idType) {
+  public TyID(int line, int column, String idType) {
     this.idType = idType;
     this.line = line;
     this.column = column;

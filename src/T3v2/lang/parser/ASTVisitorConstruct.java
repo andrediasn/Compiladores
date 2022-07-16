@@ -198,10 +198,10 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitTyIDType(langParser.TyIDTypeContext ctx) { 
+	public SuperNode visitTyID(langParser.TyIDContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        TyIDType nodeTyID = new TyIDType(line,column,ctx.IDTYPE().getText());
+        TyID nodeTyID = new TyID(line,column,ctx.IDTYPE().getText());
         return nodeTyID; 
 	}
 

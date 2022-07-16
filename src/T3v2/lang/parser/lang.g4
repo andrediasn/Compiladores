@@ -45,7 +45,7 @@ btype: INT 		#tyInt
 	| CHAR 		#tyChar
 	| BOOL 		#tyBool
 	| FLOAT 	#tyFloat
-	| IDTYPE 	#tyIDType
+	| IDTYPE 	#tyID
 	;
 
 /* cmd */

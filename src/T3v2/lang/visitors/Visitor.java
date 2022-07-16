@@ -31,7 +31,6 @@ public abstract class Visitor
     public abstract void visit(Div e);
     public abstract void visit(DoubleT e);
     
-    
 		public abstract void visit(If e);
     public abstract void visit(Var e); // lvalue -  armazenar ID e seus seletores
     public abstract void visit(CModule e); // ModuleT
@@ -39,7 +38,6 @@ public abstract class Visitor
     public abstract void visit(Mult e);
     public abstract void visit(Plus e);
     public abstract void visit(Minus e);
-
     public abstract void visit(New e);
 
     public abstract void visit(And e);
@@ -63,6 +61,6 @@ public abstract class Visitor
     public abstract void visit(TyBool t);
 		public abstract void visit(TyChar t);
     public abstract void visit(TyFloat t);
-    public abstract void visit(TyIDType t);
+    public abstract void visit(TyID t);
 		public abstract void visit(TyInt t);
 }
