@@ -13,12 +13,10 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class TypeIDType extends BType {
+public class TyInt extends BType {
   private int line, column;
-  private String idType;
 
-  public TypeIDType(int line, int column, String idType) {
-    this.idType = idType;
+  public TyInt(int line, int column) {
     this.line = line;
     this.column = column;
   }
@@ -29,10 +27,6 @@ public class TypeIDType extends BType {
 
   public int getColumn() {
     return column;
-  }
-
-  public String getIdType() {
-    return idType;
   }
 
   public void accept(Visitor v) { 

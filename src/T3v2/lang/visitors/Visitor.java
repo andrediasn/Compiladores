@@ -63,9 +63,9 @@ public abstract class Visitor
 		
     public abstract void visit(Type t);
 
-    public abstract void visit(TypeBool t);
-		public abstract void visit(TypeChar t);
-    public abstract void visit(TypeFloat t);
-    public abstract void visit(TypeIDType t);
-		public abstract void visit(TypeInt t);
+    public abstract void visit(TyBool t);
+		public abstract void visit(TyChar t);
+    public abstract void visit(TyFloat t);
+    public abstract void visit(TyIDType t);
+		public abstract void visit(TyInt t);
 }

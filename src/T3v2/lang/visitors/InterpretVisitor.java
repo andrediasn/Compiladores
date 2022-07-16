@@ -471,11 +471,11 @@ public class InterpretVisitor extends Visitor{
             ArrayList<Object> aux = null;
             boolean idType = false;
             HashMap<String, Object> a = null;
-            if (bType instanceof TypeIDType) {
+            if (bType instanceof TyIDType) {
                 idType = true;
-                TypeIDType typeIdType = (TypeIDType) bType;
+                TyIDType tyIdType = (TyIDType) bType;
                 a = new HashMap<>();
-                Data data = types.get(typeIdType.getIdType());
+                Data data = types.get(tyIdType.getIdType());
                 for (Decl decl : data.getTypes()) {
                     a.put(decl.getId(), null);
                 }
@@ -667,15 +667,15 @@ public class InterpretVisitor extends Visitor{
         }
     }
     
-    public void visit(Type type) { }
+    public void visit(Type t) { }
     
-    public void visit(TypeBool type) { }
+    public void visit(TyBool t) { }
 		
-    public void visit(TypeChar type) { }
+    public void visit(TyChar t) { }
 
-    public void visit(TypeFloat type) { }
+    public void visit(TyFloat t) { }
 
-    public void visit(TypeIDType type) { }
+    public void visit(TyIDType t) { }
 
-    public void visit(TypeInt type) { }
+    public void visit(TyInt t) { }
 }

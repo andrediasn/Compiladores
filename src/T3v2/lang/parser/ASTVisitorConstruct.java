@@ -165,44 +165,44 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 	}
 	
 	@Override 
-	public SuperNode visitTypeInt(langParser.TypeIntContext ctx) { 
+	public SuperNode visitTyInt(langParser.TyIntContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        TypeInt nodeTypeInt = new TypeInt(line,column);
-        return nodeTypeInt;
+        TyInt nodeTyInt = new TyInt(line,column);
+        return nodeTyInt;
 	}
 	
 	@Override 
-	public SuperNode visitTypeChar(langParser.TypeCharContext ctx) {     
+	public SuperNode visitTyChar(langParser.TyCharContext ctx) {     
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        TypeChar nodeTypeChar = new TypeChar(line,column);
-        return nodeTypeChar;
+        TyChar nodeTyChar = new TyChar(line,column);
+        return nodeTyChar;
 	}
 
 	@Override 
-	public SuperNode visitTypeBool(langParser.TypeBoolContext ctx) { 
+	public SuperNode visitTyBool(langParser.TyBoolContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        TypeBool nodeTypeBool = new TypeBool(line,column);
-        return nodeTypeBool;
+        TyBool nodeTyBool = new TyBool(line,column);
+        return nodeTyBool;
 	}
 
 
 	@Override 
-	public SuperNode visitTypeFloat(langParser.TypeFloatContext ctx) { 
+	public SuperNode visitTyFloat(langParser.TyFloatContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        TypeFloat nodeTypeFloat = new TypeFloat(line,column);
-        return nodeTypeFloat;
+        TyFloat nodeTyFloat = new TyFloat(line,column);
+        return nodeTyFloat;
 	}
 
 	@Override 
-	public SuperNode visitTypeIDType(langParser.TypeIDTypeContext ctx) { 
+	public SuperNode visitTyIDType(langParser.TyIDTypeContext ctx) { 
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        TypeIDType nodeTypeID = new TypeIDType(line,column,ctx.IDTYPE().getText());
-        return nodeTypeID; 
+        TyIDType nodeTyID = new TyIDType(line,column,ctx.IDTYPE().getText());
+        return nodeTyID; 
 	}
 
 	@Override 

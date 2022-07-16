@@ -13,10 +13,10 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class TypeFloat extends BType {
+public class TyBool extends BType {
   private int line, column;
 
-  public TypeFloat(int line, int column) {
+  public TyBool(int line, int column) {
     this.line = line;
     this.column = column;
   }
@@ -30,6 +30,6 @@ public class TypeFloat extends BType {
   }
 
   public void accept(Visitor v) { 
-		v.visit(this);
+		v.visit(this); 
 	}
 }

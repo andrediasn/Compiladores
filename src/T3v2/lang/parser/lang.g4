@@ -32,11 +32,11 @@ params: param (COMMA param)*;
 param: (ID|IDTYPE) DOUBLECOLON type;									
 type: btype (brace)*;		
 brace: LEFTBRACE RIGHTBRACE;																						
-btype: INT 																													#typeInt
-	| CHAR 																													#typeChar
-	| BOOL	 																												#typeBool
-	| FLOAT	 																												#typeFloat
-	| IDTYPE 																												#typeIDType
+btype: INT 																													#tyInt
+	| CHAR 																													#tyChar
+	| BOOL	 																												#tyBool
+	| FLOAT	 																												#tyFloat
+	| IDTYPE 																												#tyIDType
 	;
 cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET 																						#cmdArray
 	| IF LEFTPARENT exp RIGHTPARENT cmd 																					#if

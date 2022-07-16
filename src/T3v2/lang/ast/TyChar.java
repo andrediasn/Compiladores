@@ -13,10 +13,10 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class TypeInt extends BType {
+public class TyChar extends BType {
   private int line, column;
 
-  public TypeInt(int line, int column) {
+  public TyChar(int line, int column) {
     this.line = line;
     this.column = column;
   }
