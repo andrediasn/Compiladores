@@ -13,13 +13,13 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class Prog extends SuperNode {
+public class Program extends SuperNode {
 
   private int line, column;
   private Data[] datas;
   private Func[] funcs;
 
-  public Prog(int line, int column, Data[] data, Func[] func) {
+  public Program(int line, int column, Data[] data, Func[] func) {
     this.funcs = func;
     this.datas = data;
     this.line = line;

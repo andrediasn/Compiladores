@@ -24,7 +24,7 @@ grammar lang;
 
 /* Regra da gramática */
 
-prog: ( data )* ( func )+;																									
+program: ( data )* ( func )+;																									
 data: DATA IDTYPE LEFTBRACKET ( decl )+ RIGHTBRACKET; 																		
 decl: (ID|IDTYPE) DOUBLECOLON type SEMICOLON; 																				
 func: (ID|IDTYPE) LEFTPARENT (params)? RIGHTPARENT (COLON type (COMMA type)*)? LEFTBRACKET ( cmd )* RIGHTBRACKET; 			

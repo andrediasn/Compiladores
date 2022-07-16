@@ -17,12 +17,12 @@ import org.antlr.v4.runtime.tree.ParseTree;
 public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
 
     @Override 
-	public SuperNode visitProg(langParser.ProgContext ctx) {
+	public SuperNode visitProgram(langParser.ProgramContext ctx) {
 		int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
         Data[] datas = null;
         Func[] funcs = null;
-        Prog nodeProg;
+        Program nodeProgram;
         SuperNode result = this.defaultResult();
         int n = ctx.data().size();
         if (n != 0) {
@@ -43,8 +43,8 @@ public class ASTVisitorConstruct extends langBaseVisitor<SuperNode> {
                 funcs[i] = (Func) this.aggregateResult(result, childResult);
             }
         }
-        nodeProg = new Prog(line,column,datas, funcs);
-        return nodeProg; 
+        nodeProgram = new Program(line,column,datas, funcs);
+        return nodeProgram; 
     }
 
 	@Override 

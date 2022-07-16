@@ -580,14 +580,14 @@ public class InterpretVisitor extends Visitor{
         }
     }
 
-    public void visit(Prog prog) {
+    public void visit(Program program) {
         Func main = null;
-        if (prog.getDatas() != null) {
-            for (Data data : prog.getDatas()) {
+        if (program.getDatas() != null) {
+            for (Data data : program.getDatas()) {
                 types.put(data.getId(), data);
             }
         }
-        for (Func func : prog.getFuncs()) {
+        for (Func func : program.getFuncs()) {
             funcs.put(func.getID(), func);
             if (func.getID().equals("main")) {
                 main = func;

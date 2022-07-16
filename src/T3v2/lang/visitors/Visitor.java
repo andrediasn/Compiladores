@@ -15,45 +15,57 @@ import lang.ast.*;
 
 public abstract class Visitor
 {
-	  public abstract void visit(And and);
-		public abstract void visit(Attr attr);
-    public abstract void visit(CallCmd callCmd);
-    public abstract void visit(CallExp callExp);
-    public abstract void visit(Caracter caract);
-    public abstract void visit(CmdArray cmdArray);
-		public abstract void visit(Data data);
-  	public abstract void visit(Decl decl);
-    public abstract void visit(Div div);
-    public abstract void visit(DoubleT doub);
-    public abstract void visit(Eq eq);
-    public abstract void visit(False fal);
-    public abstract void visit(Func func);
-		public abstract void visit(If i);
-    public abstract void visit(IntegerT integer);
-    public abstract void visit(Iterate ite);
-    public abstract void visit(Less less);
-    public abstract void visit(Lvalue lValue);
-    public abstract void visit(Minus minus);
-    public abstract void visit(ModuleT module);
-    public abstract void visit(Mult mult);
-    public abstract void visit(Neg neg);
-    public abstract void visit(Neq neq);
-    public abstract void visit(New ne);
-		public abstract void visit(Not not);
-    public abstract void visit(Null nu);
-		public abstract void visit(Params params);
-    public abstract void visit(Plus plus);
-	  public abstract void visit(Print pri);
-    public abstract void visit(Prog prog);
-    public abstract void visit(Read read);
-    public abstract void visit(Return ret);
-    public abstract void visit(SelectorArray selector);
-    public abstract void visit(SelectorData selector);
-		public abstract void visit(True tr);
-    public abstract void visit(Type type);
-    public abstract void visit(TypeBool type);
-		public abstract void visit(TypeChar type);
-    public abstract void visit(TypeFloat type);
-    public abstract void visit(TypeIDType type);
-		public abstract void visit(TypeInt type);
+	  
+    public abstract void visit(Program p); // prog - 
+    public abstract void visit(Attr e);  // Assign - para armazenar atribuições de variáveis
+    public abstract void visit(Func f); // - para armazenar definição de funções;
+    public abstract void visit(CallCmd e);
+    public abstract void visit(CallExp e);
+    public abstract void visit(CmdArray e);
+		public abstract void visit(Data e);
+
+    public abstract void visit(IntegerT e);
+    public abstract void visit(Caracter e);
+    public abstract void visit(Iterate e);
+  	public abstract void visit(Decl e);
+    public abstract void visit(Div e);
+    public abstract void visit(DoubleT e);
+    
+    
+		public abstract void visit(If e);
+    public abstract void visit(Lvalue e);
+    public abstract void visit(ModuleT e);
+    
+    public abstract void visit(Mult e);
+    public abstract void visit(Plus e);
+    public abstract void visit(Minus e);
+
+    public abstract void visit(New e);
+
+    public abstract void visit(And e);
+    public abstract void visit(Neg e);
+    public abstract void visit(Neq e);
+		public abstract void visit(Not e);
+    public abstract void visit(Eq e);
+    public abstract void visit(Less e);
+    public abstract void visit(False e);
+    public abstract void visit(True e);
+
+    public abstract void visit(Null e);
+		public abstract void visit(Params e);
+    
+	  public abstract void visit(Print e);
+    
+    public abstract void visit(Read e);
+    public abstract void visit(Return e);
+    public abstract void visit(SelectorArray e);
+    public abstract void visit(SelectorData e);
+		
+    public abstract void visit(Type t);
+
+    public abstract void visit(TypeBool t);
+		public abstract void visit(TypeChar t);
+    public abstract void visit(TypeFloat t);
+    public abstract void visit(TypeIDType t);
+		public abstract void visit(TypeInt t);
 }

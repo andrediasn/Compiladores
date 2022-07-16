@@ -33,7 +33,7 @@ public class LangAdapter implements ParseAdaptor {
 			lexer = new langLexer(stream);
 			CommonTokenStream tokenStream = new CommonTokenStream(lexer) ;
 			parser = new langParser(tokenStream);
-			ParseTree tree = parser.prog();	
+			ParseTree tree = parser.program();	
 
 			if( parser.getNumberOfSyntaxErrors()==0 ) {
 				ASTVisitorConstruct vis = new ASTVisitorConstruct();
