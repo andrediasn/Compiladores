@@ -13,7 +13,6 @@ Matrícula: 201435031
 package lang.ast;
 
 import lang.visitors.Visitable;
-import java.util.HashMap;
 
 public abstract class SuperNode implements Visitable {
     public SuperNode() { }
