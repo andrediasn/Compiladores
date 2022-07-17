@@ -9,42 +9,40 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-
 package lang.ast;
 
-import lang.ASTVisitor.Visitor;
+import lang.visitors.Visitor;
 
 public class Type extends SuperNode {
 	
-  private int line, column;
-  private Btype btype;
+	private int line, column;
+  private BType t;
+  private int braces;
 
-  public Type(int line, int column, Btype btype) 
-  {
-    
-	this.line = line;
+  public Type(int line, int column, BType t, int braces) {
+    this.t = t;
+    this.braces = braces;
+    this.line = line;
     this.column = column;
-	this.btype = btype;
-
   }
 
-  public int getLine() 
-  {
+  public int getLine() {
     return line;
   }
 
-  public int getColumn() 
-  {
+  public int getColumn() {
     return column;
   }
 
-  public Btype getBtype() 
-  {
-    return btype;
+  public BType getBtype() {
+    return t;
   };
 
-  public void accept(Visitor v) 
-  {
+  public int getBraces() {
+		return braces;
+  };
+
+  public void accept(Visitor v) {
     v.visit(this);
   }
 }

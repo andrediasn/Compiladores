@@ -11,38 +11,32 @@ Matrícula: 201435031
 */
 package lang.ast;
 
-import lang.ASTVisitor.Visitor;
+import lang.visitors.Visitor;
 
 public class Return extends Cmd{
 
   private int line, column;
-  private Exp[] exps;
+  private Expr[] exp;
 
-  public Return(int line, int column, Exp[] exps)
-	{
+  public Return(int line, int column, Expr[] exp) {
     this.line = line;
     this.column = column;
-    this.exps = exps;
+    this.exp = exp;
   }
 
-  public int getLine()
-  {
+  public int getLine() {
     return line;
   }
 
-  public int getColumn()
-  {
+  public int getColumn() {
     return column;
   }
 
-  public Exp[] getExps()
-  {
-    return exps;
+  public Expr[] getExpressions() {
+    return exp;
   }
 
-
-  public void accept(Visitor v) 
-  { 
+  public void accept(Visitor v) { 
 		v.visit(this);
   }
 }

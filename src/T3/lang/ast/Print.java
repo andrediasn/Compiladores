@@ -9,41 +9,34 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-
 package lang.ast;
 
-import lang.ASTVisitor.Visitor;
+import lang.visitors.Visitor;
 
 public class Print extends Cmd{
 
   private int line, column;
-  private Exp exp;
+  private Expr exp;
 
-  public Print(int line, int column, Exp exp)
-	{
+  public Print(int line, int column, Expr exp) {
     this.line = line;
     this.column = column;
     this.exp = exp;
   }
 
-  public int getLine()
-  {
+  public int getLine() {
     return line;
   }
 
-  public int getColumn()
-  {
+  public int getColumn() {
     return column;
   }
 
-  public Exp getExp()
-  {
+  public Expr getExpression() {
     return exp;
   }
 
-
-  public void accept(Visitor v) 
-   { 
+  public void accept(Visitor v) { 
 		v.visit(this); 
 	}
 }

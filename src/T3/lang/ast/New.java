@@ -9,48 +9,40 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-
 package lang.ast;
 
-import lang.ASTVisitor.Visitor;
+import lang.visitors.Visitor;
 
-public class New extends Exp {
+public class New extends Expr {
 
   private int line,  column;
-  private Type type;
-  private Exp exp;
+  private Type t;
+  private Expr exp;
 
-  public New(int line, int column, Type type, Exp exp) 
-  {
-    this.type = type;
-    this.exp = exp;
+  public New(int line, int column, Type t, Expr exp) {
     this.line = line;
     this.column = column;
+    this.t = t;
+    this.exp = exp;
   }
 
-  public int getLine() 
-  {
+  public int getLine() {
     return line;
   }
 
-  public int getColumn() 
-  {
+  public int getColumn() {
     return column;
   }
 
-  public Type getType() 
-  {
-    return type;
+  public Type getType() {
+    return t;
   }
 
-  public Exp getExp() 
-  {
+  public Expr getExpression() {
     return exp;
   }
 
-
-  public void accept(Visitor v) 
-  {
+  public void accept(Visitor v) {
     v.visit(this);
   }
 }

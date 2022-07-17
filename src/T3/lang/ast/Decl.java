@@ -9,23 +9,21 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-
 package lang.ast;
 
-import lang.ASTVisitor.Visitor;
+import lang.visitors.Visitor;
 
 public class Decl extends SuperNode {
 
-  private int line, column;
+	private int line, column;
   private String id;
-  private Type type;
+  private Type t;
 
-  public Decl(int line, int column, String id, Type type) {
-    
-	this.line = line;
+  public Decl(int line, int column, String id, Type t) {
+    this.line = line;
     this.column = column;
-	this.id = id;
-    this.type = type;
+    this.id = id;
+    this.t = t;
   }
 
   public int getLine() {
@@ -41,11 +39,10 @@ public class Decl extends SuperNode {
   }
 
   public Type getType() {
-    return type;
+    return t;
   }
-
-  public void accept(Visitor v) 
-  { 
-	v.visit(this); 
-  }
+  
+  public void accept(Visitor v) { 
+		v.visit(this); 
+	}
 }

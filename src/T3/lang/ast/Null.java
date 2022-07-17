@@ -9,12 +9,11 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-
 package lang.ast;
 
-import lang.ASTVisitor.Visitor;
+import lang.visitors.Visitor;
 
-public class Null extends Exp {
+public class Null extends Expr {
 
   private int line, column;
 
@@ -30,7 +29,6 @@ public class Null extends Exp {
   public int getColumn() {
     return column;
   }
-
 
   public void accept(Visitor v) {
     v.visit(this);

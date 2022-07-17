@@ -13,51 +13,28 @@ Matrícula: 201435031
 
 package lang.parser;
 
-
-import org.antlr.v4.runtime.CommonTokenStream;
-
 import java.io.IOException;
-
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
-
 import lang.ast.*;
-import lang.parser.ParseAdaptor;
-import lang.parser.langLexer;
-import lang.parser.langParser;
+import lang.visitors.LangVisitors;
 
 public class LangAdapter implements ParseAdaptor {
-
-	@Override
 	public SuperNode parseFile(String path) {
-		// TODO Auto-generated method stub
-    	try {
-			
-    		langLexer lexer;
-        	langParser parser;
-        
+        try  {
 			CharStream stream = CharStreams.fromFileName(path);
-        	lexer = new langLexer(stream);
-        	CommonTokenStream tokenStream = new CommonTokenStream(lexer) ;
-        	parser = new langParser(tokenStream);
-        	
-        	ParseTree tree = parser.prog();	
-						 		
-            Node node = new Node(); 
-
-            if(parser.getNumberOfSyntaxErrors()==0) 
-            {
-                node.setTree(tree);
-                return node;
-            }
-        	
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			langLexer lexer = new langLexer(stream);
+			CommonTokenStream tokenStream = new CommonTokenStream(lexer) ;
+			langParser parser = new langParser(tokenStream);
+			ParseTree result = parser.program();	
+			if( parser.getNumberOfSyntaxErrors() == 0 ) {
+				LangVisitors v = new LangVisitors();
+				return result.accept(v);
+			}
+		}	
+        catch(IOException e) { 
 			e.printStackTrace();
-		}
-		return null;
-		
-	}
-	
+		}     
+		return null;  
+    }
 }

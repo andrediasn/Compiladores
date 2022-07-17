@@ -9,17 +9,15 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-
 package lang.ast;
 
-import lang.ASTVisitor.Visitor;
+import lang.visitors.Visitor;
 
 public class Div extends BinOp {
 
-  public Div(int line, int column, Exp left, Exp right){
-    super(line, column, left, right);
+  public Div(int line, int column, Expr l, Expr r){
+    super(line, column, l, r);
   }
-
 
   public void accept(Visitor v) { 
 		v.visit(this); 

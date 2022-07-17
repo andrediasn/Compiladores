@@ -9,39 +9,32 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-
 package lang.ast;
 
-import lang.ASTVisitor.Visitor;
+import lang.visitors.Visitor;
 
-public class True extends Exp {
+public class True extends Expr {
 
   private int line, column;
 
-  public True(int line, int column) 
-  {
+  public True(int line, int column) {
     this.line = line;
     this.column = column;
   }
 
-  public int getLine() 
-  {
+  public int getLine() {
     return line;
   }
 
-  public int getColumn() 
-  {
+  public int getColumn() {
     return column;
   }
 
-  public boolean getValue() 
-  {
+  public boolean getValue() {
     return true;
   }
 
-
-  public void accept(Visitor v) 
-  {
+  public void accept(Visitor v) {
     v.visit(this);
   }
 }

@@ -9,9 +9,6 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-
 package lang.ast;
 
-public abstract class Btype extends SuperNode {
-
-}
+public abstract class BType extends SuperNode {}

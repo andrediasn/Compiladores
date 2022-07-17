@@ -9,29 +9,26 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-
 package lang.ast;
 
-import lang.ASTVisitor.Visitor;
+import lang.visitors.Visitor;
 
 public class Func extends SuperNode {
 
   private int line, column;
   private String id;
-  private Params[] params;
-  private Type[] returnFunction; 
-  private Cmd[] cmds;
+  private Type[] ret;
+  private Param[] p;
+  private Cmd[] c;
 
 
-  public Func(int line, int column, String id, Type[] returnFunction, Params[] params,  Cmd[] cmds) {
-    
-	this.line = line;
+  public Func(int line, int column, String id, Param[] p, Type[] ret, Cmd[] c) {
+    this.id = id;
+    this.ret = ret;
+    this.p = p;
+    this.c = c;
+    this.line = line;
     this.column = column;
-	this.id = id;
-    this.returnFunction = returnFunction;
-    this.params = params;
-    this.cmds = cmds;
-
   }
 
   public int getLine() {
@@ -46,20 +43,19 @@ public class Func extends SuperNode {
     return id;
   }
 
-  public Type[] getReturnFunction() {
-    return returnFunction;
+  public Type[] getTypeReturn() {
+    return ret;
   }
 
-  public Params[] getParams() {
-    return params;
+  public Param[] getParam() {
+    return p;
   }
 
-  public Cmd[] getCmds() {
-    return cmds;
+  public Cmd[] getBody() {
+    return c;
   }
 
-  public void accept(Visitor v) 
-  {
+  public void accept(Visitor v) {
     v.visit(this);
   }
 }

@@ -9,12 +9,6 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-
 package lang.ast;
 
-import lang.ASTVisitor.Visitor;
-
-
-public abstract class Selector extends SuperNode{
-    
-}
+public abstract class Selector extends SuperNode {}

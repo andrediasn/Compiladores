@@ -21,7 +21,7 @@ import java.util.List;
 
 public class TestVisitor {
     private ParseAdaptor adp;
-    private String okSrcs = "testes/semantica/certo/";
+    private String okSrcs = "../testes/semantica/certo/";
     private File f;
    
     public TestVisitor(ParseAdaptor adp){

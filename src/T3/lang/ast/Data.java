@@ -9,47 +9,41 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-
 package lang.ast;
 
-import lang.ASTVisitor.Visitor;
+import lang.visitors.Visitor;
 
 public class Data extends SuperNode
 {
   private int line, column;
   private String id;
-  private Decl[] recordDataTypes;
+  private Decl[] types;
 
-  public Data(int line, int column/*, String id, Decl[] recordDataTypes*/)
-  {
+  public Data(int line, int column, String id, Decl[] types) {
     this.line = line;
     this.column = column;
     this.id = id;
-    this.recordDataTypes = recordDataTypes;
+    this.types = types;
   }
 
-  public int getLine()
-  {
+  public int getLine() {
     return line;
   }
 
-  public int getColumn()
-  {
+  public int getColumn() {
     return column;
   }
 
-  public String getId()
-  {
+  public String getId() {
     return id;
   }
 
-  public Decl[] getRecordDataTypes()
-  {
-    return recordDataTypes;
+  public Decl[] getTypes() {
+    return types;
   }
 
-  public void accept(Visitor v) 
-  { 
-	v.visit(this); 
-  }
+
+  public void accept(Visitor v) { 
+		v.visit(this); 
+	}
 }

@@ -9,61 +9,52 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-
 package lang.ast;
 
-import lang.ASTVisitor.Visitor;
+import lang.visitors.Visitor;
 
 public class If extends Cmd{
 
   private int line, column;
-  private Cmd cIf, cElse;
-  private Exp expression;
+  private Cmd t, e;
+  private Expr exp;
 
-  public If(int line, int column, Exp expression, Cmd cIf, Cmd cElse)
-	{
+  public If(int line, int column, Expr exp, Cmd t, Cmd e)	{
     this.line = line;
     this.column = column;
-    this.expression = expression;
-    this.cIf = cIf;
-    this.cElse = cElse;
+    this.exp = exp;
+    this.t = t;
+    this.e = e;
   }
 
-  public If(int line, int column, Exp expression, Cmd cIf)
-	{
+  public If(int line, int column, Expr exp, Cmd t) {
     this.line = line;
     this.column = column;
-    this.expression = expression;
-    this.cIf = cIf;
+    this.exp = exp;
+    this.t = t;
   }
 
-  public int getLine()
-  {
+  public int getLine()  {
     return line;
   }
 
-  public int getColumn()
-  {
+  public int getColumn()  {
     return column;
   }
 
-  public Exp getExpression()
-  {
-    return expression;
+  public Expr getExpression()  {
+    return exp;
   }
 
-  public Cmd getCIf()
-  {
-    return cIf;
+  public Cmd getThen()  {
+    return t;
   }
 
-  public Cmd getCElse()
-  {
-    return cElse;
+  public Cmd getElse()  {
+    return e;
   }
 
-  public void accept(Visitor v) 
-  { 
+  public void accept(Visitor v) { 
 		v.visit(this); 
-  }
+	}
 }
