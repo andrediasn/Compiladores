@@ -13,13 +13,13 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class FloatV extends Exp {
+public class FloatV extends Expr {
 	
 	private int line, column;
-  private float value;
+  private float v;
 
-  public FloatV(int line, int column, float value) {
-    this.value = value;
+  public FloatV(int line, int column, float v) {
+    this.v = v;
     this.line = line;
     this.column = column;
   }
@@ -33,7 +33,7 @@ public class FloatV extends Exp {
   }
 
   public float getValue() {
-    return value;
+    return v;
   }
 
   public void accept(Visitor v) {

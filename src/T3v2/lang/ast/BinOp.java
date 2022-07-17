@@ -11,17 +11,17 @@ Matrícula: 201435031
 */
 package lang.ast;
 
-public abstract class BinOp extends Exp {
+public abstract class BinOp extends Expr {
 
   private int line, column;
-  private Exp left;
-  private Exp right;
+  private Expr l;
+  private Expr r;
  
-  public BinOp(int line, int column, Exp left, Exp right) {
+  public BinOp(int line, int column, Expr l, Expr r) {
     this.line = line;
     this.column = column;
-    this.left = left;
-    this.right = right;
+    this.l = l;
+    this.r = r;
   }
 
   public int getLine() {
@@ -32,20 +32,20 @@ public abstract class BinOp extends Exp {
     return column;
   }
 
-  public void setLeft(Exp left) {
-    this.left = left;
+  public void setLeft(Expr l) {
+    this.l = l;
   }
 
-  public void setRight(Exp right) {
-    this.right = right;
+  public void setRight(Expr r) {
+    this.r = r;
   }
 
-  public Exp getLeft() {
-    return left;
+  public Expr getLeft() {
+    return l;
   }
 
-  public Exp getRight() {
-    return right;
+  public Expr getRight() {
+    return r;
   }
 
 }

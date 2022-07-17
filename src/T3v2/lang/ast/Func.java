@@ -17,16 +17,16 @@ public class Func extends SuperNode {
 
   private int line, column;
   private String id;
-  private Type[] typeReturn;
-  private Param[] param;
-  private Cmd[] body;
+  private Type[] ret;
+  private Param[] p;
+  private Cmd[] c;
 
 
-  public Func(int line, int column, String id, Param[] param, Type[] typeReturn, Cmd[] body) {
+  public Func(int line, int column, String id, Param[] p, Type[] ret, Cmd[] c) {
     this.id = id;
-    this.typeReturn = typeReturn;
-    this.param = param;
-    this.body = body;
+    this.ret = ret;
+    this.p = p;
+    this.c = c;
     this.line = line;
     this.column = column;
   }
@@ -44,15 +44,15 @@ public class Func extends SuperNode {
   }
 
   public Type[] getTypeReturn() {
-    return typeReturn;
+    return ret;
   }
 
   public Param[] getParam() {
-    return param;
+    return p;
   }
 
   public Cmd[] getBody() {
-    return body;
+    return c;
   }
 
   public void accept(Visitor v) {

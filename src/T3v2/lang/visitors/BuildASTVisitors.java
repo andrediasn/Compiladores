@@ -229,9 +229,9 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitIf(langParser.IfContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp expression = (Exp) e.exp().accept(this);
+        Expr exp = (Expr) e.exp().accept(this);
         Cmd the = (Cmd) e.cmd().accept(this);
-        If nodeIf = new If(line, column, expression, the);
+        If nodeIf = new If(line, column, exp, the);
         return nodeIf;
 	}
 	
@@ -239,10 +239,10 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitIfElse(langParser.IfElseContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp expression = (Exp) e.exp().accept(this);
+        Expr exp = (Expr) e.exp().accept(this);
         Cmd the = (Cmd) e.cmd(0).accept(this);
         Cmd els = (Cmd) e.cmd(1).accept(this);
-        If nodeIfElse = new If(line, column, expression, the, els);
+        If nodeIfElse = new If(line, column, exp, the, els);
         return nodeIfElse;
 	}
 	
@@ -250,9 +250,9 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitIterate(langParser.IterateContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp expression = (Exp) e.exp().accept(this);
+        Expr exp = (Expr) e.exp().accept(this);
         Cmd cmd = (Cmd) e.cmd().accept(this);
-        Iterate nodeIterate = new Iterate(line, column, expression, cmd);
+        Iterate nodeIterate = new Iterate(line, column, exp, cmd);
         return nodeIterate;
 	}
 
@@ -269,8 +269,8 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitPrint(langParser.PrintContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp expression = (Exp) e.exp().accept(this);
-        Print nodePrint = new Print(line, column, expression);
+        Expr exp = (Expr) e.exp().accept(this);
+        Print nodePrint = new Print(line, column, exp);
         return nodePrint;
 	}
 		
@@ -278,15 +278,15 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitReturn(langParser.ReturnContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp[] expressions = null;
+        Expr[] expressions = null;
         SuperNode result = this.defaultResult();
         int n = e.exp().size();
         if (n != 0) {
-            expressions = new Exp[n];
+            expressions = new Expr[n];
             for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
                 ParseTree c = e.exp(i);
                 SuperNode childResult = c.accept(this);
-                expressions[i] = (Exp) this.aggregateResult(result, childResult);
+                expressions[i] = (Expr) this.aggregateResult(result, childResult);
             }
         }
         Return nodeReturn = new Return(line, column, expressions);
@@ -298,8 +298,8 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
         LValue lvalue = (LValue) e.lvalue().accept(this);
-        Exp expression = (Exp) e.exp().accept(this);
-        Attr nodeAttr = new Attr(line, column, lvalue, expression);
+        Expr exp = (Expr) e.exp().accept(this);
+        Attr nodeAttr = new Attr(line, column, lvalue, exp);
         return nodeAttr;
 	}
 
@@ -308,17 +308,17 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitCallCMD(langParser.CallCMDContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp[] expressions = null;
+        Expr[] expressions = null;
         LValue[] lvalues = null;
         SuperNode result = this.defaultResult();
         if(e.exps()!= null) {
             int n = e.exps().exp().size();
             if (n != 0) {
-                expressions = new Exp[n];
+                expressions = new Expr[n];
                 for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
                     ParseTree c = e.exps().exp(i);
                     SuperNode childResult = c.accept(this);
-                    expressions[i] = (Exp) this.aggregateResult(result, childResult);
+                    expressions[i] = (Expr) this.aggregateResult(result, childResult);
                 }
             }
         }
@@ -344,6 +344,34 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
         }
         return nodeCall;
 	}
+
+    @Override 
+	public SuperNode visitCallExp(langParser.CallExpContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Expr exp = (Expr) e.exp().accept(this);
+        Expr[] params = null;
+        SuperNode result = this.defaultResult();
+        if(e.exps()!= null) {
+            int n = e.exps().exp().size();
+            if (n != 0) {
+                params = new Expr[n];
+                for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
+                    ParseTree c = e.exps().exp(i);
+                    SuperNode childResult = c.accept(this);
+                    params[i] = (Expr) this.aggregateResult(result, childResult);
+                }
+            }
+        }
+        CallExp nodeCallExp = null;
+        if (e.ID().getText() != null) {
+            nodeCallExp = new CallExp(line,column,e.ID().getText(), params, exp);
+        }
+        else {
+            nodeCallExp = new CallExp(line,column,e.IDTYPE().getText(), params, exp);
+        }
+        return nodeCallExp; 
+	}
 	
 	@Override public SuperNode visitRex(langParser.RexContext e) { 
         return visitChildren(e); 
@@ -353,8 +381,8 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitAnd(langParser.AndContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp left = (Exp) e.exp(0).accept(this);
-        Exp right = (Exp) e.exp(1).accept(this);
+        Expr left = (Expr) e.exp(0).accept(this);
+        Expr right = (Expr) e.exp(1).accept(this);
         And nodeAnd = new And(line, column, left, right);
         return nodeAnd;
 	}
@@ -368,8 +396,8 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitLess(langParser.LessContext e) { 
 		    int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp left = (Exp) e.aexp(0).accept(this);
-        Exp right = (Exp) e.aexp(1).accept(this);
+        Expr left = (Expr) e.aexp(0).accept(this);
+        Expr right = (Expr) e.aexp(1).accept(this);
         Less nodeLess = new Less(line, column, left, right);
         return nodeLess;
 	}
@@ -378,8 +406,8 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitNeq(langParser.NeqContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp left = (Exp) e.rexp().accept(this);
-        Exp right = (Exp) e.aexp().accept(this);
+        Expr left = (Expr) e.rexp().accept(this);
+        Expr right = (Expr) e.aexp().accept(this);
 
         Neq nodeNeq = new Neq(line, column, left, right);
         return nodeNeq; 
@@ -389,8 +417,8 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitEq(langParser.EqContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp left = (Exp) e.rexp().accept(this);
-        Exp right = (Exp) e.aexp().accept(this);
+        Expr left = (Expr) e.rexp().accept(this);
+        Expr right = (Expr) e.aexp().accept(this);
         Eq nodeEq = new Eq(line, column, left, right);
         return nodeEq;
 	}
@@ -401,31 +429,31 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
     }
 
 	@Override 
-	public SuperNode visitMinus(langParser.MinusContext e) { 
+	public SuperNode visitSub(langParser.SubContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp left = (Exp) e.aexp().accept(this);
-        Exp right = (Exp) e.mexp().accept(this);
-        Minus nodeMinus= new Minus(line, column, left, right);
-        return nodeMinus;
+        Expr left = (Expr) e.aexp().accept(this);
+        Expr right = (Expr) e.mexp().accept(this);
+        Sub nodeSub= new Sub(line, column, left, right);
+        return nodeSub;
 	}
 	
 	@Override 
-	public SuperNode visitPlus(langParser.PlusContext e) { 
+	public SuperNode visitAdd(langParser.AddContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp left = (Exp) e.aexp().accept(this);
-        Exp right = (Exp) e.mexp().accept(this);
-        Plus nodePlus = new Plus(line, column, left, right);
-        return nodePlus;
+        Expr left = (Expr) e.aexp().accept(this);
+        Expr right = (Expr) e.mexp().accept(this);
+        Add nodeAdd = new Add(line, column, left, right);
+        return nodeAdd;
 	}
 	
 	@Override 
 	public SuperNode visitDiv(langParser.DivContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp left = (Exp) e.mexp().accept(this);
-        Exp right = (Exp) e.sexp().accept(this);
+        Expr left = (Expr) e.mexp().accept(this);
+        Expr right = (Expr) e.sexp().accept(this);
         Div nodeDiv = new Div(line, column, left, right);
         return nodeDiv; 
 	}
@@ -434,8 +462,8 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitMult(langParser.MultContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp left = (Exp) e.mexp().accept(this);
-        Exp right = (Exp) e.sexp().accept(this);
+        Expr left = (Expr) e.mexp().accept(this);
+        Expr right = (Expr) e.sexp().accept(this);
         Mult nodeMult = new Mult(line, column, left, right);
         return nodeMult;
 	}
@@ -449,8 +477,8 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitMod(langParser.ModContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp left = (Exp) e.mexp().accept(this);
-        Exp right = (Exp) e.sexp().accept(this);
+        Expr left = (Expr) e.mexp().accept(this);
+        Expr right = (Expr) e.sexp().accept(this);
         CModule nodeCModule = new CModule(line, column, left, right);
         return nodeCModule;
 	}
@@ -459,8 +487,8 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitNot(langParser.NotContext e) { 
 	    int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp expression = (Exp) e.sexp().accept(this);
-        Not nodeNot = new Not(line, column, expression);
+        Expr exp = (Expr) e.sexp().accept(this);
+        Not nodeNot = new Not(line, column, exp);
         return nodeNot;  
 	}
 	
@@ -468,8 +496,8 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitSMinus(langParser.SMinusContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Exp expression = (Exp) e.sexp().accept(this);
-        SMinus nodeSMinus= new SMinus(line, column, expression);
+        Expr exp = (Expr) e.sexp().accept(this);
+        SMinus nodeSMinus= new SMinus(line, column, exp);
         return nodeSMinus;
 	}
 
@@ -540,7 +568,7 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	
 	@Override 
 	public SuperNode visitExpression(langParser.ExpressionContext e) { 
-		Exp nodeExpression = (Exp) e.exp().accept(this);
+		Expr nodeExpression = (Expr) e.exp().accept(this);
         return nodeExpression;
 	}
 
@@ -549,40 +577,12 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
         Type type = (Type) e.type().accept(this);
-        Exp expression = null;
+        Expr exp = null;
         if(e.exp()!= null) {
-            expression = (Exp) e.exp().accept(this);
+            exp = (Expr) e.exp().accept(this);
         }
-        New nodeNew = new New(line, column, type, expression);
+        New nodeNew = new New(line, column, type, exp);
         return nodeNew;
-	}
-
-	@Override 
-	public SuperNode visitCallExp(langParser.CallExpContext e) { 
-		int line = e.getStart().getLine();
-        int column = e.getStart().getCharPositionInLine();
-        Exp expression = (Exp) e.exp().accept(this);
-        Exp[] params = null;
-        SuperNode result = this.defaultResult();
-        if(e.exps()!= null) {
-            int n = e.exps().exp().size();
-            if (n != 0) {
-                params = new Exp[n];
-                for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
-                    ParseTree c = e.exps().exp(i);
-                    SuperNode childResult = c.accept(this);
-                    params[i] = (Exp) this.aggregateResult(result, childResult);
-                }
-            }
-        }
-        CallExp nodeCallExp = null;
-        if (e.ID().getText() != null) {
-            nodeCallExp = new CallExp(line,column,e.ID().getText(), params, expression);
-        }
-        else {
-            nodeCallExp = new CallExp(line,column,e.IDTYPE().getText(), params, expression);
-        }
-        return nodeCallExp; 
 	}
 
 	@Override 
@@ -616,8 +616,8 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
         LValue nodeLExp = (LValue) e.lvalue().accept(this);
-        Exp expression = (Exp) e.exp().accept(this);
-        nodeLExp.add(new LExp(line, column, expression));
+        Expr exp = (Expr) e.exp().accept(this);
+        nodeLExp.add(new LExp(line, column, exp));
         return nodeLExp; 
 	}
 

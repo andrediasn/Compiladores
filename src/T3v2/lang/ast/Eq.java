@@ -15,8 +15,8 @@ import lang.visitors.Visitor;
 
 public class Eq extends BinOp{
 
-  public Eq(int line, int column, Exp left, Exp right){
-    super(line, column, left, right);
+  public Eq(int line, int column, Expr l, Expr r){
+    super(line, column, l, r);
   }
 
   public void accept(Visitor v) { 

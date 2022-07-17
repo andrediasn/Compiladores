@@ -13,10 +13,10 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class Minus extends BinOp {
+public class Add extends BinOp {
 
-  public Minus(int line, int column, Exp left, Exp right){
-    super(line, column, left, right);
+ 	public Add(int line, int column, Expr l, Expr r){
+    super(line, column, l, r);
   }
 
   public void accept(Visitor v) {

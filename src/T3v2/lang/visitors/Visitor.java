@@ -42,13 +42,13 @@ public abstract class Visitor
     public abstract void visit(CModule e); // ModuleT
     public abstract void visit(Div e);
     public abstract void visit(Mult e);
-    public abstract void visit(Plus e);
-    public abstract void visit(Minus e);
+    public abstract void visit(Add e);
+    public abstract void visit(Sub e);
     
-    public abstract void visit(And e);
     public abstract void visit(SMinus e); // Neg - menos unário
-    public abstract void visit(Neq e);
 		public abstract void visit(Not e);
+    public abstract void visit(Neq e);
+    public abstract void visit(And e);
     public abstract void visit(Eq e);
     public abstract void visit(Less e);
     

@@ -17,13 +17,13 @@ public class TData extends SuperNode {
 
 	private int line, column;
   private String id;
-  private Type type;
+  private Type t;
 
-  public TData(int line, int column, String id, Type type) {
+  public TData(int line, int column, String id, Type t) {
     this.line = line;
     this.column = column;
     this.id = id;
-    this.type = type;
+    this.t = t;
   }
 
   public int getLine() {
@@ -39,7 +39,7 @@ public class TData extends SuperNode {
   }
 
   public Type getType() {
-    return type;
+    return t;
   }
   
   public void accept(Visitor v) { 

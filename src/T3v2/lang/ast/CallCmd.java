@@ -16,12 +16,12 @@ import lang.visitors.Visitor;
 public class CallCmd extends Cmd {
 
   private int line, column;
-  private String name;
-  private Exp[] exps;
+  private String n;
+  private Expr[] exps;
   private LValue[] ret;
 
-  public CallCmd(int line, int column, String name, Exp[] exps, LValue[] ret)	{
-    this.name = name;
+  public CallCmd(int line, int column, String n, Expr[] exps, LValue[] ret)	{
+    this.n = n;
     this.exps = exps;
     this.ret = ret;
     this.line = line;
@@ -37,10 +37,10 @@ public class CallCmd extends Cmd {
   }
 
   public String getName() {
-    return name;
+    return n;
   }
 
-  public Exp[] getExpressions() {
+  public Expr[] getExpressions() {
     return exps;
   }
 

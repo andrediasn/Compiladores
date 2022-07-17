@@ -13,15 +13,15 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class Not extends Exp {
+public class Not extends Expr {
 
 		private int line, column;
-		private Exp expression;
+		private Expr exp;
 
-		public Not(int line, int column, Exp expression) {
-			this.expression = expression;
+		public Not(int line, int column, Expr exp) {
 			this.line = line;
 			this.column = column;
+			this.exp = exp;
 		}
 
 		public int getLine() {
@@ -32,8 +32,8 @@ public class Not extends Exp {
 			return column;
 		}
 
-		public Exp getExpression() {
-			return expression;
+		public Expr getExpression() {
+			return exp;
 		}
 
 		public void accept(Visitor v) {

@@ -13,7 +13,7 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class True extends Exp {
+public class True extends Expr {
 
   private int line, column;
 

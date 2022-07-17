@@ -13,15 +13,15 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class Caracter extends Exp {
+public class Caracter extends Expr {
 
   private int line, column;
-  private char value;
+  private char v;
 
-  public Caracter(int line, int column, char value) {
-    this.value = value;
+  public Caracter(int line, int column, char v) {
     this.line = line;
     this.column = column;
+    this.v = v;
   }
 
   public int getLine() {
@@ -33,7 +33,7 @@ public class Caracter extends Exp {
   }
 
   public char getValue() {
-    return value;
+    return v;
   }
 
   public void accept(Visitor v) {

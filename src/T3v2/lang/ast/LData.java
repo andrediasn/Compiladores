@@ -19,9 +19,9 @@ public class LData extends Selector{
   private String index;
 
   public LData(int line, int column, String index){
-    this.index = index;
     this.line = line;
     this.column = column;
+    this.index = index;
   }
 
   public int getLine() {

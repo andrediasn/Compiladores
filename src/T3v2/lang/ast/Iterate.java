@@ -16,14 +16,14 @@ import lang.visitors.Visitor;
 public class Iterate extends Cmd{
 
   private int line, column;
-  private Exp expression;
-  private Cmd body;
+  private Expr exp;
+  private Cmd c;
 
-  public Iterate(int line, int column, Exp expression, Cmd body){
+  public Iterate(int line, int column, Expr exp, Cmd c){
     this.line = line;
     this.column = column;
-    this.expression = expression;
-    this.body = body;
+    this.exp = exp;
+    this.c = c;
   }
 
   public int getLine() {
@@ -34,12 +34,12 @@ public class Iterate extends Cmd{
     return column;
   }
 
-  public Exp getExpression() {
-    return expression;
+  public Expr getExpression() {
+    return exp;
   }
 
   public Cmd getBody() {
-    return body;
+    return c;
   }
 
   public void accept(Visitor v) { 

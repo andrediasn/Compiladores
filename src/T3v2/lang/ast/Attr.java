@@ -17,13 +17,13 @@ public class Attr extends Cmd{
 
   private int line, column;
   private LValue lvalue;
-  private Exp expression;
+  private Expr exp;
 
-  public Attr(int line, int column, LValue lvalue, Exp expression)	{
+  public Attr(int line, int column, LValue lvalue, Expr exp)	{
     this.line = line;
     this.column = column;
     this.lvalue = lvalue;
-    this.expression = expression;
+    this.exp = exp;
   }
 
   public int getLine() {
@@ -38,8 +38,8 @@ public class Attr extends Cmd{
     return lvalue;
   }
 
-  public Exp getExpression() {
-    return expression;
+  public Expr getExpression() {
+    return exp;
   }
 
   public void accept(Visitor v) { 

@@ -15,12 +15,12 @@ import lang.visitors.Visitor;
 
 public class TyID extends BType {
   private int line, column;
-  private String idType;
+  private String t;
 
-  public TyID(int line, int column, String idType) {
-    this.idType = idType;
+  public TyID(int line, int column, String t) {
     this.line = line;
     this.column = column;
+    this.t = t;
   }
 
   public int getLine() {
@@ -32,7 +32,7 @@ public class TyID extends BType {
   }
 
   public String getIdType() {
-    return idType;
+    return t;
   }
 
   public void accept(Visitor v) { 

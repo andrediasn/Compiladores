@@ -56,7 +56,7 @@ cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET				#stmtList
 	| READ lvalue SEMICOLON							#read
 	| PRINT exp SEMICOLON 							#print
 	| RETURN exp ( COMMA exp )* SEMICOLON 			#return
-	| lvalue ATTR exp SEMICOLON 						#attr
+	| lvalue ATTR exp SEMICOLON 					#attr
 	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LT lvalue ( COMMA lvalue )* GT)? SEMICOLON		#callCMD
 	;
 
@@ -70,8 +70,8 @@ rexp: aexp LT aexp 		#less
 	| rexp NEQ aexp		#neq
 	| aexp 				#aex
 	;
-aexp: aexp PLUS mexp	#plus
-	| aexp MINUS mexp	#minus
+aexp: aexp ADD mexp		#add
+	| aexp SUB mexp		#sub
 	| mexp 				#mex
 	;
 mexp: mexp MULT sexp	#mult
@@ -80,7 +80,7 @@ mexp: mexp MULT sexp	#mult
 	| sexp 				#sex
 	;
 sexp: NOT sexp			#not
-	| MINUS sexp		#SMinus
+	| SUB sexp			#SMinus
 	| TRUE				#true
 	| FALSE				#false
 	| NULL				#null
@@ -133,8 +133,8 @@ DOUBLECOLON: 	'::';
 ATTR: 			'=';
 EQ: 			'==';
 NEQ:			'!=';
-PLUS: 			'+';
-MINUS: 			'-';
+ADD: 			'+';
+SUB: 			'-';
 MULT: 			'*';
 DIV: 			'/';
 MOD: 			'%';

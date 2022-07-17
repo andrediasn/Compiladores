@@ -121,7 +121,7 @@ public class InterpretVisitor extends Visitor{
         try {
             Func f = funcs.get(e.getName());
             if (f != null) {
-                for (Exp exp : e.getExpressions()) {
+                for (Expr exp : e.getExpressions()) {
                     exp.accept(this);
                 }
                 f.accept(this);
@@ -170,7 +170,7 @@ public class InterpretVisitor extends Visitor{
         try {
             Func f = funcs.get(e.getName());
             if (f != null) {
-                for (Exp exp : e.getExpressions()) {
+                for (Expr exp : e.getExpressions()) {
                     exp.accept(this);
                 }
                 f.accept(this);
@@ -302,9 +302,9 @@ public class InterpretVisitor extends Visitor{
         try {
             e.getExpression().accept(this);
             if ((Boolean) operands.pop()) {
-                e.getThe().accept(this);
-            } else if (e.getEls() != null) {
-                e.getEls().accept(this);
+                e.getThen().accept(this);
+            } else if (e.getElse() != null) {
+                e.getElse().accept(this);
             }
         } catch (Exception x) {
             throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
@@ -386,7 +386,7 @@ public class InterpretVisitor extends Visitor{
         }
     }
 
-    public void visit(Minus e) {
+    public void visit(Sub e) {
         try {
             e.getLeft().accept(this);
             e.getRight().accept(this);
@@ -569,7 +569,7 @@ public class InterpretVisitor extends Visitor{
 
     public void visit(Param e) { }
 
-    public void visit(Plus e) {
+    public void visit(Add e) {
         try {
             e.getLeft().accept(this);
             e.getRight().accept(this);
@@ -634,7 +634,7 @@ public class InterpretVisitor extends Visitor{
 
     public void visit(Return e) {
         ArrayList<Object> aux = new ArrayList<Object>();
-        for (Exp exp : e.getExpressions()) {
+        for (Expr exp : e.getExpressions()) {
             exp.accept(this);
             aux.add(operands.pop());
         }
@@ -646,7 +646,7 @@ public class InterpretVisitor extends Visitor{
 
     public void visit(LExp e) {
         try {
-            Exp exp = e.getIndex();
+            Expr exp = e.getIndex();
             exp.accept(this);
         } catch (Exception x) {
             throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());

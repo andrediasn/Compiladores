@@ -11,4 +11,4 @@ Matrícula: 201435031
 */
 package lang.ast;
 
-public abstract class Exp extends SuperNode {}
+public abstract class Expr extends SuperNode {}

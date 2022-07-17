@@ -13,17 +13,17 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class New extends Exp {
+public class New extends Expr {
 
   private int line,  column;
-  private Type type;
-  private Exp expression;
+  private Type t;
+  private Expr exp;
 
-  public New(int line, int column, Type type, Exp expression) {
-    this.type = type;
-    this.expression = expression;
+  public New(int line, int column, Type t, Expr exp) {
     this.line = line;
     this.column = column;
+    this.t = t;
+    this.exp = exp;
   }
 
   public int getLine() {
@@ -35,11 +35,11 @@ public class New extends Exp {
   }
 
   public Type getType() {
-    return type;
+    return t;
   }
 
-  public Exp getExpression() {
-    return expression;
+  public Expr getExpression() {
+    return exp;
   }
 
   public void accept(Visitor v) {

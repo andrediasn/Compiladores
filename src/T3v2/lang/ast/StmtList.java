@@ -15,12 +15,12 @@ import lang.visitors.Visitor;
 
 public class StmtList extends Cmd{
 	private int line, column;
-  private Cmd[] stmtList;
+  private Cmd[] c;
 
-  public StmtList(int line , int column, Cmd[] stmtList)	{
+  public StmtList(int line , int column, Cmd[] c)	{
     this.line = line;
     this.column = column;
-    this.stmtList = stmtList;
+    this.c = c;
   }
 
   public int getLine() {
@@ -32,7 +32,7 @@ public class StmtList extends Cmd{
   }
 
   public Cmd[] getList() { 
-	  return stmtList; 
+	  return c; 
 	}
 
 

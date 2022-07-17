@@ -13,19 +13,19 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class CallExp extends Exp {
+public class CallExp extends Expr {
 
   private int line, column;
-  private String name;
-  private Exp[] expressions;
-  private Exp returnable;
+  private String n;
+  private Expr[] exps;
+  private Expr ret;
 
-  public CallExp(int line, int column, String name, Exp[] expressions, Exp returnable) {
-    this.name = name;
-    this.expressions = expressions;
-    this.returnable = returnable;
+  public CallExp(int line, int column, String n, Expr[] exps, Expr ret) {
     this.line = line;
     this.column = column;
+    this.n = n;
+    this.ret = ret;
+    this.exps = exps;
   }
 
   public int getLine() {
@@ -37,15 +37,15 @@ public class CallExp extends Exp {
   }
 
   public String getName() {
-    return name;
+    return n;
   }
 
-  public Exp[] getExpressions() {
-    return expressions;
+  public Expr[] getExpressions() {
+    return exps;
   }
 
-  public Exp getReturnable() {
-    return returnable;
+  public Expr getReturnable() {
+    return ret;
   }
 
 

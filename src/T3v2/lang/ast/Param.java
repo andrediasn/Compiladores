@@ -17,11 +17,11 @@ public class Param extends SuperNode {
 
   private int line, column;
   private String id;
-  private Type type;
+  private Type t;
 
-  public Param(int line, int column, String id, Type type) {
+  public Param(int line, int column, String id, Type t) {
     this.id = id;
-    this.type = type;
+    this.t = t;
     this.line = line;
     this.column = column;
   }
@@ -39,7 +39,7 @@ public class Param extends SuperNode {
   }
 
   public Type getType() {
-    return type;
+    return t;
   }
 
   public void accept(Visitor v) {

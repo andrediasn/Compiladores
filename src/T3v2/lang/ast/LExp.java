@@ -16,12 +16,12 @@ import lang.visitors.Visitor;
 public class LExp extends Selector {
 
 	private int line, column;
-  private Exp index;
+  private Expr index;
 
-  public LExp(int line, int column, Exp index) {
-    this.index = index;
+  public LExp(int line, int column, Expr index) {
     this.line = line;
     this.column = column;
+    this.index = index;
   }
 
   public int getLine() {
@@ -32,7 +32,7 @@ public class LExp extends Selector {
     return column;
   }
 
-  public Exp getIndex() {
+  public Expr getIndex() {
     return index;
   }
 

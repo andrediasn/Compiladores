@@ -16,14 +16,14 @@ import lang.visitors.Visitor;
 public class Program extends SuperNode {
 
   private int line, column;
-  private Data[] datas;
-  private Func[] funcs;
+  private Data[] d;
+  private Func[] f;
 
-  public Program(int line, int column, Data[] data, Func[] func) {
-    this.funcs = func;
-    this.datas = data;
+  public Program(int line, int column, Data[] d, Func[] f) {
     this.line = line;
     this.column = column;
+    this.f = f;
+    this.d = d;
   }
 
   public int getLine() {
@@ -35,11 +35,11 @@ public class Program extends SuperNode {
   }
 
   public Func[] getFuncs() {
-    return funcs;
+    return f;
   }
 
   public Data[] getDatas() {
-    return datas;
+    return d;
   }
 
   public void accept(Visitor v) {

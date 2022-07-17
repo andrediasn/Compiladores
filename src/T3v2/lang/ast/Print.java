@@ -16,12 +16,12 @@ import lang.visitors.Visitor;
 public class Print extends Cmd{
 
   private int line, column;
-  private Exp expression;
+  private Expr exp;
 
-  public Print(int line, int column, Exp expression) {
+  public Print(int line, int column, Expr exp) {
     this.line = line;
     this.column = column;
-    this.expression = expression;
+    this.exp = exp;
   }
 
   public int getLine() {
@@ -32,8 +32,8 @@ public class Print extends Cmd{
     return column;
   }
 
-  public Exp getExpression() {
-    return expression;
+  public Expr getExpression() {
+    return exp;
   }
 
   public void accept(Visitor v) { 

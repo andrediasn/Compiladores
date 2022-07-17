@@ -16,22 +16,22 @@ import lang.visitors.Visitor;
 public class If extends Cmd{
 
   private int line, column;
-  private Cmd the, els;
-  private Exp expression;
+  private Cmd t, e;
+  private Expr exp;
 
-  public If(int line, int column, Exp expression, Cmd the, Cmd els)	{
+  public If(int line, int column, Expr exp, Cmd t, Cmd e)	{
     this.line = line;
     this.column = column;
-    this.expression = expression;
-    this.the = the;
-    this.els = els;
+    this.exp = exp;
+    this.t = t;
+    this.e = e;
   }
 
-  public If(int line, int column, Exp expression, Cmd the) {
+  public If(int line, int column, Expr exp, Cmd t) {
     this.line = line;
     this.column = column;
-    this.expression = expression;
-    this.the = the;
+    this.exp = exp;
+    this.t = t;
   }
 
   public int getLine()  {
@@ -42,16 +42,16 @@ public class If extends Cmd{
     return column;
   }
 
-  public Exp getExpression()  {
-    return expression;
+  public Expr getExpression()  {
+    return exp;
   }
 
-  public Cmd getThe()  {
-    return the;
+  public Cmd getThen()  {
+    return t;
   }
 
-  public Cmd getEls()  {
-    return els;
+  public Cmd getElse()  {
+    return e;
   }
 
   public void accept(Visitor v) { 

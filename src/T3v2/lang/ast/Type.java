@@ -16,11 +16,11 @@ import lang.visitors.Visitor;
 public class Type extends SuperNode {
 	
 	private int line, column;
-  private BType typeB;
+  private BType t;
   private int braces;
 
-  public Type(int line, int column, BType typeB, int braces) {
-    this.typeB = typeB;
+  public Type(int line, int column, BType t, int braces) {
+    this.t = t;
     this.braces = braces;
     this.line = line;
     this.column = column;
@@ -35,7 +35,7 @@ public class Type extends SuperNode {
   }
 
   public BType getBtype() {
-    return typeB;
+    return t;
   };
 
   public int getBraces() {
