@@ -18,28 +18,28 @@ import lang.parser.*;
 public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 
     @Override 
-	public SuperNode visitProgram(langParser.ProgramContext ctx) {
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitProgram(langParser.ProgramContext e) {
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         Data[] datas = null;
         Func[] funcs = null;
         Program nodeProgram;
         SuperNode result = this.defaultResult();
-        int n = ctx.data().size();
+        int n = e.data().size();
         if (n != 0) {
             datas = new Data[n];
-            for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
-                ParseTree c = ctx.data(i);
+            for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
+                ParseTree c = e.data(i);
                 SuperNode childResult = c.accept(this);
                 datas[i] = (Data) this.aggregateResult(result, childResult);
             }
         }
         result = this.defaultResult();
-        n = ctx.func().size();
+        n = e.func().size();
         if (n != 0) {
             funcs = new Func[n];
-            for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
-                ParseTree c = ctx.func(i);
+            for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
+                ParseTree c = e.func(i);
                 SuperNode childResult = c.accept(this);
                 funcs[i] = (Func) this.aggregateResult(result, childResult);
             }
@@ -49,174 +49,174 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
     }
 
 	@Override 
-	public SuperNode visitData(langParser.DataContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitData(langParser.DataContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         Decl[] declaration = null;
         SuperNode result = this.defaultResult();
-        int n = ctx.decl().size();
+        int n = e.decl().size();
         if (n != 0) {
             declaration = new Decl[n];
-            for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
-                ParseTree c = ctx.decl(i);
+            for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
+                ParseTree c = e.decl(i);
                 SuperNode childResult = c.accept(this);
                 declaration[i] = (Decl) this.aggregateResult(result, childResult);
             }
         }
-        Data nodeData = new Data(line,column, ctx.IDTYPE().getText(), declaration);
+        Data nodeData = new Data(line,column, e.IDTYPE().getText(), declaration);
         return nodeData;
 	}
 
 
 	@Override 
-	public SuperNode visitDecl(langParser.DeclContext ctx)  { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Type type = (Type) ctx.type().accept(this);
+	public SuperNode visitDecl(langParser.DeclContext e)  { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Type type = (Type) e.type().accept(this);
         Decl nodeDecl = null;
-        if (ctx.ID().getText() != null) {
-            nodeDecl = new Decl(line, column,ctx.ID().getText(), type);
+        if (e.ID().getText() != null) {
+            nodeDecl = new Decl(line, column,e.ID().getText(), type);
         } else {
-            nodeDecl = new Decl(line,column,ctx.IDTYPE().getText(), type);
+            nodeDecl = new Decl(line,column,e.IDTYPE().getText(), type);
         }
         return nodeDecl; 
 	}
 
 
 	@Override 
-	public SuperNode visitFunc(langParser.FuncContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitFunc(langParser.FuncContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         Param[] params = null;
         Type[] returnable = null;
         Cmd[] comand = null;
         SuperNode result = this.defaultResult();
-        if(ctx.params()!= null) {
-            int n = ctx.params().param().size();
+        if(e.params()!= null) {
+            int n = e.params().param().size();
             if (n != 0) {
                 params = new Param[n];
-                for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
-                    ParseTree c = ctx.params().param(i);
+                for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
+                    ParseTree c = e.params().param(i);
                     SuperNode childResult = c.accept(this);
                     params[i] = (Param) this.aggregateResult(result, childResult);
                 }
             }
         }
         result = this.defaultResult();
-        int n = ctx.type().size();
+        int n = e.type().size();
         if (n != 0) {
             returnable = new Type[n];
-            for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
-                ParseTree c = ctx.type(i);
+            for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
+                ParseTree c = e.type(i);
                 SuperNode childResult = c.accept(this);
                 returnable[i] = (Type) this.aggregateResult(result, childResult);
             }
         }
         result = this.defaultResult();
-        n = ctx.cmd().size();
+        n = e.cmd().size();
         if (n != 0) {
             comand = new Cmd[n];
-            for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
-                ParseTree c = ctx.cmd(i);
+            for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
+                ParseTree c = e.cmd(i);
                 SuperNode childResult = c.accept(this);
                 comand[i] = (Cmd) this.aggregateResult(result, childResult);
             }
         }
         Func nodeFunc = null;
-        if (ctx.ID().getText() != null) {
-            nodeFunc = new Func(line, column, ctx.ID().getText(), params, returnable, comand);
+        if (e.ID().getText() != null) {
+            nodeFunc = new Func(line, column, e.ID().getText(), params, returnable, comand);
         } else {
-            nodeFunc = new Func(line,column,ctx.IDTYPE().getText(), params, returnable, comand);
+            nodeFunc = new Func(line,column,e.IDTYPE().getText(), params, returnable, comand);
         }
         
         return nodeFunc;
 	}
 
-	@Override public SuperNode visitParams(langParser.ParamsContext ctx) { 
-        return visitChildren(ctx); 
+	@Override public SuperNode visitParams(langParser.ParamsContext e) { 
+        return visitChildren(e); 
     }
 
 	@Override 
-	public SuperNode visitParam(langParser.ParamContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Type type = (Type) ctx.type().accept(this);
+	public SuperNode visitParam(langParser.ParamContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Type type = (Type) e.type().accept(this);
         Param nodeParam = null;
-        if (ctx.ID().getText() != null) {
-            nodeParam = new Param(line, column, ctx.ID().getText(), type);
+        if (e.ID().getText() != null) {
+            nodeParam = new Param(line, column, e.ID().getText(), type);
         } else {
-            nodeParam = new Param(line, column, ctx.IDTYPE().getText(), type);
+            nodeParam = new Param(line, column, e.IDTYPE().getText(), type);
         }
         return nodeParam;
 	}
     
     @Override 
-    public SuperNode visitType(langParser.TypeContext ctx) { 
-         int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        BType nodeBType = (BType) ctx.btype().accept(this);
-        int braces = ctx.brace().size();
+    public SuperNode visitType(langParser.TypeContext e) { 
+         int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        BType nodeBType = (BType) e.btype().accept(this);
+        int braces = e.brace().size();
         Type nodeType = new Type(line, column, nodeBType, braces);
         return nodeType; 
     }
 
 	@Override 
-    public SuperNode visitBrace(langParser.BraceContext ctx) { 
-        return visitChildren(ctx); 
+    public SuperNode visitBrace(langParser.BraceContext e) { 
+        return visitChildren(e); 
     }
 
     @Override 
-	public SuperNode visitTyID(langParser.TyIDContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        TyID nodeTyID = new TyID(line,column,ctx.IDTYPE().getText());
+	public SuperNode visitTyID(langParser.TyIDContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        TyID nodeTyID = new TyID(line,column,e.IDTYPE().getText());
         return nodeTyID; 
 	}
 	
 	@Override 
-	public SuperNode visitTyInt(langParser.TyIntContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitTyInt(langParser.TyIntContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         TyInt nodeTyInt = new TyInt(line,column);
         return nodeTyInt;
 	}
 	
 	@Override 
-	public SuperNode visitTyChar(langParser.TyCharContext ctx) {     
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitTyChar(langParser.TyCharContext e) {     
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         TyChar nodeTyChar = new TyChar(line,column);
         return nodeTyChar;
 	}
 
 	@Override 
-	public SuperNode visitTyBool(langParser.TyBoolContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitTyBool(langParser.TyBoolContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         TyBool nodeTyBool = new TyBool(line,column);
         return nodeTyBool;
 	}
 
 
 	@Override 
-	public SuperNode visitTyFloat(langParser.TyFloatContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitTyFloat(langParser.TyFloatContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         TyFloat nodeTyFloat = new TyFloat(line,column);
         return nodeTyFloat;
 	}
 
 	@Override 
-	public SuperNode visitStmtList(langParser.StmtListContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitStmtList(langParser.StmtListContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         Cmd[] stmtList = null;
         SuperNode result = this.defaultResult();
-        int n = ctx.cmd().size();
+        int n = e.cmd().size();
         if (n != 0) {
             stmtList = new Cmd[n];
-            for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
-                ParseTree c = ctx.cmd(i);
+            for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
+                ParseTree c = e.cmd(i);
                 SuperNode childResult = c.accept(this);
                 stmtList[i] = (Cmd) this.aggregateResult(result, childResult);
             }
@@ -226,65 +226,65 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	}
 	
 	@Override 
-	public SuperNode visitIf(langParser.IfContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp expression = (Exp) ctx.exp().accept(this);
-        Cmd the = (Cmd) ctx.cmd().accept(this);
+	public SuperNode visitIf(langParser.IfContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp expression = (Exp) e.exp().accept(this);
+        Cmd the = (Cmd) e.cmd().accept(this);
         If nodeIf = new If(line, column, expression, the);
         return nodeIf;
 	}
 	
 	@Override 
-	public SuperNode visitIfElse(langParser.IfElseContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp expression = (Exp) ctx.exp().accept(this);
-        Cmd the = (Cmd) ctx.cmd(0).accept(this);
-        Cmd els = (Cmd) ctx.cmd(1).accept(this);
+	public SuperNode visitIfElse(langParser.IfElseContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp expression = (Exp) e.exp().accept(this);
+        Cmd the = (Cmd) e.cmd(0).accept(this);
+        Cmd els = (Cmd) e.cmd(1).accept(this);
         If nodeIfElse = new If(line, column, expression, the, els);
         return nodeIfElse;
 	}
 	
 	@Override 
-	public SuperNode visitIterate(langParser.IterateContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp expression = (Exp) ctx.exp().accept(this);
-        Cmd cmd = (Cmd) ctx.cmd().accept(this);
+	public SuperNode visitIterate(langParser.IterateContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp expression = (Exp) e.exp().accept(this);
+        Cmd cmd = (Cmd) e.cmd().accept(this);
         Iterate nodeIterate = new Iterate(line, column, expression, cmd);
         return nodeIterate;
 	}
 
 	@Override 
-	public SuperNode visitRead(langParser.ReadContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Var var = (Var) ctx.var().accept(this);
+	public SuperNode visitRead(langParser.ReadContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Var var = (Var) e.var().accept(this);
         Read nodeRead = new Read(line, column, var);
         return nodeRead;
 	}
 	
 	@Override 
-	public SuperNode visitPrint(langParser.PrintContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp expression = (Exp) ctx.exp().accept(this);
+	public SuperNode visitPrint(langParser.PrintContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp expression = (Exp) e.exp().accept(this);
         Print nodePrint = new Print(line, column, expression);
         return nodePrint;
 	}
 		
 	@Override 
-	public SuperNode visitReturn(langParser.ReturnContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitReturn(langParser.ReturnContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         Exp[] expressions = null;
         SuperNode result = this.defaultResult();
-        int n = ctx.exp().size();
+        int n = e.exp().size();
         if (n != 0) {
             expressions = new Exp[n];
-            for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
-                ParseTree c = ctx.exp(i);
+            for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
+                ParseTree c = e.exp(i);
                 SuperNode childResult = c.accept(this);
                 expressions[i] = (Exp) this.aggregateResult(result, childResult);
             }
@@ -294,41 +294,41 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	}
 	
 	@Override 
-	public SuperNode visitAttr(langParser.AttrContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Var var = (Var) ctx.var().accept(this);
-        Exp expression = (Exp) ctx.exp().accept(this);
+	public SuperNode visitAttr(langParser.AttrContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Var var = (Var) e.var().accept(this);
+        Exp expression = (Exp) e.exp().accept(this);
         Attr nodeAttr = new Attr(line, column, var, expression);
         return nodeAttr;
 	}
 
 
 	@Override 
-	public SuperNode visitCallCMD(langParser.CallCMDContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitCallCMD(langParser.CallCMDContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         Exp[] expressions = null;
         Var[] vars = null;
         SuperNode result = this.defaultResult();
-        if(ctx.exps()!= null) {
-            int n = ctx.exps().exp().size();
+        if(e.exps()!= null) {
+            int n = e.exps().exp().size();
             if (n != 0) {
                 expressions = new Exp[n];
-                for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
-                    ParseTree c = ctx.exps().exp(i);
+                for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
+                    ParseTree c = e.exps().exp(i);
                     SuperNode childResult = c.accept(this);
                     expressions[i] = (Exp) this.aggregateResult(result, childResult);
                 }
             }
         }
         result = this.defaultResult();
-        if(ctx.var() != null) {
-            int n = ctx.var().size();
+        if(e.var() != null) {
+            int n = e.var().size();
             if (n != 0) {
                 vars = new Var[n];
-                for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
-                    ParseTree c = ctx.var(i);
+                for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
+                    ParseTree c = e.var(i);
                     SuperNode childResult = c.accept(this);
                     vars[i] = (Var) this.aggregateResult(result, childResult);
                 }
@@ -336,188 +336,188 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
         }
         
         CallCmd nodeCall = null;
-        if (ctx.ID().getText() != null) {
-            nodeCall = new CallCmd(line,column,ctx.ID().getText(), expressions, vars);
+        if (e.ID().getText() != null) {
+            nodeCall = new CallCmd(line,column,e.ID().getText(), expressions, vars);
         }
         else {
-            nodeCall = new CallCmd(line,column,ctx.IDTYPE().getText(), expressions, vars);
+            nodeCall = new CallCmd(line,column,e.IDTYPE().getText(), expressions, vars);
         }
         return nodeCall;
 	}
 	
-	@Override public SuperNode visitRex(langParser.RexContext ctx) { 
-        return visitChildren(ctx); 
+	@Override public SuperNode visitRex(langParser.RexContext e) { 
+        return visitChildren(e); 
     }
 
 	@Override 
-	public SuperNode visitAnd(langParser.AndContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp left = (Exp) ctx.exp(0).accept(this);
-        Exp right = (Exp) ctx.exp(1).accept(this);
+	public SuperNode visitAnd(langParser.AndContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp left = (Exp) e.exp(0).accept(this);
+        Exp right = (Exp) e.exp(1).accept(this);
         And nodeAnd = new And(line, column, left, right);
         return nodeAnd;
 	}
 
 	@Override 
-	public SuperNode visitAex(langParser.AexContext ctx) { 
-        return visitChildren(ctx); 
+	public SuperNode visitAex(langParser.AexContext e) { 
+        return visitChildren(e); 
     }
 	
 	@Override 
-	public SuperNode visitLess(langParser.LessContext ctx) { 
-		    int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp left = (Exp) ctx.aexp(0).accept(this);
-        Exp right = (Exp) ctx.aexp(1).accept(this);
+	public SuperNode visitLess(langParser.LessContext e) { 
+		    int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp left = (Exp) e.aexp(0).accept(this);
+        Exp right = (Exp) e.aexp(1).accept(this);
         Less nodeLess = new Less(line, column, left, right);
         return nodeLess;
 	}
 	
 	@Override 
-	public SuperNode visitNeq(langParser.NeqContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp left = (Exp) ctx.rexp().accept(this);
-        Exp right = (Exp) ctx.aexp().accept(this);
+	public SuperNode visitNeq(langParser.NeqContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp left = (Exp) e.rexp().accept(this);
+        Exp right = (Exp) e.aexp().accept(this);
 
         Neq nodeNeq = new Neq(line, column, left, right);
         return nodeNeq; 
 	}
 
 	@Override 
-	public SuperNode visitEq(langParser.EqContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp left = (Exp) ctx.rexp().accept(this);
-        Exp right = (Exp) ctx.aexp().accept(this);
+	public SuperNode visitEq(langParser.EqContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp left = (Exp) e.rexp().accept(this);
+        Exp right = (Exp) e.aexp().accept(this);
         Eq nodeEq = new Eq(line, column, left, right);
         return nodeEq;
 	}
 	
 	@Override 
-	public SuperNode visitMex(langParser.MexContext ctx) { 
-        return visitChildren(ctx); 
+	public SuperNode visitMex(langParser.MexContext e) { 
+        return visitChildren(e); 
     }
 
 	@Override 
-	public SuperNode visitMinus(langParser.MinusContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp left = (Exp) ctx.aexp().accept(this);
-        Exp right = (Exp) ctx.mexp().accept(this);
+	public SuperNode visitMinus(langParser.MinusContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp left = (Exp) e.aexp().accept(this);
+        Exp right = (Exp) e.mexp().accept(this);
         Minus nodeMinus= new Minus(line, column, left, right);
         return nodeMinus;
 	}
 	
 	@Override 
-	public SuperNode visitPlus(langParser.PlusContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp left = (Exp) ctx.aexp().accept(this);
-        Exp right = (Exp) ctx.mexp().accept(this);
+	public SuperNode visitPlus(langParser.PlusContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp left = (Exp) e.aexp().accept(this);
+        Exp right = (Exp) e.mexp().accept(this);
         Plus nodePlus = new Plus(line, column, left, right);
         return nodePlus;
 	}
 	
 	@Override 
-	public SuperNode visitDiv(langParser.DivContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp left = (Exp) ctx.mexp().accept(this);
-        Exp right = (Exp) ctx.sexp().accept(this);
+	public SuperNode visitDiv(langParser.DivContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp left = (Exp) e.mexp().accept(this);
+        Exp right = (Exp) e.sexp().accept(this);
         Div nodeDiv = new Div(line, column, left, right);
         return nodeDiv; 
 	}
 
 	@Override 
-	public SuperNode visitMult(langParser.MultContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp left = (Exp) ctx.mexp().accept(this);
-        Exp right = (Exp) ctx.sexp().accept(this);
+	public SuperNode visitMult(langParser.MultContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp left = (Exp) e.mexp().accept(this);
+        Exp right = (Exp) e.sexp().accept(this);
         Mult nodeMult = new Mult(line, column, left, right);
         return nodeMult;
 	}
 	
 	@Override 
-	public SuperNode visitSex(langParser.SexContext ctx) { 
-        return visitChildren(ctx); 
+	public SuperNode visitSex(langParser.SexContext e) { 
+        return visitChildren(e); 
     }
 
 	@Override 
-	public SuperNode visitMod(langParser.ModContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp left = (Exp) ctx.mexp().accept(this);
-        Exp right = (Exp) ctx.sexp().accept(this);
+	public SuperNode visitMod(langParser.ModContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp left = (Exp) e.mexp().accept(this);
+        Exp right = (Exp) e.sexp().accept(this);
         CModule nodeCModule = new CModule(line, column, left, right);
         return nodeCModule;
 	}
 	
 	@Override 
-	public SuperNode visitNot(langParser.NotContext ctx) { 
-	    int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp expression = (Exp) ctx.sexp().accept(this);
+	public SuperNode visitNot(langParser.NotContext e) { 
+	    int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp expression = (Exp) e.sexp().accept(this);
         Not nodeNot = new Not(line, column, expression);
         return nodeNot;  
 	}
 	
 	@Override 
-	public SuperNode visitSMinus(langParser.SMinusContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp expression = (Exp) ctx.sexp().accept(this);
+	public SuperNode visitSMinus(langParser.SMinusContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp expression = (Exp) e.sexp().accept(this);
         SMinus nodeSMinus= new SMinus(line, column, expression);
         return nodeSMinus;
 	}
 
 	@Override 
-	public SuperNode visitTrue(langParser.TrueContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitTrue(langParser.TrueContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         True nodeTrue = new True(line, column);
         return nodeTrue;
 	}
 
 	@Override 
-	public SuperNode visitFalse(langParser.FalseContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitFalse(langParser.FalseContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         False nodeFalse = new False(line, column);
         return nodeFalse;
 	}
 
 	@Override 
-	public SuperNode visitNull(langParser.NullContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitNull(langParser.NullContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         Null nodeNull = new Null(line, column);
         return nodeNull;
 	}
 
 	@Override 
-	public SuperNode visitInt(langParser.IntContext ctx) { 
-		int line = ctx.getStart().getLine();
-		int column = ctx.getStart().getCharPositionInLine();
-        Int nodeInt = new Int( line, column, Integer.parseInt(ctx.INT().getText()));
+	public SuperNode visitInt(langParser.IntContext e) { 
+		int line = e.getStart().getLine();
+		int column = e.getStart().getCharPositionInLine();
+        Int nodeInt = new Int( line, column, Integer.parseInt(e.INT().getText()));
         return nodeInt; 
 	}
 	
 	@Override 
-	public SuperNode visitFloat(langParser.FloatContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        FloatV nodeFloat = new FloatV( line,column,Float.parseFloat(ctx.FLOAT().getText()));
+	public SuperNode visitFloat(langParser.FloatContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        FloatV nodeFloat = new FloatV( line,column,Float.parseFloat(e.FLOAT().getText()));
         return nodeFloat;
 	}
 
 	@Override 
-	public SuperNode visitCaracter(langParser.CaracterContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        String s = ctx.CARACTER().getText();
+	public SuperNode visitCaracter(langParser.CaracterContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        String s = e.CARACTER().getText();
         String newString =  s.replace("'\\\\'", "'\\'");
         newString = newString.replace("'\\n'", "'\n'");
         newString = newString.replace("'\\r'", "'\r'");
@@ -530,97 +530,97 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
         return nodeCaracter;
 	}
 
-	@Override public SuperNode visitPex(langParser.PexContext ctx) { 
-        return visitChildren(ctx); 
+	@Override public SuperNode visitPex(langParser.PexContext e) { 
+        return visitChildren(e); 
     }
 
-	@Override public SuperNode visitVars(langParser.VarsContext ctx) { 
-        return visitChildren(ctx);
+	@Override public SuperNode visitVars(langParser.VarsContext e) { 
+        return visitChildren(e);
     }
 	
 	@Override 
-	public SuperNode visitExpression(langParser.ExpressionContext ctx) { 
-		Exp nodeExpression = (Exp) ctx.exp().accept(this);
+	public SuperNode visitExpression(langParser.ExpressionContext e) { 
+		Exp nodeExpression = (Exp) e.exp().accept(this);
         return nodeExpression;
 	}
 
 	@Override 
-	public SuperNode visitNew(langParser.NewContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Type type = (Type) ctx.type().accept(this);
+	public SuperNode visitNew(langParser.NewContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Type type = (Type) e.type().accept(this);
         Exp expression = null;
-        if(ctx.exp()!= null) {
-            expression = (Exp) ctx.exp().accept(this);
+        if(e.exp()!= null) {
+            expression = (Exp) e.exp().accept(this);
         }
         New nodeNew = new New(line, column, type, expression);
         return nodeNew;
 	}
 
 	@Override 
-	public SuperNode visitCallExp(langParser.CallExpContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Exp expression = (Exp) ctx.exp().accept(this);
+	public SuperNode visitCallExp(langParser.CallExpContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Exp expression = (Exp) e.exp().accept(this);
         Exp[] params = null;
         SuperNode result = this.defaultResult();
-        if(ctx.exps()!= null) {
-            int n = ctx.exps().exp().size();
+        if(e.exps()!= null) {
+            int n = e.exps().exp().size();
             if (n != 0) {
                 params = new Exp[n];
-                for(int i = 0; i < n && this.shouldVisitNextChild(ctx, result); ++i) {
-                    ParseTree c = ctx.exps().exp(i);
+                for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
+                    ParseTree c = e.exps().exp(i);
                     SuperNode childResult = c.accept(this);
                     params[i] = (Exp) this.aggregateResult(result, childResult);
                 }
             }
         }
         CallExp nodeCallExp = null;
-        if (ctx.ID().getText() != null) {
-            nodeCallExp = new CallExp(line,column,ctx.ID().getText(), params, expression);
+        if (e.ID().getText() != null) {
+            nodeCallExp = new CallExp(line,column,e.ID().getText(), params, expression);
         }
         else {
-            nodeCallExp = new CallExp(line,column,ctx.IDTYPE().getText(), params, expression);
+            nodeCallExp = new CallExp(line,column,e.IDTYPE().getText(), params, expression);
         }
         return nodeCallExp; 
 	}
 
 	@Override 
-	public SuperNode visitVarIds(langParser.VarIdsContext ctx) { 
-        int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
+	public SuperNode visitVarIds(langParser.VarIdsContext e) { 
+        int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
         Var nodeVar = null;
-        if (ctx.ID().getText() != null) {
-            nodeVar = new Var(line, column, ctx.ID().getText());
+        if (e.ID().getText() != null) {
+            nodeVar = new Var(line, column, e.ID().getText());
         } else {
-            nodeVar = new Var(line, column, ctx.IDTYPE().getText());
+            nodeVar = new Var(line, column, e.IDTYPE().getText());
         }
         return nodeVar; 
 	}
 
 	@Override 
-	public SuperNode visitAccessData(langParser.AccessDataContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Var nodeAccessData = (Var) ctx.var().accept(this);
-        if (ctx.ID().getText() != null) {
-            nodeAccessData.add(new AccessData(line, column, ctx.ID().getText()));
+	public SuperNode visitAccessData(langParser.AccessDataContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Var nodeAccessData = (Var) e.var().accept(this);
+        if (e.ID().getText() != null) {
+            nodeAccessData.add(new AccessData(line, column, e.ID().getText()));
         } else {
-            nodeAccessData.add(new AccessData(line, column, ctx.IDTYPE().getText()));
+            nodeAccessData.add(new AccessData(line, column, e.IDTYPE().getText()));
         }
         return nodeAccessData; 
 	}
 
 	@Override 
-	public SuperNode visitAccessArray(langParser.AccessArrayContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        Var nodeAccessArray = (Var) ctx.var().accept(this);
-        Exp expression = (Exp) ctx.exp().accept(this);
+	public SuperNode visitAccessArray(langParser.AccessArrayContext e) { 
+		int line = e.getStart().getLine();
+        int column = e.getStart().getCharPositionInLine();
+        Var nodeAccessArray = (Var) e.var().accept(this);
+        Exp expression = (Exp) e.exp().accept(this);
         nodeAccessArray.add(new AccessArray(line, column, expression));
         return nodeAccessArray; 
 	}
 
-	@Override public SuperNode visitExps(langParser.ExpsContext ctx) { return visitChildren(ctx); }
+	@Override public SuperNode visitExps(langParser.ExpsContext e) { return visitChildren(e); }
 }
 
