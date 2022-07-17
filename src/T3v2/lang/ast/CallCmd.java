@@ -44,7 +44,7 @@ public class CallCmd extends Cmd {
     return exps;
   }
 
-  public LValue[] getReturnable() {
+  public LValue[] getReturn() {
     return ret;
   }
 

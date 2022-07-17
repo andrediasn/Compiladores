@@ -55,8 +55,7 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
         }
         return new TData(e.getStart().getLine(),e.getStart().getCharPositionInLine(),e.IDTYPE().getText(), (Type) e.type().accept(this));
 	}
-
-
+    
 	@Override 
 	public SuperNode visitFunc(langParser.FuncContext e) { 
         Param[] params = null;
@@ -109,11 +108,6 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
     public SuperNode visitBrace(langParser.BraceContext e) { 
         return visitChildren(e); 
     }
-
-    @Override 
-	public SuperNode visitTyID(langParser.TyIDContext e) { 
-        return new TyID(e.getStart().getLine(),e.getStart().getCharPositionInLine(),e.IDTYPE().getText());
-	}
 	
 	@Override 
 	public SuperNode visitTyInt(langParser.TyIntContext e) { 
@@ -133,6 +127,11 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	@Override 
 	public SuperNode visitTyFloat(langParser.TyFloatContext e) { 
         return new TyFloat(e.getStart().getLine(),e.getStart().getCharPositionInLine());
+	}
+
+    @Override 
+	public SuperNode visitTyID(langParser.TyIDContext e) { 
+        return new TyID(e.getStart().getLine(),e.getStart().getCharPositionInLine(),e.IDTYPE().getText());
 	}
 
 	@Override 
@@ -230,10 +229,10 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
             return new CallExpr(e.getStart().getLine(),e.getStart().getCharPositionInLine(),e.ID().getText(), params, (Expr) e.exp().accept(this));
         }
         return new CallExpr(e.getStart().getLine(),e.getStart().getCharPositionInLine(),e.IDTYPE().getText(), params, (Expr) e.exp().accept(this));
-
 	}
-	
-	@Override public SuperNode visitRex(langParser.RexContext e) { 
+
+	@Override 
+    public SuperNode visitExps(langParser.ExpsContext e) { 
         return visitChildren(e); 
     }
 
@@ -241,20 +240,14 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitAnd(langParser.AndContext e) { 
         return new And(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.exp(0).accept(this), (Expr) e.exp(1).accept(this));
 	}
-
-	@Override 
-	public SuperNode visitAex(langParser.AexContext e) { 
+	
+	@Override public SuperNode visitRExpr(langParser.RExprContext e) { 
         return visitChildren(e); 
     }
 	
 	@Override 
 	public SuperNode visitLess(langParser.LessContext e) { 
         return new Less(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.aexp(0).accept(this), (Expr) e.aexp(1).accept(this));
-	}
-	
-	@Override 
-	public SuperNode visitNeq(langParser.NeqContext e) { 
-        return new Neq(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.rexp().accept(this), (Expr) e.aexp().accept(this));
 	}
 
 	@Override 
@@ -263,9 +256,19 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	}
 	
 	@Override 
-	public SuperNode visitMex(langParser.MexContext e) { 
+	public SuperNode visitNeq(langParser.NeqContext e) { 
+        return new Neq(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.rexp().accept(this), (Expr) e.aexp().accept(this));
+	}
+
+	@Override 
+	public SuperNode visitAExpr(langParser.AExprContext e) { 
         return visitChildren(e); 
     }
+	
+	@Override 
+	public SuperNode visitAdd(langParser.AddContext e) { 
+        return new Add(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.aexp().accept(this), (Expr) e.mexp().accept(this));
+	}
 
 	@Override 
 	public SuperNode visitSub(langParser.SubContext e) { 
@@ -273,8 +276,13 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	}
 	
 	@Override 
-	public SuperNode visitAdd(langParser.AddContext e) { 
-        return new Add(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.aexp().accept(this), (Expr) e.mexp().accept(this));
+	public SuperNode visitMExpr(langParser.MExprContext e) { 
+        return visitChildren(e); 
+    }
+
+	@Override 
+	public SuperNode visitMult(langParser.MultContext e) { 
+        return new Mult(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.mexp().accept(this), (Expr) e.sexp().accept(this));
 	}
 	
 	@Override 
@@ -283,19 +291,14 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitMult(langParser.MultContext e) { 
-        return new Mult(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.mexp().accept(this), (Expr) e.sexp().accept(this));
-	}
-	
-	@Override 
-	public SuperNode visitSex(langParser.SexContext e) { 
-        return visitChildren(e); 
-    }
-
-	@Override 
 	public SuperNode visitMod(langParser.ModContext e) { 
         return new CModule(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.mexp().accept(this), (Expr) e.sexp().accept(this));
 	}
+	
+	@Override 
+	public SuperNode visitSExpr(langParser.SExprContext e) { 
+        return visitChildren(e); 
+    }
 	
 	@Override 
 	public SuperNode visitNot(langParser.NotContext e) { 
@@ -344,7 +347,7 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
         return new Caracter(e.getStart().getLine(), e.getStart().getCharPositionInLine(), s.charAt(1));
 	}
 
-	@Override public SuperNode visitPex(langParser.PexContext e) { 
+	@Override public SuperNode visitPExpr(langParser.PExprContext e) { 
         return visitChildren(e); 
     }
 
@@ -353,7 +356,7 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
     }
 	
 	@Override 
-	public SuperNode visitExpression(langParser.ExpressionContext e) { 
+	public SuperNode visitExpr(langParser.ExprContext e) { 
 		return (Expr) e.exp().accept(this);
 	}
 
@@ -374,6 +377,13 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
+	public SuperNode visitLExpr(langParser.LExprContext e) { 
+        LValue node = (LValue) e.lvalue().accept(this);
+        node.add(new LExpr(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.exp().accept(this)));
+        return node; 
+	}
+    
+	@Override 
 	public SuperNode visitLData(langParser.LDataContext e) { 
         LValue node = (LValue) e.lvalue().accept(this);
         if (e.ID().getText() != null) {
@@ -383,17 +393,5 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
         }
         return node; 
 	}
-
-	@Override 
-	public SuperNode visitLExpr(langParser.LExprContext e) { 
-        LValue node = (LValue) e.lvalue().accept(this);
-        node.add(new LExpr(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.exp().accept(this)));
-        return node; 
-	}
-
-	@Override 
-    public SuperNode visitExps(langParser.ExpsContext e) { 
-        return visitChildren(e); 
-    }
 }
 

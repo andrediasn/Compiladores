@@ -61,23 +61,22 @@ cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET				#stmtList
 	;
 
 /* exp */	
-exps: exp ( COMMA exp )*; 
 exp: exp AND exp		#and
-	| rexp				#rex
+	| rexp				#rExpr
 	;
 rexp: aexp LT aexp 		#less
 	| rexp EQ aexp		#eq
 	| rexp NEQ aexp		#neq
-	| aexp 				#aex
+	| aexp 				#aExpr
 	;
 aexp: aexp ADD mexp		#add
 	| aexp SUB mexp		#sub
-	| mexp 				#mex
+	| mexp 				#mExpr
 	;
 mexp: mexp MULT sexp	#mult
 	| mexp DIV sexp		#div
 	| mexp MOD sexp		#mod
-	| sexp 				#sex
+	| sexp 				#sExpr
 	;
 sexp: NOT sexp			#not
 	| SUB sexp			#SMinus
@@ -87,13 +86,14 @@ sexp: NOT sexp			#not
 	| INT				#int
 	| FLOAT				#float
 	| CARACTER			#caracter
-	| pexp				#pex																																													
+	| pexp				#pExpr																																													
 	;																																																
 pexp: lvalue 																	#lValues																						
-	| LEFTPARENT exp RIGHTPARENT 												#expression
+	| LEFTPARENT exp RIGHTPARENT 												#expr
 	| NEW type (LEFTBRACE exp RIGHTBRACE)? 										#new
 	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT LEFTBRACE exp RIGHTBRACE 		#callExpr
 	;
+exps: exp ( COMMA exp )*; 
 
 /* lvalue */	
 lvalue: (ID|IDTYPE) 							#lValueIDs

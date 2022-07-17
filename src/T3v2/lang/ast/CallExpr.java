@@ -44,7 +44,7 @@ public class CallExpr extends Expr {
     return exps;
   }
 
-  public Expr getReturnable() {
+  public Expr getReturn() {
     return ret;
   }
 
