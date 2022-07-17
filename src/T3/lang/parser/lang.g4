@@ -57,7 +57,7 @@ cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET				#stmtList
 	| PRINT exp SEMICOLON 							#print
 	| RETURN exp ( COMMA exp )* SEMICOLON 			#return
 	| lvalue ATTR exp SEMICOLON 					#attr
-	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LT lvalue ( COMMA lvalue )* GT)? SEMICOLON		#call
+	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LT lvalue ( COMMA lvalue )* GT)? SEMICOLON		#callCmd
 	;
 
 /* exp */	

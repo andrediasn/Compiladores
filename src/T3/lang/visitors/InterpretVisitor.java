@@ -87,7 +87,7 @@ public class InterpretVisitor extends Visitor{
         }
     }
 
-    public void visit(Call e) {
+    public void visit(CallCmd e) {
         try {
             if (funcs.get(e.getName()) != null) {
                 for (Expr exp : e.getExpressions()) {

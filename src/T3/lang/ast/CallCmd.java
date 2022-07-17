@@ -13,14 +13,14 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class Call extends Cmd {
+public class CallCmd extends Cmd {
 
   private int line, column;
   private String n;
   private Expr[] exps;
   private LValue[] ret;
 
-  public Call(int line, int column, String n, Expr[] exps, LValue[] ret)	{
+  public CallCmd(int line, int column, String n, Expr[] exps, LValue[] ret)	{
     this.n = n;
     this.exps = exps;
     this.ret = ret;

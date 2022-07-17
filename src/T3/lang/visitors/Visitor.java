@@ -20,7 +20,7 @@ public abstract class Visitor
     public abstract void visit(AccessData e);
   	public abstract void visit(Decl e);
     public abstract void visit(StmtList e);
-    public abstract void visit(Call e);
+    public abstract void visit(CallCmd e);
     public abstract void visit(CallExpr e);
     public abstract void visit(Attr e);
 		
