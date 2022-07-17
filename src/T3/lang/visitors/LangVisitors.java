@@ -189,7 +189,7 @@ public class LangVisitors extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitCallCMD(langParser.CallCMDContext e) { 
+	public SuperNode visitCall(langParser.CallContext e) { 
         Expr[] expressions = null;
         LValue[] lvalues = null;
         if(e.exps() != null) {
@@ -209,9 +209,9 @@ public class LangVisitors extends langBaseVisitor<SuperNode> {
             }
         }
         if (e.ID().getText() != null) {
-            return new CallCmd(e.getStart().getLine(),e.getStart().getCharPositionInLine(),e.ID().getText(), expressions, lvalues);
+            return new Call(e.getStart().getLine(),e.getStart().getCharPositionInLine(),e.ID().getText(), expressions, lvalues);
         }
-        return new CallCmd(e.getStart().getLine(),e.getStart().getCharPositionInLine(),e.IDTYPE().getText(), expressions, lvalues);
+        return new Call(e.getStart().getLine(),e.getStart().getCharPositionInLine(),e.IDTYPE().getText(), expressions, lvalues);
 	}
 
     @Override 
