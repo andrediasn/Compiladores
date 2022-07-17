@@ -92,12 +92,12 @@ sexp: NOT sexp			#not
 pexp: lvalue 																	#lValues																						
 	| LEFTPARENT exp RIGHTPARENT 												#expression
 	| NEW type (LEFTBRACE exp RIGHTBRACE)? 										#new
-	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT LEFTBRACE exp RIGHTBRACE 		#callExp
+	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT LEFTBRACE exp RIGHTBRACE 		#callExpr
 	;
 
 /* lvalue */	
 lvalue: (ID|IDTYPE) 							#lValueIDs
-	| lvalue LEFTBRACE exp RIGHTBRACE 			#lExp
+	| lvalue LEFTBRACE exp RIGHTBRACE 			#lExpr
 	| lvalue DOT (ID|IDTYPE) 					#lData
 	;
 																									

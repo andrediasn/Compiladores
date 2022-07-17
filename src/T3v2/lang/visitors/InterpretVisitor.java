@@ -166,7 +166,7 @@ public class InterpretVisitor extends Visitor{
         }
     }
 
-    public void visit(CallExp e) {
+    public void visit(CallExpr e) {
         try {
             Func f = funcs.get(e.getName());
             if (f != null) {
@@ -372,7 +372,7 @@ public class InterpretVisitor extends Visitor{
                         lv.accept(this);
                         if (lv instanceof LData) {
                             obj = ((HashMap<String, Object>) obj).get((String) operands.pop());
-                        } else if (lv instanceof LExp) {
+                        } else if (lv instanceof LExpr) {
                             obj = ((ArrayList) obj).get((Integer) operands.pop());
                         }
                     }
@@ -644,7 +644,7 @@ public class InterpretVisitor extends Visitor{
         retMode = true;
     }
 
-    public void visit(LExp e) {
+    public void visit(LExpr e) {
         try {
             Expr exp = e.getIndex();
             exp.accept(this);

@@ -13,12 +13,12 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class LExp extends Selector {
+public class LExpr extends Selector {
 
 	private int line, column;
   private Expr index;
 
-  public LExp(int line, int column, Expr index) {
+  public LExpr(int line, int column, Expr index) {
     this.line = line;
     this.column = column;
     this.index = index;

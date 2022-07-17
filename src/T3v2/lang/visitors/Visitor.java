@@ -22,7 +22,7 @@ public abstract class Visitor
   	public abstract void visit(TData e); // informações dos tipo de data
     public abstract void visit(StmtList e); // CmdArray - Lista de comandos
     public abstract void visit(CallCmd e);
-    public abstract void visit(CallExp e);
+    public abstract void visit(CallExpr e);
     public abstract void visit(Attr e); // Assign - Atribuições de variáveis
 		
     public abstract void visit(Func f); // Definição de funções
@@ -37,7 +37,7 @@ public abstract class Visitor
     public abstract void visit(Caracter e);
     public abstract void visit(Iterate e);
     public abstract void visit(New e);
-    public abstract void visit(LExp e); //SelectorArray - acesso a posição da array
+    public abstract void visit(LExpr e); //SelectorArray - acesso a posição da array
     
     public abstract void visit(CModule e); // ModuleT
     public abstract void visit(Div e);

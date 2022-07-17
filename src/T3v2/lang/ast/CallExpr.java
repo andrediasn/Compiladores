@@ -13,14 +13,14 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class CallExp extends Expr {
+public class CallExpr extends Expr {
 
   private int line, column;
   private String n;
   private Expr[] exps;
   private Expr ret;
 
-  public CallExp(int line, int column, String n, Expr[] exps, Expr ret) {
+  public CallExpr(int line, int column, String n, Expr[] exps, Expr ret) {
     this.line = line;
     this.column = column;
     this.n = n;

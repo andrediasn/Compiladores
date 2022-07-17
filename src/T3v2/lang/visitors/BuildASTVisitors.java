@@ -346,7 +346,7 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	}
 
     @Override 
-	public SuperNode visitCallExp(langParser.CallExpContext e) { 
+	public SuperNode visitCallExpr(langParser.CallExprContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
         Expr exp = (Expr) e.exp().accept(this);
@@ -363,14 +363,14 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
                 }
             }
         }
-        CallExp nodeCallExp = null;
+        CallExpr nodeCallExpr = null;
         if (e.ID().getText() != null) {
-            nodeCallExp = new CallExp(line,column,e.ID().getText(), params, exp);
+            nodeCallExpr = new CallExpr(line,column,e.ID().getText(), params, exp);
         }
         else {
-            nodeCallExp = new CallExp(line,column,e.IDTYPE().getText(), params, exp);
+            nodeCallExpr = new CallExpr(line,column,e.IDTYPE().getText(), params, exp);
         }
-        return nodeCallExp; 
+        return nodeCallExpr; 
 	}
 	
 	@Override public SuperNode visitRex(langParser.RexContext e) { 
@@ -612,15 +612,18 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitLExp(langParser.LExpContext e) { 
+	public SuperNode visitLExpr(langParser.LExprContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
         LValue nodeLExp = (LValue) e.lvalue().accept(this);
         Expr exp = (Expr) e.exp().accept(this);
-        nodeLExp.add(new LExp(line, column, exp));
+        nodeLExp.add(new LExpr(line, column, exp));
         return nodeLExp; 
 	}
 
-	@Override public SuperNode visitExps(langParser.ExpsContext e) { return visitChildren(e); }
+	@Override 
+    public SuperNode visitExps(langParser.ExpsContext e) { 
+        return visitChildren(e); 
+    }
 }
 
