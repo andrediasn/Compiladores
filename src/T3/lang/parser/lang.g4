@@ -85,7 +85,7 @@ sexp: NOT sexp			#not
 	| NULL				#null
 	| INT				#int
 	| FLOAT				#float
-	| CARACTER			#caracter
+	| CHAR				#char
 	| pexp				#pExpr																																													
 	;																																																
 pexp: lvalue 																	#lValues																						
@@ -123,7 +123,7 @@ LEFTBRACE: 		'[';
 RIGHTBRACE: 	']';
 LEFTBRACKET: 	'{';
 RIGHTBRACKET: 	'}';
-GT: 		'>';
+GT: 			'>';
 LT: 			'<';
 DOT: 			'.';
 COMMA: 			',';
@@ -144,7 +144,7 @@ ID: 			[a-z] [a-zA-Z0-9_]* ;
 IDTYPE: 		[A-Z] [a-zA-Z0-9_]* ;
 INT: 			('0'..'9')+;
 FLOAT: 			('0'..'9')* '.'('0'..'9')+;
-CARACTER: 		'\'' ( ~[\\'] | '\\n' | '\\t' | '\\b' | '\\r' | '\\\\' | '\\\'' ) '\'' ;
+CHAR: 		'\'' ( ~[\\'] | '\\n' | '\\t' | '\\b' | '\\r' | '\\\\' | '\\\'' ) '\'' ;
 ENDLINE: 	        '\r'? '\n' -> skip;
 EMPTY: 		        [ \t]+ -> skip;
 LINECOMMENT:     	'--' ~[\r\n]* -> channel(HIDDEN);

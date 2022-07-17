@@ -13,12 +13,12 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class Caracter extends Expr {
+public class Char extends Expr {
 
   private int line, column;
   private char v;
 
-  public Caracter(int line, int column, char v) {
+  public Char(int line, int column, char v) {
     this.line = line;
     this.column = column;
     this.v = v;

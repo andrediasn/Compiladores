@@ -336,15 +336,15 @@ public class LangVisitors extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitCaracter(langParser.CaracterContext e) { 
-        String s =  e.CARACTER().getText().replace("'\\\\'", "'\\'");
+	public SuperNode visitChar(langParser.CharContext e) { 
+        String s =  e.CHAR().getText().replace("'\\\\'", "'\\'");
         s = s.replace("'\\n'", "'\n'");
         s = s.replace("'\\r'", "'\r'");
         s = s.replace("'\\t'", "'\t'");
         s = s.replace("'\\b'", "'\b'");
         s = s.replace("'\\''", "'''");
         s = s.replace("'\\\"'", "'\"'");
-        return new Caracter(e.getStart().getLine(), e.getStart().getCharPositionInLine(), s.charAt(1));
+        return new Char(e.getStart().getLine(), e.getStart().getCharPositionInLine(), s.charAt(1));
 	}
 
 	@Override public SuperNode visitPExpr(langParser.PExprContext e) { 

@@ -33,7 +33,7 @@ public abstract class Visitor
     public abstract void visit(LValue e);
     public abstract void visit(Int e);
     public abstract void visit(FloatV e);
-    public abstract void visit(Caracter e);
+    public abstract void visit(Char e);
     public abstract void visit(Iterate e);
     public abstract void visit(New e);
     public abstract void visit(LExpr e);

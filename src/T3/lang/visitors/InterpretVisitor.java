@@ -300,7 +300,7 @@ public class InterpretVisitor extends Visitor{
         }
     }
 
-    public void visit(Caracter e) {
+    public void visit(Char e) {
         try {
             operands.push(e.getValue());
         } catch (Exception x) {
