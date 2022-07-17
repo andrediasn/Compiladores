@@ -17,46 +17,46 @@ import java.util.*;
 public class InterpretVisitor extends Visitor{
 
   	private Stack<HashMap<String, Object>> env;
-	private Stack<Object> operands;
+	private Stack<Object> ops;
     private HashMap<String, Func> funcs;
 	private HashMap<String, Data> types;
-    private ArrayList<Object> returnables;
+    private ArrayList<Object> returns;
     private boolean retMode, debug;
 
     public InterpretVisitor() {
         env = new Stack<HashMap<String, Object>>();
         env.push(new HashMap<String, Object>());
-        operands = new Stack<Object>();
+        ops = new Stack<Object>();
         funcs = new HashMap<String, Func>();
 		types = new HashMap<String, Data>();
-        returnables = new ArrayList<Object>();
+        returns = new ArrayList<Object>();
         retMode = false;
         debug = false;
     }
 
-    public InterpretVisitor(boolean debug) {
+    public InterpretVisitor(boolean e) {
         this();
-        this.debug = debug;
+        this.debug = e;
     }
 
-    public void visit(And and) {
+    public void visit(And e) {
         try {
-            and.getLeft().accept(this);
-            and.getRight().accept(this);
+            e.getLeft().accept(this);
+            e.getRight().accept(this);
             Object left, right;
-            right = operands.pop();
-            left = operands.pop();
-            operands.push(Boolean.valueOf((Boolean) left && (Boolean) right));
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + and.getLine() + ", " + and.getColumn() + ") " + exception.getMessage());
+            right = ops.pop();
+            left = ops.pop();
+            ops.push(Boolean.valueOf((Boolean) left && (Boolean) right));
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-	public void visit(Attr attr) {
+	public void visit(Attr e) {
         try {
-            Var var = attr.getValue();
-            attr.getExpression().accept(this);
-            Object val = operands.pop();
+            Var var = e.getValue();
+            e.getExpression().accept(this);
+            Object val = ops.pop();
             Object obj = null;
 
             if (env.peek().containsKey(var.getId())) {
@@ -68,7 +68,7 @@ public class InterpretVisitor extends Visitor{
             if (!selectors.isEmpty()) {
                 for (int k = 0; k < selectors.size() - 1; k++) {
                     selectors.get(k).accept(this);
-                    Object select = operands.pop();
+                    Object select = ops.pop();
                     if (selectors.get(k) instanceof AccessData) {
                         obj = ((HashMap<String, Object>) obj).get(select);
                     } else {
@@ -76,7 +76,7 @@ public class InterpretVisitor extends Visitor{
                     }
                 }
                 selectors.get(selectors.size() - 1).accept(this);
-                Object select = operands.pop();
+                Object select = ops.pop();
 
                 if (selectors.get(selectors.size() - 1) instanceof AccessData) {
                     ((HashMap<String, Object>) obj).put((String) select, val);
@@ -87,24 +87,24 @@ public class InterpretVisitor extends Visitor{
                 env.peek().put(var.getId(), val);
             }
 
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + attr.getLine() + ", " + attr.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-	public void visit(CallCmd callCmd) {
+	public void visit(CallCmd e) {
         try {
-            Func f = funcs.get(callCmd.getName());
+            Func f = funcs.get(e.getName());
             if (f != null) {
-                for (Exp exp : callCmd.getExpressions()) {
+                for (Exp exp : e.getExpressions()) {
                     exp.accept(this);
                 }
                 f.accept(this);
-                if (callCmd.getReturnable() != null) {
-                    Var[] s = callCmd.getReturnable();
+                if (e.getReturnable() != null) {
+                    Var[] s = e.getReturnable();
 
                     for (int i = 0; i < s.length; i++) {
-                        Object val = returnables.get(i);
+                        Object val = returns.get(i);
                         Var var = s[i];
                         Object obj = env.peek().get(var.getId());
                         ArrayList<Selector> selectors = var.getSelectors();
@@ -112,7 +112,7 @@ public class InterpretVisitor extends Visitor{
                         if (!selectors.isEmpty()) {
                             for (int k = 0; k < selectors.size() - 1; k++) {
                                 selectors.get(k).accept(this);
-                                Object select = operands.pop();
+                                Object select = ops.pop();
                                 if (selectors.get(k) instanceof AccessData) {
                                     obj = ((HashMap<String, Object>) obj).get(select);
                                 } else {
@@ -120,7 +120,7 @@ public class InterpretVisitor extends Visitor{
                                 }
                             }
                             selectors.get(selectors.size() - 1).accept(this);
-                            Object select = operands.pop();
+                            Object select = ops.pop();
                             if (selectors.get(selectors.size() - 1) instanceof AccessData) {
                                 ((HashMap<String, Object>) obj).put((String) select, val);
                             } else {
@@ -131,139 +131,138 @@ public class InterpretVisitor extends Visitor{
                         }
                     }
                 }
-                returnables.clear();
+                returns.clear();
             } else {
-                throw new RuntimeException(" (" + callCmd.getLine() + ", " + callCmd.getColumn() + ") Função não definida " + callCmd.getName());
+                throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") Undefined function " + e.getName());
             }
 
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + callCmd.getLine() + ", " + callCmd.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(CallExp callExp) {
+    public void visit(CallExp e) {
         try {
-            Func f = funcs.get(callExp.getName());
+            Func f = funcs.get(e.getName());
             if (f != null) {
-                for (Exp exp : callExp.getExpressions()) {
+                for (Exp exp : e.getExpressions()) {
                     exp.accept(this);
                 }
                 f.accept(this);
 
-                callExp.getReturnable().accept(this);
-                Integer pos = (Integer) operands.pop();
-                Object result = returnables.get(pos);
-                operands.push(result);
-                returnables.clear();
+                e.getReturnable().accept(this);
+                Integer pos = (Integer) ops.pop();
+                Object result = returns.get(pos);
+                ops.push(result);
+                returns.clear();
 
             } else {
-                throw new RuntimeException(" (" + callExp.getLine() + ", " + callExp.getColumn() + ") Função não existe " + callExp.getName());
+                throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") Função não existe " + e.getName());
             }
 
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + callExp.getLine() + ", " + callExp.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
 
     }
 
-    public void visit(Caracter caract) {
+    public void visit(Caracter e) {
         try {
-            operands.push(caract.getValue());
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + caract.getLine() + ", " + caract.getColumn() + ") " + exception.getMessage());
+            ops.push(e.getValue());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(StmtList stmtList) {
+    public void visit(StmtList e) {
         if (retMode) {
             return;
         }
         try {
-            for (Cmd cmd : stmtList.getList()) {
-
+            for (Cmd cmd : e.getList()) {
                 cmd.accept(this);
                 if (retMode) {
                     return;
                 }
             }
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + stmtList.getLine() + ", " + stmtList.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(Data data) { }
+    public void visit(Data e) { }
 
     @Override
-    public void visit(Decl decl) { }
+    public void visit(Decl e) { }
 		
-  	public void visit(Div div) {
+  	public void visit(Div e) {
         try {
-            div.getLeft().accept(this);
-            div.getRight().accept(this);
+            e.getLeft().accept(this);
+            e.getRight().accept(this);
             Object left, right;
-            right = operands.pop();
-            left = operands.pop();
+            right = ops.pop();
+            left = ops.pop();
             
             if (left.getClass() == Integer.class && right.getClass() == Integer.class) {
-                operands.push((Integer) left / (Integer) right);
+                ops.push((Integer) left / (Integer) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Float.class) { 
-                operands.push((Float) left / (Float) right);
+                ops.push((Float) left / (Float) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Integer.class) {
-                operands.push((Float) left / (Integer) right);
+                ops.push((Float) left / (Integer) right);
 			} else if (left.getClass() == Integer.class && right.getClass() == Float.class) {
-                operands.push((Integer) left / (Float) right);
+                ops.push((Integer) left / (Float) right);
 			} else {
 				throw new RuntimeException("Inválido");
 			}
 
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + div.getLine() + ", " + div.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(FloatV doub) {
+    public void visit(FloatV e) {
         try {
-            operands.push(Float.valueOf(doub.getValue()));
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + doub.getLine() + ", " + doub.getColumn() + ") " + exception.getMessage());
+            ops.push(Float.valueOf(e.getValue()));
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(Eq eq) {
+    public void visit(Eq e) {
         try {
-            eq.getLeft().accept(this);
-            eq.getRight().accept(this);
-            operands.push(Boolean.valueOf(operands.pop().equals(operands.pop())));
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + eq.getLine() + ", " + eq.getColumn() + ") " + exception.getMessage());
+            e.getLeft().accept(this);
+            e.getRight().accept(this);
+            ops.push(Boolean.valueOf(ops.pop().equals(ops.pop())));
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(False fal) {
+    public void visit(False e) {
         try {
-            operands.push(Boolean.valueOf(false));
-        } catch (ValException expression) {
-            throw new RuntimeException(" (" + fal.getLine() + ", " + fal.getColumn() + ") " + expression.getMessage());
+            ops.push(Boolean.valueOf(false));
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
     
-    public void visit(Func func) {
+    public void visit(Func e) {
         HashMap<String, Object> lv = new HashMap<String, Object>();
-        if (func.getParam() != null) {
-            for (int i = func.getParam().length - 1; i >= 0; i--) {
-                lv.put(func.getParam()[i].getID(), operands.pop());
+        if (e.getParam() != null) {
+            for (int i = e.getParam().length - 1; i >= 0; i--) {
+                lv.put(e.getParam()[i].getID(), ops.pop());
             }
         }
         env.push(lv);
 
-        for (Cmd cmd : func.getBody()) {
+        for (Cmd cmd : e.getBody()) {
             if (retMode) {
                 break;
             }
             cmd.accept(this);
         }
 
-        if (debug && func.getID().equals("main")) {
+        if (debug && e.getID().equals("main")) {
 
             Object[] obj = env.peek().keySet().toArray();
             System.out.println("-------------- Memoria ----------------");
@@ -277,194 +276,194 @@ public class InterpretVisitor extends Visitor{
         retMode = false;
     }
 
-    public void visit(If i) {
+    public void visit(If e) {
         try {
-            i.getExpression().accept(this);
-            if ((Boolean) operands.pop()) {
-                i.getThe().accept(this);
-            } else if (i.getEls() != null) {
-                i.getEls().accept(this);
+            e.getExpression().accept(this);
+            if ((Boolean) ops.pop()) {
+                e.getThe().accept(this);
+            } else if (e.getEls() != null) {
+                e.getEls().accept(this);
             }
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + i.getLine() + ", " + i.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(Int integer) {
+    public void visit(Int e) {
         try {
-            operands.push(Integer.valueOf(integer.getValue()));
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + integer.getLine() + ", " + integer.getColumn() + ") " + exception.getMessage());
+            ops.push(Integer.valueOf(e.getValue()));
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(Iterate ite) {
+    public void visit(Iterate e) {
         try {
-            ite.getExpression().accept(this);
-            Object obj = operands.pop();
+            e.getExpression().accept(this);
+            Object obj = ops.pop();
             Object objClass = obj.getClass();
             if (objClass == Integer.class) {
 
                 for (int i = 0; i < (Integer) obj; i++) {
-                    ite.getBody().accept(this);
-                    ite.getExpression().accept(this);
+                    e.getBody().accept(this);
+                    e.getExpression().accept(this);
                 }
             } else {
                 throw new RuntimeException("Dados se diferenciam");
             }
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + ite.getLine() + ", " + ite.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
     
-	public void visit(Less less) {
+	public void visit(Less e) {
         try {
-            less.getLeft().accept(this);
-            less.getRight().accept(this);
+            e.getLeft().accept(this);
+            e.getRight().accept(this);
             Object left, right;
-            right = operands.pop();
-            left = operands.pop();
+            right = ops.pop();
+            left = ops.pop();
 
             if (left.getClass() == Integer.class && right.getClass() == Integer.class) {
-                operands.push((Integer) left < (Integer) right);
+                ops.push((Integer) left < (Integer) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Float.class) { 
-                operands.push((Float) left < (Float) right);
+                ops.push((Float) left < (Float) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Integer.class) {
-                operands.push((Float) left < (Integer) right);
+                ops.push((Float) left < (Integer) right);
 			} else if (left.getClass() == Integer.class && right.getClass() == Float.class) {
-                operands.push((Integer) left < (Float) right);
+                ops.push((Integer) left < (Float) right);
 			} else {
 				throw new RuntimeException("Inválido");
 			}
 						
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + less.getLine() + ", " + less.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
     
-    public void visit(Var var) {
+    public void visit(Var e) {
         try {
-            if (env.peek().containsKey(var.getId())) {
-                Object obj = env.peek().get(var.getId());
-                if (var.getSelectors().size() != 0) {
-                    for (Selector lv : var.getSelectors()) {
+            if (env.peek().containsKey(e.getId())) {
+                Object obj = env.peek().get(e.getId());
+                if (e.getSelectors().size() != 0) {
+                    for (Selector lv : e.getSelectors()) {
                         lv.accept(this);
                         if (lv instanceof AccessData) {
-                            obj = ((HashMap<String, Object>) obj).get((String) operands.pop());
+                            obj = ((HashMap<String, Object>) obj).get((String) ops.pop());
                         } else if (lv instanceof AccessArray) {
-                            obj = ((ArrayList) obj).get((Integer) operands.pop());
+                            obj = ((ArrayList) obj).get((Integer) ops.pop());
                         }
                     }
                 }
-                operands.push(obj);
+                ops.push(obj);
             } else {
-                throw new RuntimeException(" (" + var.getLine() + ", " + var.getColumn() + ") não declarado " + var.getId());
+                throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") não declarado " + e.getId());
             }
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + var.getLine() + ", " + var.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(Minus minus) {
+    public void visit(Minus e) {
         try {
-            minus.getLeft().accept(this);
-            minus.getRight().accept(this);
+            e.getLeft().accept(this);
+            e.getRight().accept(this);
             Object left, right;
-            right = operands.pop();
-            left = operands.pop();
+            right = ops.pop();
+            left = ops.pop();
             if (left.getClass() == Integer.class && right.getClass() == Integer.class) {
-                operands.push((Integer) left - (Integer) right);
+                ops.push((Integer) left - (Integer) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Float.class) { 
-                operands.push((Float) left - (Float) right);
+                ops.push((Float) left - (Float) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Integer.class) {
-                operands.push((Float) left - (Integer) right);
+                ops.push((Float) left - (Integer) right);
 			} else if (left.getClass() == Integer.class && right.getClass() == Float.class) {
-                operands.push((Integer) left - (Float) right);
+                ops.push((Integer) left - (Float) right);
 			} else {
 				throw new RuntimeException("Inválido");
 			}
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + minus.getLine() + ", " + minus.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
     
-    public void visit(CModule cModule) {
+    public void visit(CModule e) {
         try {
-            cModule.getLeft().accept(this);
-            cModule.getRight().accept(this);
+            e.getLeft().accept(this);
+            e.getRight().accept(this);
             Object left, right;
-            right = operands.pop();
-            left = operands.pop();
+            right = ops.pop();
+            left = ops.pop();
             if (left.getClass() == Integer.class && right.getClass() == Integer.class) {
-                operands.push((Integer) left % (Integer) right);
+                ops.push((Integer) left % (Integer) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Float.class) { 
-                operands.push((Float) left % (Float) right);
+                ops.push((Float) left % (Float) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Integer.class) {
-                operands.push((Float) left % (Integer) right);
+                ops.push((Float) left % (Integer) right);
 			} else if (left.getClass() == Integer.class && right.getClass() == Float.class) {
-                operands.push((Integer) left % (Float) right);
+                ops.push((Integer) left % (Float) right);
 			} else {
 				throw new RuntimeException("Inválido");
 			}
 
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + cModule.getLine() + ", " + cModule.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(Mult mult) {
+    public void visit(Mult e) {
         try {
-            mult.getLeft().accept(this);
-            mult.getRight().accept(this);
+            e.getLeft().accept(this);
+            e.getRight().accept(this);
             Object left, right;
-            right = operands.pop();
-            left = operands.pop();
+            right = ops.pop();
+            left = ops.pop();
             if (left.getClass() == Integer.class && right.getClass() == Integer.class) {
-                operands.push((Integer) left * (Integer) right);
+                ops.push((Integer) left * (Integer) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Float.class) { 
-                operands.push((Float) left * (Float) right);
+                ops.push((Float) left * (Float) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Integer.class) {
-                operands.push((Float) left * (Integer) right);
+                ops.push((Float) left * (Integer) right);
 			} else if (left.getClass() == Integer.class && right.getClass() == Float.class) {
-                operands.push((Integer) left * (Float) right);
+                ops.push((Integer) left * (Float) right);
 			} else {
 				throw new RuntimeException("Inválido");
 			}
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + mult.getLine() + ", " + mult.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
     
-    public void visit(SMinus sMinus) {
+    public void visit(SMinus e) {
         try {
-            sMinus.getExpression().accept(this);
+            e.getExpression().accept(this);
             Number exp;
-            exp = (Number) operands.pop();
+            exp = (Number) ops.pop();
             if (exp.getClass() == Integer.class) {
-                operands.push(-exp.intValue());
+                ops.push(-exp.intValue());
             } else if (exp.getClass() == Float.class) {
-                operands.push(-exp.floatValue());
+                ops.push(-exp.floatValue());
             } else {
                 throw new RuntimeException("Inválido");
             }
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + sMinus.getLine() + ", " + sMinus.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(Neq neq) {
+    public void visit(Neq e) {
         try {
-            neq.getLeft().accept(this);
-            neq.getRight().accept(this);
-            operands.push(!operands.pop().equals(operands.pop()));
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + neq.getLine() + ", " + neq.getColumn() + ") " + exception.getMessage());
+            e.getLeft().accept(this);
+            e.getRight().accept(this);
+            ops.push(!ops.pop().equals(ops.pop()));
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
     
-    public void visit(New ne) {
+    public void visit(New e) {
         try {
-            Type type = ne.getType();
+            Type type = e.getType();
             BType bType = type.getBtype();
             Integer t = 0;
             ArrayList<Object> val = null;
@@ -480,9 +479,9 @@ public class InterpretVisitor extends Visitor{
                     a.put(decl.getId(), null);
                 }
             }
-            if (ne.getExpression() != null) {
-                ne.getExpression().accept(this);
-                t = (Integer) operands.pop();
+            if (e.getExpression() != null) {
+                e.getExpression().accept(this);
+                t = (Integer) ops.pop();
                 if (idType) {
                     val = new ArrayList<Object>(t);
                     for (int i = 0; i < t; i++) {
@@ -500,7 +499,7 @@ public class InterpretVisitor extends Visitor{
                     aux.add(val);
                     val = aux;
                 }
-                operands.push(val);
+                ops.push(val);
             } else {
                 if (type.getBraces() != 0) {
                     val = new ArrayList<Object>();
@@ -515,79 +514,79 @@ public class InterpretVisitor extends Visitor{
                         aux.add(val);
                         val = aux;
                     }
-                    operands.push(val);
+                    ops.push(val);
                 } else {
                     if (idType) {
-                        operands.push(a);
+                        ops.push(a);
                     } else {
-                        operands.push(null);
+                        ops.push(null);
                     }
                 }
             }
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + ne.getLine() + ", " + ne.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(Not not) {
+    public void visit(Not e) {
         try {
-            not.getExpression().accept(this);
-            operands.push(!(Boolean) operands.pop());
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + not.getLine() + ", " + not.getColumn() + ") " + exception.getMessage());
+            e.getExpression().accept(this);
+            ops.push(!(Boolean) ops.pop());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(Null nu) {
+    public void visit(Null e) {
         try {
-            operands.push(null);
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + nu.getLine() + ", " + nu.getColumn() + ") " + exception.getMessage());
+            ops.push(null);
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(Param param) { }
+    public void visit(Param e) { }
 
-    public void visit(Plus plus) {
+    public void visit(Plus e) {
         try {
-            plus.getLeft().accept(this);
-            plus.getRight().accept(this);
+            e.getLeft().accept(this);
+            e.getRight().accept(this);
             Object left, right;
-            right = operands.pop();
-            left = operands.pop();
+            right = ops.pop();
+            left = ops.pop();
             if (left.getClass() == Integer.class && right.getClass() == Integer.class) {
-                operands.push((Integer) left + (Integer) right);
+                ops.push((Integer) left + (Integer) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Float.class) { 
-                operands.push((Float) left + (Float) right);
+                ops.push((Float) left + (Float) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Integer.class) {
-                operands.push((Float) left + (Integer) right);
+                ops.push((Float) left + (Integer) right);
 			} else if (left.getClass() == Integer.class && right.getClass() == Float.class) {
-                operands.push((Integer) left + (Float) right);
+                ops.push((Integer) left + (Float) right);
 			} else {
 				throw new RuntimeException("Inválido");
 			}
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + plus.getLine() + ", " + plus.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(Print pri) {
+    public void visit(Print e) {
         try {
-            pri.getExpression().accept(this);
-            System.out.print(operands.pop());
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + pri.getLine() + ", " + pri.getColumn() + ") " + exception.getMessage());
+            e.getExpression().accept(this);
+            System.out.print(ops.pop());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(Program program) {
+    public void visit(Program e) {
         Func main = null;
-        if (program.getDatas() != null) {
-            for (Data data : program.getDatas()) {
+        if (e.getDatas() != null) {
+            for (Data data : e.getDatas()) {
                 types.put(data.getId(), data);
             }
         }
-        for (Func func : program.getFuncs()) {
+        for (Func func : e.getFuncs()) {
             funcs.put(func.getID(), func);
             if (func.getID().equals("main")) {
                 main = func;
@@ -599,16 +598,16 @@ public class InterpretVisitor extends Visitor{
         main.accept(this);
     }
 
-    public void visit(Read read) {
+    public void visit(Read e) {
         try {
             Scanner scan = new Scanner(System.in);
             Object Input = scan.nextLine();
-            Var var = read.getValue();
+            Var var = e.getValue();
             if (!var.getSelectors().isEmpty()) {
                 Object obj = (Object) env.peek().get(var.getId());
                 for (int k = 0; k < var.getSelectors().size() - 1; k++) {
                     var.getSelectors().get(k).accept(this);
-                    Object s = operands.pop();
+                    Object s = ops.pop();
                     if (var.getSelectors().get(k) instanceof AccessData) {
                         obj = ((HashMap<String, Object>) obj).get(s);
                     } else {
@@ -616,54 +615,54 @@ public class InterpretVisitor extends Visitor{
                     }
                 }
                 var.getSelectors().get(var.getSelectors().size() - 1).accept(this);
-                Object s = operands.pop();
+                Object s = ops.pop();
                 if (var.getSelectors().get(var.getSelectors().size() - 1) instanceof AccessData) {
                     ((HashMap<String, Object>) obj).put((String) s, Input);
                 } else {
                     ((ArrayList) obj).set((Integer) s, Input);
                 }
             } else {
-                env.peek().put(read.getValue().getId(), Input);
+                env.peek().put(e.getValue().getId(), Input);
             }
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + read.getLine() + ", " + read.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(Return ret) {
+    public void visit(Return e) {
         ArrayList<Object> aux = new ArrayList<Object>();
-        for (Exp exp : ret.getExpressions()) {
+        for (Exp exp : e.getExpressions()) {
             exp.accept(this);
-            aux.add(operands.pop());
+            aux.add(ops.pop());
         }
         for (int i = 0; i < aux.size(); i++) {
-            returnables.add(aux.get(i));
+            returns.add(aux.get(i));
         }
         retMode = true;
     }
 
-    public void visit(AccessArray selector) {
+    public void visit(AccessArray e) {
         try {
-            Exp exp = selector.getIndex();
+            Exp exp = e.getIndex();
             exp.accept(this);
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + selector.getLine() + ", " + selector.getColumn() + ") " + exception.getMessage());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(AccessData selector) {
+    public void visit(AccessData e) {
         try {
-            operands.push(selector.getIndex());
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + selector.getLine() + ", " + selector.getColumn() + ") " + exception.getMessage());
+            ops.push(e.getIndex());
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
 
-    public void visit(True tr) {
+    public void visit(True e) {
         try {
-            operands.push(Boolean.valueOf(true));
-        } catch (ValException exception) {
-            throw new RuntimeException(" (" + tr.getLine() + ", " + tr.getColumn() + ") " + exception.getMessage());
+            ops.push(Boolean.valueOf(true));
+        } catch (Exception x) {
+            throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
     

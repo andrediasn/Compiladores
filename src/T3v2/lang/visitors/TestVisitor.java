@@ -47,7 +47,7 @@ public class TestVisitor {
                 inst = f.listFiles();
                 for(File s : inst){
                     pth = s.getPath();
-                    System.out.println("Testando: " + pth + filler(50 -pth.length()));
+                    System.out.println("\nTestando: " + pth + filler(50 -pth.length()));
 					SuperNode node = adp.parseFile(s.getPath());
                     if(node != null){
                         System.out.println("Output: ");

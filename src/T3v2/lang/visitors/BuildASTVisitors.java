@@ -9,10 +9,11 @@ Nome: Guilherme Barbosa
 Matrícula: 201435031
 
 */
-package lang.parser;
+package lang.visitors;
 
 import lang.ast.*;
 import org.antlr.v4.runtime.tree.ParseTree;
+import lang.parser.*;
 
 public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 
@@ -148,20 +149,28 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
         }
         return nodeParam;
 	}
-
-	@Override 
-    public SuperNode visitBrace(langParser.BraceContext ctx) { 
-        return visitChildren(ctx); 
-    }
-	
-	@Override 
-	public SuperNode visitType(langParser.TypeContext ctx) { 
-	 	int line = ctx.getStart().getLine();
+    
+    @Override 
+    public SuperNode visitType(langParser.TypeContext ctx) { 
+         int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
         BType nodeBType = (BType) ctx.btype().accept(this);
         int braces = ctx.brace().size();
         Type nodeType = new Type(line, column, nodeBType, braces);
         return nodeType; 
+    }
+
+	@Override 
+    public SuperNode visitBrace(langParser.BraceContext ctx) { 
+        return visitChildren(ctx); 
+    }
+
+    @Override 
+	public SuperNode visitTyID(langParser.TyIDContext ctx) { 
+		int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+        TyID nodeTyID = new TyID(line,column,ctx.IDTYPE().getText());
+        return nodeTyID; 
 	}
 	
 	@Override 
@@ -195,14 +204,6 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
         int column = ctx.getStart().getCharPositionInLine();
         TyFloat nodeTyFloat = new TyFloat(line,column);
         return nodeTyFloat;
-	}
-
-	@Override 
-	public SuperNode visitTyID(langParser.TyIDContext ctx) { 
-		int line = ctx.getStart().getLine();
-        int column = ctx.getStart().getCharPositionInLine();
-        TyID nodeTyID = new TyID(line,column,ctx.IDTYPE().getText());
-        return nodeTyID; 
 	}
 
 	@Override 
