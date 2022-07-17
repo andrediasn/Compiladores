@@ -18,7 +18,7 @@ public abstract class Visitor
 	  
     public abstract void visit(Program p); 
 		public abstract void visit(Data e);
-    public abstract void visit(AccessData e);  //SelectorData - acesso a elemento de data
+    public abstract void visit(LData e);  //SelectorData - acesso a elemento de data
   	public abstract void visit(Decl e); // informações dos tipo de data
     public abstract void visit(StmtList e); // CmdArray - Lista de comandos
     public abstract void visit(CallCmd e);

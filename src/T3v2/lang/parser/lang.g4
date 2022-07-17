@@ -98,7 +98,7 @@ pexp: var 																		#vars
 /* var */	
 var: (ID|IDTYPE) 							#varIds
 	| var LEFTBRACE exp RIGHTBRACE 			#lExp
-	| var DOT (ID|IDTYPE) 					#accessData
+	| var DOT (ID|IDTYPE) 					#lData
 	;
 																									
 /* Lexic Rules */

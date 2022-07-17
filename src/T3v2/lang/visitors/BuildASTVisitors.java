@@ -599,16 +599,16 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitAccessData(langParser.AccessDataContext e) { 
+	public SuperNode visitLData(langParser.LDataContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Var nodeAccessData = (Var) e.var().accept(this);
+        Var nodeLData = (Var) e.var().accept(this);
         if (e.ID().getText() != null) {
-            nodeAccessData.add(new AccessData(line, column, e.ID().getText()));
+            nodeLData.add(new LData(line, column, e.ID().getText()));
         } else {
-            nodeAccessData.add(new AccessData(line, column, e.IDTYPE().getText()));
+            nodeLData.add(new LData(line, column, e.IDTYPE().getText()));
         }
-        return nodeAccessData; 
+        return nodeLData; 
 	}
 
 	@Override 
