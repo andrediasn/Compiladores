@@ -16,13 +16,13 @@ import lang.visitors.Visitor;
 public class Attr extends Cmd{
 
   private int line, column;
-  private Var var;
+  private LValue lvalue;
   private Exp expression;
 
-  public Attr(int line, int column, Var var, Exp expression)	{
+  public Attr(int line, int column, LValue lvalue, Exp expression)	{
     this.line = line;
     this.column = column;
-    this.var = var;
+    this.lvalue = lvalue;
     this.expression = expression;
   }
 
@@ -34,8 +34,8 @@ public class Attr extends Cmd{
     return column;
   }
 
-  public Var getValue() {
-    return var;
+  public LValue getValue() {
+    return lvalue;
   }
 
   public Exp getExpression() {

@@ -79,16 +79,16 @@ public class InterpretVisitor extends Visitor{
 
 	public void visit(Attr e) {
         try {
-            Var var = e.getValue();
+            LValue lvalue = e.getValue();
             e.getExpression().accept(this);
             Object val = operands.pop();
             Object obj = null;
 
-            if (env.peek().containsKey(var.getId())) {
-                obj = env.peek().get(var.getId());
+            if (env.peek().containsKey(lvalue.getId())) {
+                obj = env.peek().get(lvalue.getId());
             }
 
-            ArrayList<Selector> selectors = var.getSelectors();
+            ArrayList<Selector> selectors = lvalue.getSelectors();
 
             if (!selectors.isEmpty()) {
                 for (int k = 0; k < selectors.size() - 1; k++) {
@@ -109,7 +109,7 @@ public class InterpretVisitor extends Visitor{
                     ((ArrayList) obj).set((Integer) select, val);
                 }
             } else {
-                env.peek().put(var.getId(), val);
+                env.peek().put(lvalue.getId(), val);
             }
 
         } catch (Exception x) {
@@ -126,13 +126,13 @@ public class InterpretVisitor extends Visitor{
                 }
                 f.accept(this);
                 if (e.getReturnable() != null) {
-                    Var[] s = e.getReturnable();
+                    LValue[] s = e.getReturnable();
 
                     for (int i = 0; i < s.length; i++) {
                         Object val = returns.get(i);
-                        Var var = s[i];
-                        Object obj = env.peek().get(var.getId());
-                        ArrayList<Selector> selectors = var.getSelectors();
+                        LValue lvalue = s[i];
+                        Object obj = env.peek().get(lvalue.getId());
+                        ArrayList<Selector> selectors = lvalue.getSelectors();
 
                         if (!selectors.isEmpty()) {
                             for (int k = 0; k < selectors.size() - 1; k++) {
@@ -152,7 +152,7 @@ public class InterpretVisitor extends Visitor{
                                 ((ArrayList) obj).set((Integer) select, val);
                             }
                         } else {
-                            env.peek().put(var.getId(), val);
+                            env.peek().put(lvalue.getId(), val);
                         }
                     }
                 }
@@ -363,7 +363,7 @@ public class InterpretVisitor extends Visitor{
         }
     }
     
-    public void visit(Var e) {
+    public void visit(LValue e) {
         try {
             if (env.peek().containsKey(e.getId())) {
                 Object obj = env.peek().get(e.getId());
@@ -605,21 +605,21 @@ public class InterpretVisitor extends Visitor{
         try {
             Scanner scan = new Scanner(System.in);
             Object Input = scan.nextLine();
-            Var var = e.getValue();
-            if (!var.getSelectors().isEmpty()) {
-                Object obj = (Object) env.peek().get(var.getId());
-                for (int k = 0; k < var.getSelectors().size() - 1; k++) {
-                    var.getSelectors().get(k).accept(this);
+            LValue lvalue = e.getValue();
+            if (!lvalue.getSelectors().isEmpty()) {
+                Object obj = (Object) env.peek().get(lvalue.getId());
+                for (int k = 0; k < lvalue.getSelectors().size() - 1; k++) {
+                    lvalue.getSelectors().get(k).accept(this);
                     Object s = operands.pop();
-                    if (var.getSelectors().get(k) instanceof LData) {
+                    if (lvalue.getSelectors().get(k) instanceof LData) {
                         obj = ((HashMap<String, Object>) obj).get(s);
                     } else {
                         obj = ((ArrayList) obj).get((Integer) s);
                     }
                 }
-                var.getSelectors().get(var.getSelectors().size() - 1).accept(this);
+                lvalue.getSelectors().get(lvalue.getSelectors().size() - 1).accept(this);
                 Object s = operands.pop();
-                if (var.getSelectors().get(var.getSelectors().size() - 1) instanceof LData) {
+                if (lvalue.getSelectors().get(lvalue.getSelectors().size() - 1) instanceof LData) {
                     ((HashMap<String, Object>) obj).put((String) s, Input);
                 } else {
                     ((ArrayList) obj).set((Integer) s, Input);

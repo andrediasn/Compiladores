@@ -17,13 +17,13 @@ public class CallCmd extends Cmd {
 
   private int line, column;
   private String name;
-  private Exp[] expressions;
-  private Var[] returnable;
+  private Exp[] exps;
+  private LValue[] ret;
 
-  public CallCmd(int line, int column, String name, Exp[] expressions, Var[] returnable)	{
+  public CallCmd(int line, int column, String name, Exp[] exps, LValue[] ret)	{
     this.name = name;
-    this.expressions = expressions;
-    this.returnable = returnable;
+    this.exps = exps;
+    this.ret = ret;
     this.line = line;
     this.column = column;
   }
@@ -41,11 +41,11 @@ public class CallCmd extends Cmd {
   }
 
   public Exp[] getExpressions() {
-    return expressions;
+    return exps;
   }
 
-  public Var[] getReturnable() {
-    return returnable;
+  public LValue[] getReturnable() {
+    return ret;
   }
 
   public void accept(Visitor v) {

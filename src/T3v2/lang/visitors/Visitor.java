@@ -31,7 +31,7 @@ public abstract class Visitor
     public abstract void visit(Read e);
     public abstract void visit(Return e);
 
-    public abstract void visit(Var e); // lvalue -  armazenar ID e seus seletores
+    public abstract void visit(LValue e);
     public abstract void visit(Int e);
     public abstract void visit(FloatV e);
     public abstract void visit(Caracter e);

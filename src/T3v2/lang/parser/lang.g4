@@ -53,11 +53,11 @@ cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET				#stmtList
 	| IF LEFTPARENT exp RIGHTPARENT cmd 			#if
 	| IF LEFTPARENT exp RIGHTPARENT cmd ELSE cmd 	#ifElse										
 	| ITERATE LEFTPARENT exp RIGHTPARENT cmd		#iterate
-	| READ var SEMICOLON							#read
+	| READ lvalue SEMICOLON							#read
 	| PRINT exp SEMICOLON 							#print
 	| RETURN exp ( COMMA exp )* SEMICOLON 			#return
-	| var ATTR exp SEMICOLON 						#attr
-	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LESS var ( COMMA var )* GREATER)? SEMICOLON		#callCMD
+	| lvalue ATTR exp SEMICOLON 						#attr
+	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LESS lvalue ( COMMA lvalue )* GREATER)? SEMICOLON		#callCMD
 	;
 
 /* exp */	
@@ -89,16 +89,16 @@ sexp: NOT sexp			#not
 	| CARACTER			#caracter
 	| pexp				#pex																																													
 	;																																																
-pexp: var 																		#vars																								
+pexp: lvalue 																	#lValues																						
 	| LEFTPARENT exp RIGHTPARENT 												#expression
 	| NEW type (LEFTBRACE exp RIGHTBRACE)? 										#new
 	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT LEFTBRACE exp RIGHTBRACE 		#callExp
 	;
 
-/* var */	
-var: (ID|IDTYPE) 							#varIds
-	| var LEFTBRACE exp RIGHTBRACE 			#lExp
-	| var DOT (ID|IDTYPE) 					#lData
+/* lvalue */	
+lvalue: (ID|IDTYPE) 							#lValueIDs
+	| lvalue LEFTBRACE exp RIGHTBRACE 			#lExp
+	| lvalue DOT (ID|IDTYPE) 					#lData
 	;
 																									
 /* Lexic Rules */

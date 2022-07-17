@@ -260,8 +260,8 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitRead(langParser.ReadContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Var var = (Var) e.var().accept(this);
-        Read nodeRead = new Read(line, column, var);
+        LValue lvalue = (LValue) e.lvalue().accept(this);
+        Read nodeRead = new Read(line, column, lvalue);
         return nodeRead;
 	}
 	
@@ -297,9 +297,9 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitAttr(langParser.AttrContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Var var = (Var) e.var().accept(this);
+        LValue lvalue = (LValue) e.lvalue().accept(this);
         Exp expression = (Exp) e.exp().accept(this);
-        Attr nodeAttr = new Attr(line, column, var, expression);
+        Attr nodeAttr = new Attr(line, column, lvalue, expression);
         return nodeAttr;
 	}
 
@@ -309,7 +309,7 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
         Exp[] expressions = null;
-        Var[] vars = null;
+        LValue[] lvalues = null;
         SuperNode result = this.defaultResult();
         if(e.exps()!= null) {
             int n = e.exps().exp().size();
@@ -323,24 +323,24 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
             }
         }
         result = this.defaultResult();
-        if(e.var() != null) {
-            int n = e.var().size();
+        if(e.lvalue() != null) {
+            int n = e.lvalue().size();
             if (n != 0) {
-                vars = new Var[n];
+                lvalues = new LValue[n];
                 for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
-                    ParseTree c = e.var(i);
+                    ParseTree c = e.lvalue(i);
                     SuperNode childResult = c.accept(this);
-                    vars[i] = (Var) this.aggregateResult(result, childResult);
+                    lvalues[i] = (LValue) this.aggregateResult(result, childResult);
                 }
             }
         }
         
         CallCmd nodeCall = null;
         if (e.ID().getText() != null) {
-            nodeCall = new CallCmd(line,column,e.ID().getText(), expressions, vars);
+            nodeCall = new CallCmd(line,column,e.ID().getText(), expressions, lvalues);
         }
         else {
-            nodeCall = new CallCmd(line,column,e.IDTYPE().getText(), expressions, vars);
+            nodeCall = new CallCmd(line,column,e.IDTYPE().getText(), expressions, lvalues);
         }
         return nodeCall;
 	}
@@ -534,7 +534,7 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
         return visitChildren(e); 
     }
 
-	@Override public SuperNode visitVars(langParser.VarsContext e) { 
+	@Override public SuperNode visitLValues(langParser.LValuesContext e) { 
         return visitChildren(e);
     }
 	
@@ -586,23 +586,23 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitVarIds(langParser.VarIdsContext e) { 
+	public SuperNode visitLValueIDs(langParser.LValueIDsContext e) { 
         int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Var nodeVar = null;
+        LValue nodeLValue = null;
         if (e.ID().getText() != null) {
-            nodeVar = new Var(line, column, e.ID().getText());
+            nodeLValue = new LValue(line, column, e.ID().getText());
         } else {
-            nodeVar = new Var(line, column, e.IDTYPE().getText());
+            nodeLValue = new LValue(line, column, e.IDTYPE().getText());
         }
-        return nodeVar; 
+        return nodeLValue; 
 	}
 
 	@Override 
 	public SuperNode visitLData(langParser.LDataContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Var nodeLData = (Var) e.var().accept(this);
+        LValue nodeLData = (LValue) e.lvalue().accept(this);
         if (e.ID().getText() != null) {
             nodeLData.add(new LData(line, column, e.ID().getText()));
         } else {
@@ -615,7 +615,7 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitLExp(langParser.LExpContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Var nodeLExp = (Var) e.var().accept(this);
+        LValue nodeLExp = (LValue) e.lvalue().accept(this);
         Exp expression = (Exp) e.exp().accept(this);
         nodeLExp.add(new LExp(line, column, expression));
         return nodeLExp; 
