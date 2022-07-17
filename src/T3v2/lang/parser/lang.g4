@@ -28,8 +28,8 @@ grammar lang;
 program: ( data )* ( func )+;			
 
 /* data */																				
-data: DATA IDTYPE LEFTBRACKET ( tdata )+ RIGHTBRACKET; 																		
-tdata: (ID|IDTYPE) DOUBLECOLON type SEMICOLON; 		
+data: DATA IDTYPE LEFTBRACKET ( decl )+ RIGHTBRACKET; 																		
+decl: (ID|IDTYPE) DOUBLECOLON type SEMICOLON; 		
 
 /* func */
 func: (ID|IDTYPE) LEFTPARENT (params)? RIGHTPARENT (COLON type (COMMA type)*)? LEFTBRACKET ( cmd )* RIGHTBRACKET; 			

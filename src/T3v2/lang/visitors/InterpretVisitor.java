@@ -60,6 +60,9 @@ public class InterpretVisitor extends Visitor{
 
     public void visit(Data e) { }
 
+    @Override
+    public void visit(Decl e) { }
+
     public void visit(LData e) {
         try {
             operands.push(e.getIndex());
@@ -67,9 +70,6 @@ public class InterpretVisitor extends Visitor{
             throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
     }
-
-    @Override
-    public void visit(TData e) { }
 
     public void visit(StmtList e) {
         if (retMode) {
@@ -340,7 +340,7 @@ public class InterpretVisitor extends Visitor{
                 TyID tyId = (TyID) bType;
                 a = new HashMap<>();
                 Data data = types.get(tyId.getIdType());
-                for (TData declaration : data.getTypes()) {
+                for (Decl declaration : data.getTypes()) {
                     a.put(declaration.getId(), null);
                 }
             }

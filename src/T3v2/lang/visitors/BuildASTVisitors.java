@@ -38,22 +38,22 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 
 	@Override 
 	public SuperNode visitData(langParser.DataContext e) { 
-        TData[] tdata = null;
-        if (e.tdata().size() != 0) {
-            tdata = new TData[e.tdata().size()];
-            for(int i = 0; i < e.tdata().size() && this.shouldVisitNextChild(e, this.defaultResult()); ++i) {
-                tdata[i] = (TData) this.aggregateResult(this.defaultResult(), e.tdata(i).accept(this));
+        Decl[] decl = null;
+        if (e.decl().size() != 0) {
+            decl = new Decl[e.decl().size()];
+            for(int i = 0; i < e.decl().size() && this.shouldVisitNextChild(e, this.defaultResult()); ++i) {
+                decl[i] = (Decl) this.aggregateResult(this.defaultResult(), e.decl(i).accept(this));
             }
         }
-        return new Data(e.getStart().getLine(),e.getStart().getCharPositionInLine(), e.IDTYPE().getText(), tdata);
+        return new Data(e.getStart().getLine(),e.getStart().getCharPositionInLine(), e.IDTYPE().getText(), decl);
 	}
 
 	@Override 
-	public SuperNode visitTdata(langParser.TdataContext e) { 
+	public SuperNode visitDecl(langParser.DeclContext e) { 
         if (e.ID().getText() != null) {
-            return new TData(e.getStart().getLine(), e.getStart().getCharPositionInLine(),e.ID().getText(), (Type) e.type().accept(this));
+            return new Decl(e.getStart().getLine(), e.getStart().getCharPositionInLine(),e.ID().getText(), (Type) e.type().accept(this));
         }
-        return new TData(e.getStart().getLine(),e.getStart().getCharPositionInLine(),e.IDTYPE().getText(), (Type) e.type().accept(this));
+        return new Decl(e.getStart().getLine(),e.getStart().getCharPositionInLine(),e.IDTYPE().getText(), (Type) e.type().accept(this));
 	}
     
 	@Override 

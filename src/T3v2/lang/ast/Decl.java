@@ -13,13 +13,13 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class TData extends SuperNode {
+public class Decl extends SuperNode {
 
 	private int line, column;
   private String id;
   private Type t;
 
-  public TData(int line, int column, String id, Type t) {
+  public Decl(int line, int column, String id, Type t) {
     this.line = line;
     this.column = column;
     this.id = id;
