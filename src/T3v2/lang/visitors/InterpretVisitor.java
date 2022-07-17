@@ -62,7 +62,7 @@ public class InterpretVisitor extends Visitor{
     public void visit(Data e) { }
 
     @Override
-    public void visit(Decl e) { }
+    public void visit(TData e) { }
 
     public void visit(And e) {
         try {
@@ -497,8 +497,8 @@ public class InterpretVisitor extends Visitor{
                 TyID tyId = (TyID) bType;
                 a = new HashMap<>();
                 Data data = types.get(tyId.getIdType());
-                for (Decl decl : data.getTypes()) {
-                    a.put(decl.getId(), null);
+                for (TData declaration : data.getTypes()) {
+                    a.put(declaration.getId(), null);
                 }
             }
             if (e.getExpression() != null) {

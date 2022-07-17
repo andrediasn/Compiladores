@@ -19,7 +19,7 @@ public abstract class Visitor
     public abstract void visit(Program p); 
 		public abstract void visit(Data e);
     public abstract void visit(LData e);  //SelectorData - acesso a elemento de data
-  	public abstract void visit(Decl e); // informações dos tipo de data
+  	public abstract void visit(TData e); // informações dos tipo de data
     public abstract void visit(StmtList e); // CmdArray - Lista de comandos
     public abstract void visit(CallCmd e);
     public abstract void visit(CallExp e);
@@ -46,7 +46,7 @@ public abstract class Visitor
     public abstract void visit(Minus e);
     
     public abstract void visit(And e);
-    public abstract void visit(SMinus e); // Neg - Negações
+    public abstract void visit(SMinus e); // Neg - menos unário
     public abstract void visit(Neq e);
 		public abstract void visit(Not e);
     public abstract void visit(Eq e);

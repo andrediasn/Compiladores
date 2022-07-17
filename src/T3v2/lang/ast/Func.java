@@ -55,7 +55,6 @@ public class Func extends SuperNode {
     return body;
   }
 
-
   public void accept(Visitor v) {
     v.visit(this);
   }

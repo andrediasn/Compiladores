@@ -52,15 +52,15 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	public SuperNode visitData(langParser.DataContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Decl[] declaration = null;
+        TData[] declaration = null;
         SuperNode result = this.defaultResult();
-        int n = e.decl().size();
+        int n = e.tdata().size();
         if (n != 0) {
-            declaration = new Decl[n];
+            declaration = new TData[n];
             for(int i = 0; i < n && this.shouldVisitNextChild(e, result); ++i) {
-                ParseTree c = e.decl(i);
+                ParseTree c = e.tdata(i);
                 SuperNode childResult = c.accept(this);
-                declaration[i] = (Decl) this.aggregateResult(result, childResult);
+                declaration[i] = (TData) this.aggregateResult(result, childResult);
             }
         }
         Data nodeData = new Data(line,column, e.IDTYPE().getText(), declaration);
@@ -69,17 +69,17 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 
 
 	@Override 
-	public SuperNode visitDecl(langParser.DeclContext e)  { 
+	public SuperNode visitTdata(langParser.TdataContext e)  { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
         Type type = (Type) e.type().accept(this);
-        Decl nodeDecl = null;
+        TData nodeTData = null;
         if (e.ID().getText() != null) {
-            nodeDecl = new Decl(line, column,e.ID().getText(), type);
+            nodeTData = new TData(line, column,e.ID().getText(), type);
         } else {
-            nodeDecl = new Decl(line,column,e.IDTYPE().getText(), type);
+            nodeTData = new TData(line,column,e.IDTYPE().getText(), type);
         }
-        return nodeDecl; 
+        return nodeTData; 
 	}
 
 

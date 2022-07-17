@@ -17,9 +17,9 @@ public class Data extends SuperNode
 {
   private int line, column;
   private String id;
-  private Decl[] types;
+  private TData[] types;
 
-  public Data(int line, int column, String id, Decl[] types) {
+  public Data(int line, int column, String id, TData[] types) {
     this.line = line;
     this.column = column;
     this.id = id;
@@ -38,7 +38,7 @@ public class Data extends SuperNode
     return id;
   }
 
-  public Decl[] getTypes() {
+  public TData[] getTypes() {
     return types;
   }
 

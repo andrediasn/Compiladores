@@ -13,17 +13,17 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class Decl extends SuperNode {
+public class TData extends SuperNode {
 
 	private int line, column;
   private String id;
   private Type type;
 
-  public Decl(int line, int column, String id, Type type) {
-    this.id = id;
-    this.type = type;
+  public TData(int line, int column, String id, Type type) {
     this.line = line;
     this.column = column;
+    this.id = id;
+    this.type = type;
   }
 
   public int getLine() {

@@ -28,8 +28,8 @@ grammar lang;
 program: ( data )* ( func )+;			
 
 /* data */																				
-data: DATA IDTYPE LEFTBRACKET ( decl )+ RIGHTBRACKET; 																		
-decl: (ID|IDTYPE) DOUBLECOLON type SEMICOLON; 		
+data: DATA IDTYPE LEFTBRACKET ( tdata )+ RIGHTBRACKET; 																		
+tdata: (ID|IDTYPE) DOUBLECOLON type SEMICOLON; 		
 
 /* func */
 func: (ID|IDTYPE) LEFTPARENT (params)? RIGHTPARENT (COLON type (COMMA type)*)? LEFTBRACKET ( cmd )* RIGHTBRACKET; 			
@@ -57,7 +57,7 @@ cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET				#stmtList
 	| PRINT exp SEMICOLON 							#print
 	| RETURN exp ( COMMA exp )* SEMICOLON 			#return
 	| lvalue ATTR exp SEMICOLON 						#attr
-	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LESS lvalue ( COMMA lvalue )* GREATER)? SEMICOLON		#callCMD
+	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LT lvalue ( COMMA lvalue )* GT)? SEMICOLON		#callCMD
 	;
 
 /* exp */	
@@ -65,7 +65,7 @@ exps: exp ( COMMA exp )*;
 exp: exp AND exp		#and
 	| rexp				#rex
 	;
-rexp: aexp LESS aexp 	#less
+rexp: aexp LT aexp 		#less
 	| rexp EQ aexp		#eq
 	| rexp NEQ aexp		#neq
 	| aexp 				#aex
@@ -123,8 +123,8 @@ LEFTBRACE: 		'[';
 RIGHTBRACE: 	']';
 LEFTBRACKET: 	'{';
 RIGHTBRACKET: 	'}';
-GREATER: 		'>';
-LESS: 			'<';
+GT: 		'>';
+LT: 			'<';
 DOT: 			'.';
 COMMA: 			',';
 COLON: 			':';
