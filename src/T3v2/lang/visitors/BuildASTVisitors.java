@@ -612,13 +612,13 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitAccessArray(langParser.AccessArrayContext e) { 
+	public SuperNode visitLExp(langParser.LExpContext e) { 
 		int line = e.getStart().getLine();
         int column = e.getStart().getCharPositionInLine();
-        Var nodeAccessArray = (Var) e.var().accept(this);
+        Var nodeLExp = (Var) e.var().accept(this);
         Exp expression = (Exp) e.exp().accept(this);
-        nodeAccessArray.add(new AccessArray(line, column, expression));
-        return nodeAccessArray; 
+        nodeLExp.add(new LExp(line, column, expression));
+        return nodeLExp; 
 	}
 
 	@Override public SuperNode visitExps(langParser.ExpsContext e) { return visitChildren(e); }

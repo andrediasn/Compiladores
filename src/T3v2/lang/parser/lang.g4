@@ -56,7 +56,7 @@ cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET				#stmtList
 	| READ var SEMICOLON							#read
 	| PRINT exp SEMICOLON 							#print
 	| RETURN exp ( COMMA exp )* SEMICOLON 			#return
-	| var ATTR exp SEMICOLON 					#attr
+	| var ATTR exp SEMICOLON 						#attr
 	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LESS var ( COMMA var )* GREATER)? SEMICOLON		#callCMD
 	;
 
@@ -89,7 +89,7 @@ sexp: NOT sexp			#not
 	| CARACTER			#caracter
 	| pexp				#pex																																													
 	;																																																
-pexp: var 																	#vars																								
+pexp: var 																		#vars																								
 	| LEFTPARENT exp RIGHTPARENT 												#expression
 	| NEW type (LEFTBRACE exp RIGHTBRACE)? 										#new
 	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT LEFTBRACE exp RIGHTBRACE 		#callExp
@@ -97,12 +97,10 @@ pexp: var 																	#vars
 
 /* var */	
 var: (ID|IDTYPE) 							#varIds
-	| var LEFTBRACE exp RIGHTBRACE 			#accessArray
+	| var LEFTBRACE exp RIGHTBRACE 			#lExp
 	| var DOT (ID|IDTYPE) 					#accessData
 	;
 																									
-
-
 /* Lexic Rules */
 DATA: 			'data'; 
 TYPEINT: 		'Int';
@@ -112,6 +110,13 @@ TYPEBOOL: 		'Bool';
 TRUE: 			'true';
 FALSE: 			'false';
 NULL: 			'null';
+IF: 			'if';
+ELSE: 			'else';
+ITERATE: 		'iterate';
+READ: 			'read';
+PRINT: 			'print';
+RETURN: 		'return';
+NEW: 			'new';
 LEFTPARENT: 	'(';
 RIGHTPARENT:	')';
 LEFTBRACE: 		'[';
@@ -135,21 +140,12 @@ DIV: 			'/';
 MOD: 			'%';
 AND: 			'&&';
 NOT: 			'!';
-IF: 			'if';
-ELSE: 			'else';
-ITERATE: 		'iterate';
-READ: 			'read';
-PRINT: 			'print';
-RETURN: 		'return';
-NEW: 			'new';
+ID: 			[a-z] [a-zA-Z0-9_]* ;
+IDTYPE: 		[A-Z] [a-zA-Z0-9_]* ;
 INT: 			('0'..'9')+;
 FLOAT: 			('0'..'9')* '.'('0'..'9')+;
 CARACTER: 		'\'' ( ~[\\'] | '\\n' | '\\t' | '\\b' | '\\r' | '\\\\' | '\\\'' ) '\'' ;
-
 ENDLINE: 	        '\r'? '\n' -> skip;
 EMPTY: 		        [ \t]+ -> skip;
 LINECOMMENT:     	'--' ~[\r\n]* -> channel(HIDDEN);
 MULTLINESCOMMENT:   '{-' .*? '-}' -> channel(HIDDEN);
-
-ID: 			[a-z] [a-zA-Z0-9_]* ;
-IDTYPE: 		[A-Z] [a-zA-Z0-9_]* ;

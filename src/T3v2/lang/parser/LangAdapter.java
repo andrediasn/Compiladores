@@ -32,7 +32,6 @@ public class LangAdapter implements ParseAdaptor {
 				BuildASTVisitors v = new BuildASTVisitors();
 				return result.accept(v);
 			}
-			
 		}	
         catch(IOException e) { 
 			e.printStackTrace();
