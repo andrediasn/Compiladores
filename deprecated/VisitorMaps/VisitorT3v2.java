@@ -21,7 +21,7 @@ public abstract class Visitor
   	public abstract void visit(Decl e);
     public abstract void visit(StmtList e); // CmdArray - Lista de comandos
     public abstract void visit(CallCmd e);
-    public abstract void visit(CallExpr e);
+    public abstract void visit(CallExpr e); //para chamadas de função como expressão;
     public abstract void visit(Attr e); // Assign - Atribuições de variáveis
 		
     public abstract void visit(Func f);

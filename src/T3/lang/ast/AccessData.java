@@ -13,12 +13,12 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class LData extends Selector{
+public class AccessData extends Access{
 
-	private int line,  column;
+	private int line, column;
   private String index;
 
-  public LData(int line, int column, String index){
+  public AccessData(int line, int column, String index){
     this.line = line;
     this.column = column;
     this.index = index;

@@ -63,7 +63,7 @@ public class InterpretVisitor extends Visitor{
     @Override
     public void visit(Decl e) { }
 
-    public void visit(LData e) {
+    public void visit(AccessData e) {
         try {
             operands.push(e.getIndex());
         } catch (Exception x) {
@@ -99,19 +99,19 @@ public class InterpretVisitor extends Visitor{
                     for (int i = 0; i < s.length; i++) {
                         LValue lvalue = s[i];
                         Object obj = env.peek().get(lvalue.getId());
-                        if (!lvalue.getSelectors().isEmpty()) {
-                            for (int k = 0; k < lvalue.getSelectors().size() - 1; k++) {
-                                lvalue.getSelectors().get(k).accept(this);
+                        if (!lvalue.getAccess().isEmpty()) {
+                            for (int k = 0; k < lvalue.getAccess().size() - 1; k++) {
+                                lvalue.getAccess().get(k).accept(this);
                                 Object select = operands.pop();
-                                if (lvalue.getSelectors().get(k) instanceof LData) {
+                                if (lvalue.getAccess().get(k) instanceof AccessData) {
                                     obj = ((HashMap<String, Object>) obj).get(select);
                                 } else {
                                     obj = ((ArrayList) obj).get((Integer) select);
                                 }
                             }
-                            lvalue.getSelectors().get(lvalue.getSelectors().size() - 1).accept(this);
+                            lvalue.getAccess().get(lvalue.getAccess().size() - 1).accept(this);
                             Object select = operands.pop();
-                            if (lvalue.getSelectors().get(lvalue.getSelectors().size() - 1) instanceof LData) {
+                            if (lvalue.getAccess().get(lvalue.getAccess().size() - 1) instanceof AccessData) {
                                 ((HashMap<String, Object>) obj).put((String) select, returns.get(i));
                             } else {
                                 ((ArrayList) obj).set((Integer) select, returns.get(i));
@@ -157,19 +157,19 @@ public class InterpretVisitor extends Visitor{
             if (env.peek().containsKey(lvalue.getId())) {
                 obj = env.peek().get(lvalue.getId());
             }
-            if (!lvalue.getSelectors().isEmpty()) {
-                for (int k = 0; k < lvalue.getSelectors().size() - 1; k++) {
-                    lvalue.getSelectors().get(k).accept(this);
+            if (!lvalue.getAccess().isEmpty()) {
+                for (int k = 0; k < lvalue.getAccess().size() - 1; k++) {
+                    lvalue.getAccess().get(k).accept(this);
                     Object select = operands.pop();
-                    if (lvalue.getSelectors().get(k) instanceof LData) {
+                    if (lvalue.getAccess().get(k) instanceof AccessData) {
                         obj = ((HashMap<String, Object>) obj).get(select);
                     } else {
                         obj = ((ArrayList) obj).get((Integer) select);
                     }
                 }
-                lvalue.getSelectors().get(lvalue.getSelectors().size() - 1).accept(this);
+                lvalue.getAccess().get(lvalue.getAccess().size() - 1).accept(this);
                 Object select = operands.pop();
-                if (lvalue.getSelectors().get(lvalue.getSelectors().size() - 1) instanceof LData) {
+                if (lvalue.getAccess().get(lvalue.getAccess().size() - 1) instanceof AccessData) {
                     ((HashMap<String, Object>) obj).put((String) select, val);
                 } else {
                     ((ArrayList) obj).set((Integer) select, val);
@@ -223,20 +223,20 @@ public class InterpretVisitor extends Visitor{
         try {
             Scanner scan = new Scanner(System.in);
             Object Input = scan.nextLine();
-            if (!e.getValue().getSelectors().isEmpty()) {
+            if (!e.getValue().getAccess().isEmpty()) {
                 Object obj = (Object) env.peek().get(e.getValue().getId());
-                for (int k = 0; k < e.getValue().getSelectors().size() - 1; k++) {
-                    e.getValue().getSelectors().get(k).accept(this);
+                for (int k = 0; k < e.getValue().getAccess().size() - 1; k++) {
+                    e.getValue().getAccess().get(k).accept(this);
                     Object s = operands.pop();
-                    if (e.getValue().getSelectors().get(k) instanceof LData) {
+                    if (e.getValue().getAccess().get(k) instanceof AccessData) {
                         obj = ((HashMap<String, Object>) obj).get(s);
                     } else {
                         obj = ((ArrayList) obj).get((Integer) s);
                     }
                 }
-                e.getValue().getSelectors().get(e.getValue().getSelectors().size() - 1).accept(this);
+                e.getValue().getAccess().get(e.getValue().getAccess().size() - 1).accept(this);
                 Object s = operands.pop();
-                if (e.getValue().getSelectors().get(e.getValue().getSelectors().size() - 1) instanceof LData) {
+                if (e.getValue().getAccess().get(e.getValue().getAccess().size() - 1) instanceof AccessData) {
                     ((HashMap<String, Object>) obj).put((String) s, Input);
                 } else {
                     ((ArrayList) obj).set((Integer) s, Input);
@@ -265,10 +265,10 @@ public class InterpretVisitor extends Visitor{
         try {
             if (env.peek().containsKey(e.getId())) {
                 Object obj = env.peek().get(e.getId());
-                if (e.getSelectors().size() != 0) {
-                    for (Selector lv : e.getSelectors()) {
+                if (e.getAccess().size() != 0) {
+                    for (Access lv : e.getAccess()) {
                         lv.accept(this);
-                        if (lv instanceof LData) {
+                        if (lv instanceof AccessData) {
                             obj = ((HashMap<String, Object>) obj).get((String) operands.pop());
                         } else if (lv instanceof LExpr) {
                             obj = ((ArrayList) obj).get((Integer) operands.pop());

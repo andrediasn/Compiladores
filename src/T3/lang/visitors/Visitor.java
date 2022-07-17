@@ -17,7 +17,7 @@ public abstract class Visitor
 {
     public abstract void visit(Program p); 
 		public abstract void visit(Data e);
-    public abstract void visit(LData e);
+    public abstract void visit(AccessData e);
   	public abstract void visit(Decl e);
     public abstract void visit(StmtList e);
     public abstract void visit(CallCmd e);

@@ -384,12 +384,12 @@ public class LangVisitors extends langBaseVisitor<SuperNode> {
 	}
     
 	@Override 
-	public SuperNode visitLData(langParser.LDataContext e) { 
+	public SuperNode visitAccessData(langParser.AccessDataContext e) { 
         LValue node = (LValue) e.lvalue().accept(this);
         if (e.ID().getText() != null) {
-            node.add(new LData(e.getStart().getLine(), e.getStart().getCharPositionInLine(), e.ID().getText()));
+            node.add(new AccessData(e.getStart().getLine(), e.getStart().getCharPositionInLine(), e.ID().getText()));
         } else {
-            node.add(new LData(e.getStart().getLine(), e.getStart().getCharPositionInLine(), e.IDTYPE().getText()));
+            node.add(new AccessData(e.getStart().getLine(), e.getStart().getCharPositionInLine(), e.IDTYPE().getText()));
         }
         return node; 
 	}

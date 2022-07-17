@@ -13,7 +13,7 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class LExpr extends Selector {
+public class LExpr extends Access {
 
 	private int line, column;
   private Expr index;

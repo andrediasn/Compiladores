@@ -18,13 +18,13 @@ public class LValue extends Expr {
 
   private int line, column;
   private String id;
-  private ArrayList<Selector> s;
+  private ArrayList<Access> s;
 
   public LValue(int line, int column, String id) {
     this.line = line;
     this.column = column;
     this.id = id;
-    this.s = new ArrayList<Selector>();
+    this.s = new ArrayList<Access>();
   }
 
   public int getLine() {
@@ -39,11 +39,11 @@ public class LValue extends Expr {
     return id;
   }
 
-  public ArrayList<Selector> getSelectors() {
+  public ArrayList<Access> getAccess() {
     return s;
   }
 
-  public void add(Selector x) {
+  public void add(Access x) {
     s.add(x);
   }
 

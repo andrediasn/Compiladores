@@ -11,4 +11,4 @@ Matrícula: 201435031
 */
 package lang.ast;
 
-public abstract class Selector extends SuperNode {}
+public abstract class Access extends SuperNode {}
