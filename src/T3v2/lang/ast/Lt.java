@@ -13,9 +13,9 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class Less extends BinOp {
+public class Lt extends BinOp {
 
-  public Less(int line, int column, Expr l, Expr r) {
+  public Lt(int line, int column, Expr l, Expr r) {
     super(line, column, l, r);
   }
 

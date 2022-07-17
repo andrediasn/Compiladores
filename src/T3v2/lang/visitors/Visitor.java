@@ -15,17 +15,16 @@ import lang.ast.*;
 
 public abstract class Visitor
 {
-	  
     public abstract void visit(Program p); 
 		public abstract void visit(Data e);
     public abstract void visit(LData e);  //SelectorData - acesso a elemento de data
-  	public abstract void visit(Decl e); // informações dos tipo de data
+  	public abstract void visit(Decl e);
     public abstract void visit(StmtList e); // CmdArray - Lista de comandos
     public abstract void visit(CallCmd e);
     public abstract void visit(CallExpr e);
     public abstract void visit(Attr e); // Assign - Atribuições de variáveis
 		
-    public abstract void visit(Func f); // Definição de funções
+    public abstract void visit(Func f);
     public abstract void visit(Param e);
 	  public abstract void visit(Print e);
     public abstract void visit(Read e);
@@ -50,7 +49,7 @@ public abstract class Visitor
     public abstract void visit(Neq e);
     public abstract void visit(And e);
     public abstract void visit(Eq e);
-    public abstract void visit(Less e);
+    public abstract void visit(Lt e);
     
 		public abstract void visit(If e);
     public abstract void visit(False e);

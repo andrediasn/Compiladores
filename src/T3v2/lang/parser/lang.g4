@@ -64,7 +64,7 @@ cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET				#stmtList
 exp: exp AND exp		#and
 	| rexp				#rExpr
 	;
-rexp: aexp LT aexp 		#less
+rexp: aexp LT aexp 		#lt
 	| rexp EQ aexp		#eq
 	| rexp NEQ aexp		#neq
 	| aexp 				#aExpr

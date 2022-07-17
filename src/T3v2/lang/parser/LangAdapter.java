@@ -17,7 +17,7 @@ import java.io.IOException;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 import lang.ast.*;
-import lang.visitors.BuildASTVisitors;
+import lang.visitors.LangVisitors;
 
 public class LangAdapter implements ParseAdaptor {
 	public SuperNode parseFile(String path) {
@@ -27,9 +27,8 @@ public class LangAdapter implements ParseAdaptor {
 			CommonTokenStream tokenStream = new CommonTokenStream(lexer) ;
 			langParser parser = new langParser(tokenStream);
 			ParseTree result = parser.program();	
-
 			if( parser.getNumberOfSyntaxErrors() == 0 ) {
-				BuildASTVisitors v = new BuildASTVisitors();
+				LangVisitors v = new LangVisitors();
 				return result.accept(v);
 			}
 		}	

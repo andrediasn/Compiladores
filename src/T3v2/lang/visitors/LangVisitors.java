@@ -15,7 +15,7 @@ import lang.ast.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import lang.parser.*;
 
-public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
+public class LangVisitors extends langBaseVisitor<SuperNode> {
 
     @Override 
 	public SuperNode visitProgram(langParser.ProgramContext e) {
@@ -246,8 +246,8 @@ public class BuildASTVisitors extends langBaseVisitor<SuperNode> {
     }
 	
 	@Override 
-	public SuperNode visitLess(langParser.LessContext e) { 
-        return new Less(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.aexp(0).accept(this), (Expr) e.aexp(1).accept(this));
+	public SuperNode visitLt(langParser.LtContext e) { 
+        return new Lt(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.aexp(0).accept(this), (Expr) e.aexp(1).accept(this));
 	}
 
 	@Override 

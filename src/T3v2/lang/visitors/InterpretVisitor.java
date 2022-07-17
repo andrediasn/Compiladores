@@ -569,7 +569,7 @@ public class InterpretVisitor extends Visitor{
         }
     }
     
-	public void visit(Less e) {
+	public void visit(Lt e) {
         try {
             e.getLeft().accept(this);
             e.getRight().accept(this);
