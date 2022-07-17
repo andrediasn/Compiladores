@@ -13,7 +13,7 @@ Matrícula: 201435031
 package lang.visitors;
 
 import java.io.*;
-import lang.ast.*;
+import lang.ast.SuperNode;
 import lang.parser.*;
 import java.util.List;
 

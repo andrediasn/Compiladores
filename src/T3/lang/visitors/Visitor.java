@@ -36,7 +36,7 @@ public abstract class Visitor
     public abstract void visit(Char e);
     public abstract void visit(Iterate e);
     public abstract void visit(New e);
-    public abstract void visit(LExpr e);
+    public abstract void visit(Array e);
     
     public abstract void visit(CModule e);
     public abstract void visit(Div e);

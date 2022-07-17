@@ -97,7 +97,7 @@ exps: exp ( COMMA exp )*;
 
 /* lvalue */	
 lvalue: (ID|IDTYPE) 							#lValueIDs
-	| lvalue LEFTBRACE exp RIGHTBRACE 			#lExpr
+	| lvalue LEFTBRACE exp RIGHTBRACE 			#array
 	| lvalue DOT (ID|IDTYPE) 					#accessData
 	;
 																									

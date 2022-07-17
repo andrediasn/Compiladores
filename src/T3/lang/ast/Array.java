@@ -13,12 +13,12 @@ package lang.ast;
 
 import lang.visitors.Visitor;
 
-public class LExpr extends Access {
+public class Array extends Access {
 
 	private int line, column;
   private Expr index;
 
-  public LExpr(int line, int column, Expr index) {
+  public Array(int line, int column, Expr index) {
     this.line = line;
     this.column = column;
     this.index = index;

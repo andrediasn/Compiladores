@@ -377,9 +377,9 @@ public class LangVisitors extends langBaseVisitor<SuperNode> {
 	}
 
 	@Override 
-	public SuperNode visitLExpr(langParser.LExprContext e) { 
+	public SuperNode visitArray(langParser.ArrayContext e) { 
         LValue node = (LValue) e.lvalue().accept(this);
-        node.add(new LExpr(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.exp().accept(this)));
+        node.add(new Array(e.getStart().getLine(), e.getStart().getCharPositionInLine(), (Expr) e.exp().accept(this)));
         return node; 
 	}
     

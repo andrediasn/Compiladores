@@ -270,7 +270,7 @@ public class InterpretVisitor extends Visitor{
                         lv.accept(this);
                         if (lv instanceof AccessData) {
                             obj = ((HashMap<String, Object>) obj).get((String) operands.pop());
-                        } else if (lv instanceof LExpr) {
+                        } else if (lv instanceof Array) {
                             obj = ((ArrayList) obj).get((Integer) operands.pop());
                         }
                     }
@@ -393,7 +393,7 @@ public class InterpretVisitor extends Visitor{
         }
     }
 
-    public void visit(LExpr e) {
+    public void visit(Array e) {
         try {
             e.getIndex().accept(this);
         } catch (Exception x) {
