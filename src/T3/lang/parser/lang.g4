@@ -25,14 +25,14 @@ grammar lang;
 /* Gramatic Rules */
 
 /* start */
-program: ( data )* ( func )+;			
+program: (data)* (func)+;			
 
 /* data */																				
-data: DATA IDTYPE LEFTBRACKET ( decl )+ RIGHTBRACKET; 																		
+data: DATA IDTYPE LEFTBRACKET (decl)+ RIGHTBRACKET; 																		
 decl: (ID|IDTYPE) DOUBLECOLON type SEMICOLON; 		
 
 /* func */
-func: (ID|IDTYPE) LEFTPARENT (params)? RIGHTPARENT (COLON type (COMMA type)*)? LEFTBRACKET ( cmd )* RIGHTBRACKET; 			
+func: (ID|IDTYPE) LEFTPARENT (params)? RIGHTPARENT (COLON type (COMMA type)*)? LEFTBRACKET (cmd)* RIGHTBRACKET; 			
 params: param (COMMA param)*; 
 param: (ID|IDTYPE) DOUBLECOLON type;	
 
@@ -49,15 +49,15 @@ btype: TYPEINT 		#tyInt
 	;
 
 /* cmd */
-cmd: LEFTBRACKET ( cmd )* RIGHTBRACKET				#stmtList
+cmd: LEFTBRACKET (cmd)* RIGHTBRACKET				#stmtList
 	| IF LEFTPARENT exp RIGHTPARENT cmd 			#if
 	| IF LEFTPARENT exp RIGHTPARENT cmd ELSE cmd 	#ifElse										
 	| ITERATE LEFTPARENT exp RIGHTPARENT cmd		#iterate
 	| READ lvalue SEMICOLON							#read
 	| PRINT exp SEMICOLON 							#print
-	| RETURN exp ( COMMA exp )* SEMICOLON 			#return
+	| RETURN exp (COMMA exp)* SEMICOLON 			#return
 	| lvalue ATTR exp SEMICOLON 					#attr
-	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LT lvalue ( COMMA lvalue )* GT)? SEMICOLON		#callCmd
+	| (ID|IDTYPE) LEFTPARENT (exps)? RIGHTPARENT (LT lvalue (COMMA lvalue)* GT)? SEMICOLON		#callCmd
 	;
 
 /* exp */	
@@ -140,11 +140,11 @@ DIV: 			'/';
 MOD: 			'%';
 AND: 			'&&';
 NOT: 			'!';
-ID: 			[a-z] [a-zA-Z0-9_]* ;
-IDTYPE: 		[A-Z] [a-zA-Z0-9_]* ;
+ID: 			[a-z] [a-zA-Z0-9_]*;
+IDTYPE: 		[A-Z] [a-zA-Z0-9_]*;
 INT: 			('0'..'9')+;
 FLOAT: 			('0'..'9')* '.'('0'..'9')+;
-CHAR: 			'\'' ( ~[\\'] | '\\n' | '\\t' | '\\b' | '\\r' | '\\\\' | '\\\'' ) '\'' ;
+CHAR: 			'\'' ( ~[\\'] | '\\n' | '\\t' | '\\b' | '\\r' | '\\\\' | '\\\'' ) '\'';
 ENDLINE: 	        '\r'? '\n' -> skip;
 EMPTY: 		        [ \t]+ -> skip;
 LINECOMMENT:     	'--' ~[\r\n]* -> channel(HIDDEN);

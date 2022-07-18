@@ -35,7 +35,6 @@ public class StmtList extends Cmd{
 	  return c; 
 	}
 
-
   public void accept(Visitor v) {
 		v.visit(this); 
 	}
