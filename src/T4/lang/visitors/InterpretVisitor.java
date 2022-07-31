@@ -31,8 +31,7 @@ public class InterpretVisitor extends Visitor{
 	private STypeVar typeVar;
 	private STypeNull typeNull;
 	private STypeBool typeBool;
-	
-	
+	private STypeFloat typeFloat;
 
     public InterpretVisitor() {
         env = new HashMap<String, SType>();
@@ -50,6 +49,7 @@ public class InterpretVisitor extends Visitor{
 		tempFunc = null;
 		typeNull = STypeNull.newSTypeNull();
 		typeBool = STypeBool.newSTypeBool();
+		typeFloat = STypeFloat.newSTypeFloat();
     }
 
     public InterpretVisitor(boolean debug) {
@@ -388,21 +388,26 @@ public class InterpretVisitor extends Visitor{
     
     public void visit(LValue e) {
         try {
-            if (/*env.peek().containsKey(e.getId())*/ true) {
+            if (env.containsKey(e.getId())) {
                 //Object obj = env.peek().get(e.getId());
+				stck.push(env.get(e.getId())); 
                 if (e.getAccess().size() != 0) {
                     for (Access lv : e.getAccess()) {
                         lv.accept(this);
-                        if (lv instanceof AccessData) {
-                            //obj = ((HashMap<String, Object>) obj).get((String) operands.pop());
+                        /*if (lv instanceof AccessData) {
+                            obj = ((HashMap<String, Object>) obj).get((String) operands.pop());
                         } else if (lv instanceof Array) {
-                            //obj = ((ArrayList) obj).get((Integer) operands.pop());
-                        }
+                            obj = ((ArrayList) obj).get((Integer) operands.pop());
+                        }*/
                     }
                 }
                 //operands.push(obj);
             } else {
-                throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") not declared" + e.getId());
+				if (e.getAccess().size() == 0){
+					stck.push(typeVar);
+				} else {
+					throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") not declared" + e.getId());	
+				}               
             }
         } catch (Exception x) {
             throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
@@ -534,9 +539,12 @@ public class InterpretVisitor extends Visitor{
         try {
             e.getLeft().accept(this);
             e.getRight().accept(this);
-            Object right = operands.pop();
-            Object left = operands.pop();
-            if (left.getClass() == Integer.class && right.getClass() == Integer.class) {
+            SType right = stck.pop();
+            SType left = stck.pop();
+			if (left.match(typeInt) && right.match(typeInt)){
+				stck.push(typeInt);
+			}
+            /*if (left.getClass() == Integer.class && right.getClass() == Integer.class) {
                 operands.push((Integer) left % (Integer) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Float.class) { 
                 operands.push((Float) left % (Float) right);
@@ -544,7 +552,7 @@ public class InterpretVisitor extends Visitor{
                 operands.push((Float) left % (Integer) right);
 			} else if (left.getClass() == Integer.class && right.getClass() == Float.class) {
                 operands.push((Integer) left % (Float) right);
-			} else {
+			}*/ else {
 				throw new RuntimeException("Invalid");
 			}
         } catch (Exception x) {
@@ -578,9 +586,18 @@ public class InterpretVisitor extends Visitor{
         try {
             e.getLeft().accept(this);
             e.getRight().accept(this);
-            Object right = operands.pop();
-            Object left = operands.pop();
-            if (left.getClass() == Integer.class && right.getClass() == Integer.class) {
+            SType right = stck.pop();
+            SType left = stck.pop();
+			if (left.match(typeInt) && right.match(typeInt)) {
+				stck.push(typeInt);
+			} else if (left.match(typeFloat) && right.match(typeFloat)) {
+				stck.push(typeFloat);
+			} else if (left.match(typeInt) && right.match(typeFloat)) {
+				stck.push(typeFloat);
+			} else if (left.match(typeFloat) && right.match(typeInt)) {
+				stck.push(typeFloat);
+			}
+            /*if (left.getClass() == Integer.class && right.getClass() == Integer.class) {
                 operands.push((Integer) left * (Integer) right);
             } else if (left.getClass() == Float.class && right.getClass() == Float.class) { 
                 operands.push((Float) left * (Float) right);
@@ -588,7 +605,7 @@ public class InterpretVisitor extends Visitor{
                 operands.push((Float) left * (Integer) right);
             } else if (left.getClass() == Integer.class && right.getClass() == Float.class) {
                 operands.push((Integer) left * (Float) right);
-            } else {
+            }*/ else {
                 throw new RuntimeException("Invalid");
             }
         } catch (Exception x) {
@@ -644,12 +661,18 @@ public class InterpretVisitor extends Visitor{
     public void visit(SMinus e) {
         try {
             e.getExpression().accept(this);
-            Number exp = (Number) operands.pop();
-            if (exp.getClass() == Integer.class) {
+            //Number exp = (Number) operands.pop();
+			SType type = stck.pop();
+			if (type.match(typeInt)) {
+				stck.push(typeInt);
+			} else if (type.match(typeFloat)) {
+				stck.push(typeFloat);
+			}
+            /*if (exp.getClass() == Integer.class) {
                 operands.push(-exp.intValue());
             } else if (exp.getClass() == Float.class) {
                 operands.push(-exp.floatValue());
-            } else {
+            }*/ else {
                 throw new RuntimeException("Invalid");
             }
         } catch (Exception x) {
@@ -670,7 +693,14 @@ public class InterpretVisitor extends Visitor{
         try {
             e.getLeft().accept(this);
             e.getRight().accept(this);
-            operands.push(!operands.pop().equals(operands.pop()));
+			SType right = stck.pop();
+            SType left = stck.pop();
+			if (left.match(right)){
+				stck.push(typeBool);
+			} else {
+				throw new RuntimeException(e.getLine() + ", " + e.getColumn() + ": Invalid type!");
+			} 
+            //operands.push(!operands.pop().equals(operands.pop()));
         } catch (Exception x) {
             throw new RuntimeException(" (" + e.getLine() + ", " + e.getColumn() + ") " + x.getMessage());
         }
@@ -698,13 +728,23 @@ public class InterpretVisitor extends Visitor{
         }
     }
     
+	// Voltar 1
 	public void visit(Lt e) {
         try {
             e.getLeft().accept(this);
             e.getRight().accept(this);
-            Object right = operands.pop();
-            Object left = operands.pop();
-            if (left.getClass() == Integer.class && right.getClass() == Integer.class) {
+            SType right = stck.pop();
+            SType left = stck.pop();
+            if(left.match(typeInt) && right.match(typeInt)){
+				stck.push(typeBool);
+			} else if (left.match(typeFloat) && right.match(typeFloat)){
+				stck.push(typeBool);
+			} else if(left.match(typeFloat) && right.match(typeInt)){
+				stck.push(typeBool);
+			} else if(left.match(typeInt) && right.match(typeFloat)){
+				stck.push(typeBool);
+			}
+			/*if (left.getClass() == Integer.class && right.getClass() == Integer.class) {
                 operands.push((Integer) left < (Integer) right);
 			} else if (left.getClass() == Float.class && right.getClass() == Float.class) { 
                 operands.push((Float) left < (Float) right);
@@ -712,7 +752,7 @@ public class InterpretVisitor extends Visitor{
                 operands.push((Float) left < (Integer) right);
 			} else if (left.getClass() == Integer.class && right.getClass() == Float.class) {
                 operands.push((Integer) left < (Float) right);
-			} else {
+			}*/ else {
 				throw new RuntimeException("Invalid");
 			}	
         } catch (Exception x) {
