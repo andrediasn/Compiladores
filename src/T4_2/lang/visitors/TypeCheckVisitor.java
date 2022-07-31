@@ -46,15 +46,15 @@ public class TypeCheckVisitor extends Visitor
                 for(Decl de : d.getTypes())
                 {
                     de.getType().accept(this); 
-                    if(dat.elem.containsKey(de.getId())) // verificar repeticao
+                    if(dat.elem.containsKey(de.getId())) 
                     {
-                        throw new RuntimeException(de.getLine() + ", " + de.getColumn() + ": nome de elemento de data repetido" );
+                        throw new RuntimeException(de.getLine() + ", " + de.getColumn() + ": duplicate variable declaration!" );
                     }
                     dat.elem.put(de.getId(),stk.pop());
                 }
-                if(datas.containsKey(d.getId())) // verificar repeticao
+                if(datas.containsKey(d.getId())) 
                 {
-                    throw new RuntimeException(d.getLine() + ", " + d.getColumn() + ": nome de data repetido" );
+                    throw new RuntimeException(d.getLine() + ", " + d.getColumn() + ": duplicate method declaration!" );
                 }
                 datas.put(d.getId(), dat);
             }
@@ -67,7 +67,7 @@ public class TypeCheckVisitor extends Visitor
                     mainFuncs = f;
                     if(mainFuncs.getParam() != null)
                     {
-                        throw new RuntimeException(mainFuncs.getLine() + ", " + mainFuncs.getColumn() + ": Funcao main nao pode ter parametros" );
+                        throw new RuntimeException(mainFuncs.getLine() + ", " + mainFuncs.getColumn() + ": main cannot have parameters!" );
                     }
                 }
                 if (f.getParam() != null)
@@ -98,7 +98,7 @@ public class TypeCheckVisitor extends Visitor
                     lista = funcs.get(f.getID());
                     if(containsParamFunc(lista, param)) // testar se repetiu funcao
                     {
-                        throw new RuntimeException(f.getLine() + ", " + f.getColumn() + ": Funcao repetida" );
+                        throw new RuntimeException(f.getLine() + ", " + f.getColumn() + ": 	duplicate method declaration!" );
                     }
                     else
                     {
@@ -129,7 +129,7 @@ public class TypeCheckVisitor extends Visitor
                 f.accept(this);
             }
             if (mainFuncs == null) {
-                throw new RuntimeException(p.getLine() + ", " + p.getColumn() + ": Nao existe funcao main" );
+                throw new RuntimeException(p.getLine() + ", " + p.getColumn() + ": could not find the main class!" );
             }
         }
     }
@@ -272,7 +272,7 @@ public class TypeCheckVisitor extends Visitor
         }else if(tyr.match(tyfloat) && tyl.match(tyfloat)){
             stk.push(tyr);
         }else{
-            throw new RuntimeException( n.getLine() + ", " + n.getColumn() + ": Operador " + opName +" não se aplica aos tipos " + tyl.toString() + " e " + tyr.toString() );
+            throw new RuntimeException( n.getLine() + ", " + n.getColumn() + ": operator " + opName +" cannot be applied " + tyl.toString() + " and " + tyr.toString() );
         }
     }
 
@@ -321,7 +321,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Operador % não se aplica aos tipos " + tyl.toString() + " e " + tyr.toString() );
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": operator % cannot be applied " + tyl.toString() + " and " + tyr.toString() );
         }
     }
 
@@ -338,7 +338,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Operador & não se aplica aos tipos " + tyl.toString() + " e " + tyr.toString() );
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": operator & cannot be applied " + tyl.toString() + " and " + tyr.toString() );
         }
     }
 
@@ -359,7 +359,7 @@ public class TypeCheckVisitor extends Visitor
             {
                 stk.push(tybool);
             }
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Operador < não se aplica aos tipos " + tyl.toString() + " e " + tyr.toString() );
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": operator < cannot be applied " + tyl.toString() + " and " + tyr.toString() );
         }
     }
 
@@ -376,7 +376,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Operador == necessita que as duas expressoes sejam do mesmo tipo" );
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Incompatible type for ==" );
         }
     }
 
@@ -391,7 +391,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Operador ! não se aplica ao tipo " + tyr.toString() );
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": operator ! cannot be applied " + tyr.toString() );
         }
     }
 
