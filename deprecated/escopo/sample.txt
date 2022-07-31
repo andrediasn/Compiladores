@@ -1,0 +1,19 @@
+
+void f() {
+  int x;
+  x = 5;
+  {
+    int y;
+    y = 2;
+    void g(int a) {
+      int x;
+      x = a + y;
+      print x;
+    }
+    print x;
+    g(y);
+    print x;
+  }
+}
+
+f();
