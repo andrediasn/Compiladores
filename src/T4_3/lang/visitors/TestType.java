@@ -18,7 +18,7 @@ import lang.parser.*;
 
 public class TestType {
    private ParseAdaptor adp;
-   private String okSrcs = "testes/semantica/certo/";
+   private String okSrcs = "../testes/semantica/certo/";
    private File f;
    
    public TestType(ParseAdaptor adp){
