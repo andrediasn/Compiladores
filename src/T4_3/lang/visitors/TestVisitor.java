@@ -53,11 +53,17 @@ public class TestVisitor {
                         System.out.println("Parser: [  OK  ]");
                         TypeCheckVisitor t = new TypeCheckVisitor();
                         result.accept(t);
-                        System.out.println("Type: [  OK  ]");
-                        System.out.println("Output: ");
-					    InterpretVisitor v = new InterpretVisitor();
-					    result.accept(v);
-                       	flips++;
+                        if(t.getNumErrors() > 0){  
+                            System.out.println("Type: [FALHOU]"); 
+                            t.printErrors();
+                            flops++;
+                        } else {
+                            System.out.println("Type:   [  OK  ]");
+                            System.out.println("Output: ");
+                            InterpretVisitor v = new InterpretVisitor();
+                            result.accept(v);
+                            flips++;
+                        }
                     }
 					System.out.println("----------------------------");
                 }

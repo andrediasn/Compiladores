@@ -16,7 +16,6 @@ import lang.langUtil.*;
 
 import java.util.ArrayList;
 import java.util.Stack;
-
 import java.util.HashMap;
 public class TypeCheckVisitor extends Visitor
 {
@@ -26,28 +25,31 @@ public class TypeCheckVisitor extends Visitor
     private STyChar tychar = STyChar.newSTyChar();
     private STyNull tynull = STyNull.newSTyNull();
     private STyVar tyvar = STyVar.newSTyVar();
+    private STyErr tyerr = STyErr.newSTyErr();
+
     private HashMap<String, STyData> datas; 
-    private HashMap<String, SType> localEnv; 
+    private HashMap<String, SType> env; 
     private HashMap<String, ArrayList<STyFunc>> funcs;
+
     private STyFunc tempFunc;
     private Stack<SType> stk;
+
     private ArrayList<String> logError;
-    private STyErr tyerr = STyErr.newSTyErr();
 
     public TypeCheckVisitor() {
         funcs = new HashMap<String, ArrayList<STyFunc>>();
         tempFunc = null;
         datas = new HashMap<String, STyData>();
-        localEnv = new HashMap<String, SType>();
+        env = new HashMap<String, SType>();
         stk = new Stack<SType>();
         logError = new ArrayList<String>();
     }
 
-    public int getNumErrors(){ 
+    public int getNumErrors() { 
         return logError.size(); 
     }
      
-    public void printErrors(){ 
+    public void printErrors() { 
         for(String s : logError){
             System.out.println(s);
         }
@@ -59,61 +61,47 @@ public class TypeCheckVisitor extends Visitor
     }
 
     @Override
-    public void visit(Program p) 
-    {
-        Func mainFuncs = null;
+    public void visit(Program p) {
+        Func main = null;
         ArrayList<STyFunc> lista = null;
-        if (p.getDatas() != null)
-        {
-            for(Data d : p.getDatas())
-            {
-                STyData dat = new STyData(d.getId());
-                for(Decl de : d.getTypes())
-                {
+        if (p.getDatas() != null) {
+            for(Data data : p.getDatas()) {
+                STyData stydata = new STyData(data.getId());
+                for(Decl de : data.getTypes()) {
                     de.getType().accept(this); 
-                    if(dat.elem.containsKey(de.getId())) 
-                    {
+                    if(stydata.elem.containsKey(de.getId())) {
                         error(de.getLine(), de.getColumn(), "duplicate variable declaration!");
                     }
-                    dat.elem.put(de.getId(),stk.pop());
+                    stydata.elem.put(de.getId(),stk.pop());
                 }
-                if(datas.containsKey(d.getId())) 
-                {
-                    error(d.getLine(), d.getColumn(), "duplicate method declaration!");
+                if(datas.containsKey(data.getId())) {
+                    error(data.getLine(), data.getColumn(), "duplicate method declaration!");
                 }
-                datas.put(d.getId(), dat);
+                datas.put(data.getId(), stydata);
             }
         }
-        if(p.getFuncs()!=null)
-        {
+        if(p.getFuncs()!=null) {
             for(Func f : p.getFuncs()){
                 SType[] param = null;
                 if (f.getID().equals("main")) {
-                    mainFuncs = f;
-                    if(mainFuncs.getParam() != null)
-                    {
-                        error(mainFuncs.getLine(), mainFuncs.getColumn(), "main cannot have parameters!" );
+                    main = f;
+                    if(main.getParam() != null) {
+                        error(main.getLine(), main.getColumn(), "main cannot have parameters!" );
                     }
                 }
-                if (f.getParam() != null)
-                {
+                if (f.getParam() != null) {
                     param = new SType[f.getParam().length];
-                    for(int i = 0; i < f.getParam().length; i++ )
-                    {
+                    for(int i = 0; i < f.getParam().length; i++ ) {
                         f.getParam()[i].getType().accept(this);
                         param[i] = stk.pop();
                     }
                 }
-                
                 SType[] ret = null;
-                if(f.getTypeReturn() != null)
-                {
+                if(f.getType() != null) {
                     ret = new SType[f.getParam().length];
                     int i = 0;
-                    for(Type t : f.getTypeReturn())
-                    {
-                        if(i >= f.getParam().length)
-                        {
+                    for(Type t : f.getType()) {
+                        if(i >= f.getParam().length) {
                             error(f.getLine(), f.getColumn(), "too many return types!" );
                             break;
                         }
@@ -123,34 +111,29 @@ public class TypeCheckVisitor extends Visitor
                     }
                 }
                 STyFunc aux = new STyFunc(f.getID(), param, ret);
-                if(funcs.containsKey(f.getID()))
-                {
+                if(funcs.containsKey(f.getID())) {
                     lista = funcs.get(f.getID());
-                    if(containsParamFunc(lista, param)) // testar se repetiu funcao
-                    {
+                    if(containsParamFunc(lista, param)) {// testar se repetiu funcao
                         error(f.getLine(), f.getColumn(), "	duplicate method declaration!" );
                     }
-                    else
-                    {
+                    else {
                         lista.add(aux);
                         funcs.put(f.getID(), lista);
                     }
                 }
-                else
-                {
+                else {
                     lista = new ArrayList<STyFunc>();
                     lista.add(aux);
                     funcs.put(f.getID(), lista);
                 }
             }
-            for(Func f : p.getFuncs()){
-                localEnv.clear();
+            for(Func f : p.getFuncs()) {
+                env.clear();
                 lista = funcs.get(f.getID());
                 SType[] param = null;
-                if (f.getParam() != null)
-                {
+                if (f.getParam() != null) {
                     param = new SType[f.getParam().length];
-                    for(int i = 0; i < f.getParam().length; i++ ){
+                    for(int i = 0; i < f.getParam().length; i++ ) {
                         f.getParam()[i].getType().accept(this);
                         param[i] = stk.pop();
                     }
@@ -158,18 +141,18 @@ public class TypeCheckVisitor extends Visitor
                 tempFunc = selecionaFunc(lista, param);
                 f.accept(this);
             }
-            if (mainFuncs == null) {
+            if (main == null) {
                 error(p.getLine(), p.getColumn(), "could not find the main class!" );
             }
         }
     }
 
-    private boolean compara(SType[] aux, SType[] param)
+    private boolean check(SType[] aux, SType[] param)
     {
-        boolean contem = false;
+        boolean ck = false;
         if(aux.length == param.length)
         {
-            contem = true;
+            ck = true;
             for(int j = 0; j < aux.length; j++)
             {
                 SType a1 = aux[j];
@@ -185,17 +168,17 @@ public class TypeCheckVisitor extends Visitor
                 {
                     if(!a1.match(a2))
                     {
-                        contem = false;
+                        ck = false;
                     }
                 }        
             }
         }   
-        return contem;
+        return ck;
     }
 
-    private boolean comparaRetorno(SType[] aux, SType[] param)
+    private boolean checkReturn(SType[] aux, SType[] param)
     {
-        boolean contem = true;
+        boolean ck = true;
         for(int j = 0; j < aux.length; j++)
         {
             SType a1 = aux[j];
@@ -209,15 +192,15 @@ public class TypeCheckVisitor extends Visitor
             }
             if(!a1.match(a2))
             {
-                contem = false;
+                ck = false;
             }      
         } 
-        return contem;
+        return ck;
     }
 
     private boolean containsParamFunc(ArrayList<STyFunc> fun, SType[] param)
     {
-        boolean contem = false;
+        boolean ck = false;
         for(int i = 0; i < fun.size(); i++)
         {
             SType[] aux = fun.get(i).getParametro();
@@ -227,7 +210,7 @@ public class TypeCheckVisitor extends Visitor
             }
             if(aux.length == param.length)
             {
-                contem = true;
+                ck = true;
                 for(int j = 0; j < aux.length; j++)
                 {
                     SType a1 = aux[j];
@@ -241,11 +224,11 @@ public class TypeCheckVisitor extends Visitor
                     }
                     if(!a1.match(a2))
                     {
-                        contem = false;
+                        ck = false;
                     }
                 }
             }
-            if(contem)
+            if(ck)
             {
                 return true;
             }
@@ -255,7 +238,7 @@ public class TypeCheckVisitor extends Visitor
 
     private STyFunc selecionaFunc(ArrayList<STyFunc> fun, SType[] param)
     {
-        boolean contem = false;
+        boolean ck = false;
         STyFunc func = null; 
         for(int i = 0; i < fun.size(); i++)
         {
@@ -265,9 +248,9 @@ public class TypeCheckVisitor extends Visitor
                 func = fun.get(i);
                 return func;
             }
-            if(aux.length == param.length)
+            if(param != null && aux != null && aux.length == param.length)
             {
-                contem = true;
+                ck = true;
                 for(int j = 0; j < aux.length; j++)
                 {
                     SType a1 = aux[j];
@@ -281,11 +264,11 @@ public class TypeCheckVisitor extends Visitor
                     }
                     if(!a1.match(a2))
                     {
-                        contem = false;
+                        ck = false;
                     }
                 }
             }
-            if(contem)
+            if(ck)
             {
                 func = fun.get(i);
                 return func;
@@ -483,7 +466,7 @@ public class TypeCheckVisitor extends Visitor
                             retor[i] = stk.pop();
                             i+=1;
                         }
-                        if(compara(retor, aux.getRetorno()))
+                        if(check(retor, aux.getRetorno()))
                         {
                             i = 0;
                             for(LValue l : e.getReturn())
@@ -496,7 +479,7 @@ public class TypeCheckVisitor extends Visitor
                                     }
                                     else
                                     {
-                                        localEnv.put(l.getId(),aux.getRetorno()[i]);
+                                        env.put(l.getId(),aux.getRetorno()[i]);
                                     }
                                     
                                 }
@@ -543,7 +526,7 @@ public class TypeCheckVisitor extends Visitor
                 }
                 else
                 {
-                    localEnv.put(e.getValue().getId(), aux);
+                    env.put(e.getValue().getId(), aux);
                 }
                 
             }
@@ -692,18 +675,18 @@ public class TypeCheckVisitor extends Visitor
             int i = 0;
             for(Param p : f.getParam())
             {
-                if(localEnv.containsKey(p.getID()))
+                if(env.containsKey(p.getID()))
                 {
                     error( f.getLine(), f.getColumn(), "duplicate method declaration");
                 }
                 else
                 {
-                    localEnv.put(p.getID(), tempFunc.getParametro()[i]);
+                    env.put(p.getID(), tempFunc.getParametro()[i]);
                 }
                 i+=1;
             }
         }
-        if(f.getTypeReturn()!=null)
+        if(f.getType()!=null)
         {
             if(!verificaRetorno(f.getBody()))
             {
@@ -744,7 +727,7 @@ public class TypeCheckVisitor extends Visitor
                     aux[i] = stk.pop();
                     i+=1;
                 }
-                if(!comparaRetorno(aux, tempFunc.getRetorno()))
+                if(!checkReturn(aux, tempFunc.getRetorno()))
                 {
                     error( e.getLine(), e.getColumn(), "wrong return types!");
                 }
@@ -918,9 +901,9 @@ public class TypeCheckVisitor extends Visitor
 
     @Override
     public void visit(LValue e) { 
-        if(localEnv.containsKey(e.getId()))
+        if(env.containsKey(e.getId()))
         {
-            stk.push(localEnv.get(e.getId()));
+            stk.push(env.get(e.getId()));
             if(!e.getAccess().isEmpty())
             {
                 for(Access s : e.getAccess())
@@ -1028,7 +1011,7 @@ public class TypeCheckVisitor extends Visitor
         {
             if(ty.match(tyvar))
             {
-                localEnv.put(e.getValue().getId(), tyint);
+                env.put(e.getValue().getId(), tyint);
             }
             else
             {
