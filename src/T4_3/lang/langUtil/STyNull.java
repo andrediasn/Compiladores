@@ -1,7 +1,15 @@
-/* Eduardo Vieira Marques Pereira do Valle 201665554C
- * Matheus Brinati Altomar 201665564C
- */
-package lang.tipos;
+/*
+
+Grupo
+
+Nome: André Dias Nunes
+Matrícula: 201665570C
+
+Nome: Guilherme Barbosa
+Matrícula: 201435031
+
+*/
+package lang.langUtil;
 
 public class STyNull extends SType{
     private static STyNull st = new STyNull();

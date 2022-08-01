@@ -50,10 +50,10 @@ public class TestVisitor {
                     System.out.println("\nTestando: " + pth + filler(50 -pth.length()));
 					SuperNode result = adp.parseFile(s.getPath());
                     if(result != null){
-                        System.out.println("Parsing: [ ok ]");
+                        System.out.println("Parser: [  OK  ]");
                         Visitor t = new TypeCheckVisitor();
                         result.accept(t);
-                        System.out.println("Typing: [ ok ]");
+                        System.out.println("Type: [  OK  ]");
                         System.out.println("Output: ");
 					    Visitor v = new InterpretVisitor();
 					    result.accept(v);

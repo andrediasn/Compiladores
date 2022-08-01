@@ -45,7 +45,7 @@ public class LangCompiler{
               System.out.println("Executando bateria de testes sintáticos:");
               TestParser tp = new TestParser(langParser);
               return;
-          }if(args[0].equals("-byt") ){
+          }if(args[0].equals("-bty") ){
               System.out.println("Executando bateria de testes no sistemas de tipos:");
               TestType tp = new TestType(langParser); ;
               return;

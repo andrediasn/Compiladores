@@ -1,10 +1,18 @@
-/* Eduardo Vieira Marques Pereira do Valle 201665554C
- * Matheus Brinati Altomar 201665564C
- */
+/*
+
+Grupo
+
+Nome: André Dias Nunes
+Matrícula: 201665570C
+
+Nome: Guilherme Barbosa
+Matrícula: 201435031
+
+*/
 package lang.visitors;
 
 import lang.ast.*;
-import lang.tipos.*;
+import lang.langUtil.*;
 
 import java.util.ArrayList;
 import java.util.Stack;
