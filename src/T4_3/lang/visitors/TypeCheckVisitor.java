@@ -31,14 +31,31 @@ public class TypeCheckVisitor extends Visitor
     private HashMap<String, ArrayList<STyFunc>> funcs;
     private STyFunc tempFunc;
     private Stack<SType> stk;
+    private ArrayList<String> logError;
+    private STyErr tyerr = STyErr.newSTyErr();
 
-    public TypeCheckVisitor()
-    {
+    public TypeCheckVisitor() {
         funcs = new HashMap<String, ArrayList<STyFunc>>();
         tempFunc = null;
         datas = new HashMap<String, STyData>();
         localEnv = new HashMap<String, SType>();
         stk = new Stack<SType>();
+        logError = new ArrayList<String>();
+    }
+
+    public int getNumErrors(){ 
+        return logError.size(); 
+    }
+     
+    public void printErrors(){ 
+        for(String s : logError){
+            System.out.println(s);
+        }
+    }
+
+    private void error(int l, int c, String msg){
+        logError.add(" (" + l + "," + c + "): " + msg);
+        stk.push(tyerr);
     }
 
     @Override
@@ -56,13 +73,13 @@ public class TypeCheckVisitor extends Visitor
                     de.getType().accept(this); 
                     if(dat.elem.containsKey(de.getId())) 
                     {
-                        throw new RuntimeException(de.getLine() + ", " + de.getColumn() + ": duplicate variable declaration!" );
+                        error(de.getLine(), de.getColumn(), "duplicate variable declaration!");
                     }
                     dat.elem.put(de.getId(),stk.pop());
                 }
                 if(datas.containsKey(d.getId())) 
                 {
-                    throw new RuntimeException(d.getLine() + ", " + d.getColumn() + ": duplicate method declaration!" );
+                    error(d.getLine(), d.getColumn(), "duplicate method declaration!");
                 }
                 datas.put(d.getId(), dat);
             }
@@ -75,7 +92,7 @@ public class TypeCheckVisitor extends Visitor
                     mainFuncs = f;
                     if(mainFuncs.getParam() != null)
                     {
-                        throw new RuntimeException(mainFuncs.getLine() + ", " + mainFuncs.getColumn() + ": main cannot have parameters!" );
+                        error(mainFuncs.getLine(), mainFuncs.getColumn(), "main cannot have parameters!" );
                     }
                 }
                 if (f.getParam() != null)
@@ -95,6 +112,11 @@ public class TypeCheckVisitor extends Visitor
                     int i = 0;
                     for(Type t : f.getTypeReturn())
                     {
+                        if(i >= f.getParam().length)
+                        {
+                            error(f.getLine(), f.getColumn(), "too many return types!" );
+                            break;
+                        }
                         t.accept(this);
                         ret[i] = stk.pop();
                         i += 1;
@@ -106,7 +128,7 @@ public class TypeCheckVisitor extends Visitor
                     lista = funcs.get(f.getID());
                     if(containsParamFunc(lista, param)) // testar se repetiu funcao
                     {
-                        throw new RuntimeException(f.getLine() + ", " + f.getColumn() + ": 	duplicate method declaration!" );
+                        error(f.getLine(), f.getColumn(), "	duplicate method declaration!" );
                     }
                     else
                     {
@@ -137,7 +159,7 @@ public class TypeCheckVisitor extends Visitor
                 f.accept(this);
             }
             if (mainFuncs == null) {
-                throw new RuntimeException(p.getLine() + ", " + p.getColumn() + ": could not find the main class!" );
+                error(p.getLine(), p.getColumn(), "could not find the main class!" );
             }
         }
     }
@@ -280,7 +302,7 @@ public class TypeCheckVisitor extends Visitor
         }else if(tyr.match(tyfloat) && tyl.match(tyfloat)){
             stk.push(tyr);
         }else{
-            throw new RuntimeException( n.getLine() + ", " + n.getColumn() + ": operator " + opName +" cannot be applied " + tyl.toString() + " and " + tyr.toString() );
+            error( n.getLine(), n.getColumn(), "operator " + opName +" cannot be applied " + tyl.toString() + " and " + tyr.toString() );
         }
     }
 
@@ -329,7 +351,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": operator % cannot be applied " + tyl.toString() + " and " + tyr.toString() );
+            error( e.getLine(), e.getColumn(), "operator % cannot be applied " + tyl.toString() + " and " + tyr.toString() );
         }
     }
 
@@ -346,7 +368,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": operator & cannot be applied " + tyl.toString() + " and " + tyr.toString() );
+            error( e.getLine(), e.getColumn(), "operator & cannot be applied " + tyl.toString() + " and " + tyr.toString() );
         }
     }
 
@@ -367,7 +389,7 @@ public class TypeCheckVisitor extends Visitor
             {
                 stk.push(tybool);
             }
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": operator < cannot be applied " + tyl.toString() + " and " + tyr.toString() );
+            error( e.getLine(), e.getColumn(), "operator < cannot be applied " + tyl.toString() + " and " + tyr.toString() );
         }
     }
 
@@ -384,7 +406,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Incompatible type for ==" );
+            error( e.getLine(), e.getColumn(), "Incompatible type for ==" );
         }
     }
 
@@ -399,7 +421,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": operator ! cannot be applied " + tyr.toString() );
+            error( e.getLine(), e.getColumn(), "operator ! cannot be applied " + tyr.toString() );
         }
     }
 
@@ -470,7 +492,7 @@ public class TypeCheckVisitor extends Visitor
                                 {
                                     if(aux.getRetorno()[i] instanceof STyNull)
                                     {
-                                        throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": null return!"  );
+                                        error( e.getLine(), e.getColumn(), "null return!"  );
                                     }
                                     else
                                     {
@@ -483,23 +505,23 @@ public class TypeCheckVisitor extends Visitor
                         }
                         else
                         {
-                            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": return types are wrong or number of variables different from return number!" );
+                            error( e.getLine(), e.getColumn(), "return types are wrong or number of variables different from return number!" );
                         }
                     }
                     else
                     {
-                        throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": missing return statement!" );
+                        error( e.getLine(), e.getColumn(), "missing return statement!" );
                     }
                 }
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": wrong parameter types!" );
+                error( e.getLine(), e.getColumn(), "wrong parameter types!" );
             }
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": undeclared function!" );
+            error( e.getLine(), e.getColumn(), "undeclared function!" );
         }
     }
 
@@ -517,7 +539,7 @@ public class TypeCheckVisitor extends Visitor
             {
                 if(aux instanceof STyNull)
                 {
-                    throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": null expr for undeclared variable!" );
+                    error( e.getLine(), e.getColumn(), "null expr for undeclared variable!" );
                 }
                 else
                 {
@@ -529,13 +551,13 @@ public class TypeCheckVisitor extends Visitor
             {
                 if(!auxID.match(aux))
                 {
-                    throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": incompatible type!" );
+                    error( e.getLine(), e.getColumn(), "incompatible type!" );
                 }
             }
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": undefined variable!" );
+            error( e.getLine(), e.getColumn(), "undefined variable!" );
         }
 
     }
@@ -554,7 +576,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": IF must have type Bool!");
+            error( e.getLine(), e.getColumn(), "IF must have type Bool!");
         }
     }
 
@@ -564,7 +586,7 @@ public class TypeCheckVisitor extends Visitor
         e.getExpression().accept(this);
         if(stk.pop().match(tyvar))
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": undefined variable for print!");
+            error( e.getLine(), e.getColumn(), "undefined variable for print!");
         }
     }
 
@@ -672,7 +694,7 @@ public class TypeCheckVisitor extends Visitor
             {
                 if(localEnv.containsKey(p.getID()))
                 {
-                    throw new RuntimeException( f.getLine() + ", " + f.getColumn() + ": duplicate method declaration");
+                    error( f.getLine(), f.getColumn(), "duplicate method declaration");
                 }
                 else
                 {
@@ -685,7 +707,7 @@ public class TypeCheckVisitor extends Visitor
         {
             if(!verificaRetorno(f.getBody()))
             {
-                throw new RuntimeException( f.getLine() + ", " + f.getColumn() + ": wrong return!");
+                error( f.getLine(), f.getColumn(), "wrong return!");
             }
         }
         if(f.getBody()!=null)
@@ -724,17 +746,17 @@ public class TypeCheckVisitor extends Visitor
                 }
                 if(!comparaRetorno(aux, tempFunc.getRetorno()))
                 {
-                    throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": wrong return types!");
+                    error( e.getLine(), e.getColumn(), "wrong return types!");
                 }
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": wrong return amount!");
+                error( e.getLine(), e.getColumn(), "wrong return amount!");
             }
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": function cannot be returned!");
+            error( e.getLine(), e.getColumn(), "function cannot be returned!");
         }
     }
 
@@ -772,7 +794,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( t.getLine() + ", " + t.getColumn() + ": Data " + t.getIdType() + " nonexistent!");
+            error( t.getLine(), t.getColumn(), "Data " + t.getIdType() + " nonexistent!");
         }
     }
 
@@ -790,12 +812,12 @@ public class TypeCheckVisitor extends Visitor
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": wrong array access!" );
+                error( e.getLine(), e.getColumn(), "wrong array access!" );
             }
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": expected integer type for array access!");
+            error( e.getLine(), e.getColumn(), "expected integer type for array access!");
         }
     }
 
@@ -835,32 +857,32 @@ public class TypeCheckVisitor extends Visitor
                             }
                             else
                             {
-                                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": access undefined return!" );
+                                error( e.getLine(), e.getColumn(), "access undefined return!" );
                             }
                         }
                         else
                         {
-                            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": only integers in return access!" );
+                            error( e.getLine(), e.getColumn(), "only integers in return access!" );
                         }
                     }
                     else
                     {
-                        throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": undefined return!" );
+                        error( e.getLine(), e.getColumn(), "undefined return!" );
                     }
                 }
                 else
                 {
-                    throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": expected integer type!" );
+                    error( e.getLine(), e.getColumn(), "expected integer type!" );
                 }
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": wrong parameter types or different number of parameters!" );
+                error( e.getLine(), e.getColumn(), "wrong parameter types or different number of parameters!" );
             }
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": undefined function!" );
+            error( e.getLine(), e.getColumn(), "undefined function!" );
         }
     }
 
@@ -885,7 +907,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": expected integer type!");
+            error( e.getLine(), e.getColumn(), "expected integer type!");
         }
     }
 
@@ -915,7 +937,7 @@ public class TypeCheckVisitor extends Visitor
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": undeclared array or date variable!");
+                error( e.getLine(), e.getColumn(), "undeclared array or date variable!");
             }
         }
     }
@@ -936,7 +958,7 @@ public class TypeCheckVisitor extends Visitor
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": operator ! cannot be applied " + tyr.toString() );
+                error( e.getLine(), e.getColumn(), "operator ! cannot be applied " + tyr.toString() );
             }
         }
     }
@@ -953,7 +975,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Incompatible type for !=" );
+            error( e.getLine(), e.getColumn(), "Incompatible type for !=" );
         }
     }
 
@@ -979,7 +1001,7 @@ public class TypeCheckVisitor extends Visitor
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": expected int type" );
+                error( e.getLine(), e.getColumn(), "expected int type" );
             }
         }
         else
@@ -1010,7 +1032,7 @@ public class TypeCheckVisitor extends Visitor
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": expected int type!" );
+                error( e.getLine(), e.getColumn(), "expected int type!" );
             }
         }
     }
@@ -1043,12 +1065,12 @@ public class TypeCheckVisitor extends Visitor
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": wrong access of Data element!" );
+                error( e.getLine(), e.getColumn(), "wrong access of Data element!" );
             }
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": wrong access!" );
+            error( e.getLine(), e.getColumn(), "wrong access!" );
         }
     }
 }

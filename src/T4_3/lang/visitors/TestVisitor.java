@@ -51,11 +51,11 @@ public class TestVisitor {
 					SuperNode result = adp.parseFile(s.getPath());
                     if(result != null){
                         System.out.println("Parser: [  OK  ]");
-                        Visitor t = new TypeCheckVisitor();
+                        TypeCheckVisitor t = new TypeCheckVisitor();
                         result.accept(t);
                         System.out.println("Type: [  OK  ]");
                         System.out.println("Output: ");
-					    Visitor v = new InterpretVisitor();
+					    InterpretVisitor v = new InterpretVisitor();
 					    result.accept(v);
                        	flips++;
                     }
