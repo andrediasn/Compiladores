@@ -45,14 +45,14 @@ public class TestType {
                for(File s : inst){
                    pth = s.getPath();
                    System.out.print("Testando " + pth + filler(50 -pth.length()) + " ");
-                   SuperNode node = adp.parseFile(s.getPath());
-                   if(node != null){
+                   SuperNode result = adp.parseFile(s.getPath());
+                   if(result != null){
                        Visitor v = new TypeCheckVisitor();
-                       node.accept(v);
-                       System.out.println("  OK  ]");
+                       result.accept(v);
+                       System.out.println("[  OK  ]");
                        flips++;
                    }else{ 
-                      System.out.println("FALHOU]");
+                      System.out.println("[FALHOU]");
                       flops++;
                    }
                }
