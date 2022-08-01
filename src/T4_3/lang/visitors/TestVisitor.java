@@ -65,7 +65,7 @@ public class TestVisitor {
                             flips++;
                         }
                     }
-					System.out.println("----------------------------");
+					System.out.println("\n----------------------------");
                 }
                 System.out.println("Total de acertos: " + flips );
                 System.out.println("Total de erros: " + flops );

@@ -13,12 +13,9 @@ package lang.visitors;
 
 import lang.ast.*;
 import lang.langUtil.*;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Stack;
-import java.util.HashMap;
-public class TypeCheckVisitor extends Visitor
-{
+public class TypeCheckVisitor extends Visitor {
     private STyInt tyint = STyInt.newSTyInt();
     private STyFloat tyfloat = STyFloat.newSTyFloat();
     private STyBool tybool = STyBool.newSTyBool();
@@ -138,7 +135,7 @@ public class TypeCheckVisitor extends Visitor
                         param[i] = stk.pop();
                     }
                 }
-                tempFunc = selecionaFunc(lista, param);
+                tempFunc = selectFunc(lista, param);
                 f.accept(this);
             }
             if (main == null) {
@@ -147,260 +144,58 @@ public class TypeCheckVisitor extends Visitor
         }
     }
 
-    private boolean check(SType[] aux, SType[] param) {
-        boolean ck = false;
-        if(aux.length == param.length) {
-            ck = true;
-            for(int j = 0; j < aux.length; j++) {
-                SType a1 = aux[j];
-                SType a2 = param[j];
-                while(a1 instanceof STyArr && a2 instanceof STyArr) {
-                    STyArr au1 = (STyArr)a1;
-                    STyArr au2 = (STyArr)a2;
-                    a1 = au1.getArg();
-                    a2 = au2.getArg();
-                }
-                if(!(a1.match(tyvar) || a2.match(tyvar))) {
-                    if(!a1.match(a2)) {
-                        ck = false;
-                    }
-                }        
-            }
-        }   
-        return ck;
-    }
-
-    private boolean checkReturn(SType[] aux, SType[] param) {
-        boolean ck = true;
-        for(int j = 0; j < aux.length; j++) {
-            SType a1 = aux[j];
-            SType a2 = param[j];
-            while(a1 instanceof STyArr && a2 instanceof STyArr) {
-                STyArr au1 = (STyArr)a1;
-                STyArr au2 = (STyArr)a2;
-                a1 = au1.getArg();
-                a2 = au2.getArg();
-            }
-            if(!a1.match(a2)) {
-                ck = false;
-            }      
-        } 
-        return ck;
-    }
-
-    private boolean containsParamFunc(ArrayList<STyFunc> fun, SType[] param) {
-        boolean ck = false;
-        for(int i = 0; i < fun.size(); i++) {
-            SType[] aux = fun.get(i).getParametro();
-            if(param == null && aux == null) {
-                return true;
-            }
-            if(aux.length == param.length) {
-                ck = true;
-                for(int j = 0; j < aux.length; j++) {
-                    SType a1 = aux[j];
-                    SType a2 = param[j];
-                    while(a1 instanceof STyArr && a2 instanceof STyArr) {
-                        STyArr au1 = (STyArr)a1;
-                        STyArr au2 = (STyArr)a2;
-                        a1 = au1.getArg();
-                        a2 = au2.getArg();
-                    }
-                    if(!a1.match(a2)) {
-                        ck = false;
-                    }
-                }
-            }
-            if(ck) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private STyFunc selecionaFunc(ArrayList<STyFunc> fun, SType[] param) {
-        boolean ck = false;
-        STyFunc func = null; 
-        for(int i = 0; i < fun.size(); i++) {
-            SType[] aux = fun.get(i).getParametro();
-            if(param == null && aux == null) {
-                func = fun.get(i);
-                return func;
-            }
-            if(param != null && aux != null && aux.length == param.length) {
-                ck = true;
-                for(int j = 0; j < aux.length; j++) {
-                    SType a1 = aux[j];
-                    SType a2 = param[j];
-                    while(a1 instanceof STyArr && a2 instanceof STyArr) {
-                        STyArr au1 = (STyArr)a1;
-                        STyArr au2 = (STyArr)a2;
-                        a1 = au1.getArg();
-                        a2 = au2.getArg();
-                    }
-                    if(!a1.match(a2)) {
-                        ck = false;
-                    }
-                }
-            }
-            if(ck) {
-                func = fun.get(i);
-                return func;
-            }
-        }
-        return func;
-    }
-
-    private void typeArithmeticBinOp(SuperNode n, String opName) {
-        SType tyr = stk.pop();
-        SType tyl = stk.pop();
-        if( (tyr.match(tyint) && tyl.match(tyint)) ) {
-            stk.push(tyl);
-        } else if (tyr.match(tyfloat) && tyl.match(tyfloat)) {
-            stk.push(tyr);
-        } else {
-            error( n.getLine(), n.getColumn(), "operator " + opName +" cannot be applied " + tyl.toString() + " and " + tyr.toString() );
-        }
-    }
+    @Override
+    public void visit(Data d) { }
 
     @Override
-    public void visit(Add e) {
-        e.getLeft().accept(this);
-        e.getRight().accept(this);
-        typeArithmeticBinOp(e,"+");
-    }
+    public void visit(Decl e) { }
 
     @Override
-    public void visit(Sub e) {
-        e.getLeft().accept(this);
-        e.getRight().accept(this);
-        typeArithmeticBinOp(e,"-");
-    }
-
-    @Override
-    public void visit(Mult e) {
-        e.getLeft().accept(this);
-        e.getRight().accept(this);
-        typeArithmeticBinOp(e,"*");
-    }
-
-    @Override
-    public void visit(Div e) {
-        e.getLeft().accept(this);
-        e.getRight().accept(this);
-        typeArithmeticBinOp(e,"/");
-    }
-
-    @Override
-    public void visit(CModule e) {
-        e.getLeft().accept(this);
-        e.getRight().accept(this);
-        SType tyr = stk.pop();
-        SType tyl = stk.pop();
-        if( tyr.match(tyint) && tyl.match(tyint) ) {
-            stk.push(tyint);
+    public void visit(AccessData e) { 
+        SType ty = stk.pop();
+        if (ty instanceof STyData) {
+            STyData tydata = (STyData)ty;
+            if(tydata.elem.containsKey(e.getIndex())) {
+                ty = tydata.elem.get(e.getIndex());
+                stk.push(ty);
+            }
+            else {
+                error( e.getLine(), e.getColumn(), "wrong access of Data element!" );
+            }
         }
         else {
-            error( e.getLine(), e.getColumn(), "operator % cannot be applied " + tyl.toString() + " and " + tyr.toString() );
+            error( e.getLine(), e.getColumn(), "wrong access!" );
         }
     }
 
     @Override
-    public void visit(And e) {
-        e.getLeft().accept(this);
-        e.getRight().accept(this);
-        SType tyr = stk.pop();
-        SType tyl = stk.pop();
-        if(tyr.match(tybool) && tyl.match(tybool)) {
-            stk.push(tybool);
-        }
-        else {
-            error( e.getLine(), e.getColumn(), "operator & cannot be applied " + tyl.toString() + " and " + tyr.toString() );
-        }
-    }
-
-    @Override
-    public void visit(Lt e) {
-        e.getLeft().accept(this);
-        e.getRight().accept(this);
-        SType tyr = stk.pop();
-        SType tyl = stk.pop();
-        if(tyr.match(tyint) && tyl.match(tyint)) {
-            stk.push(tybool);
-        }
-        else {
-            if(tyr.match(tyfloat) && tyl.match(tyfloat)) {
-                stk.push(tybool);
+    public void visit(StmtList e) { 
+        if(e.getList() != null) {
+            for(Cmd c : e.getList()) {
+                c.accept(this);
             }
-            error( e.getLine(), e.getColumn(), "operator < cannot be applied " + tyl.toString() + " and " + tyr.toString() );
         }
-    }
-
-    @Override
-    public void visit(Eq e) {
-        e.getLeft().accept(this);
-        e.getRight().accept(this);
-        SType tyr = stk.pop();
-        SType tyl = stk.pop();
-        if(tyr.match(tyl)) {
-            stk.push(tybool);
-        }
-        else {
-            error( e.getLine(), e.getColumn(), "Incompatible type for ==" );
-        }
-    }
-
-    @Override
-    public void visit(Not e) {
-        e.getExpression().accept(this);
-        SType tyr = stk.pop();
-        if(tyr.match(tybool)) {
-            stk.push(tybool);
-        }
-        else {
-            error( e.getLine(), e.getColumn(), "operator ! cannot be applied " + tyr.toString() );
-        }
-    }
-
-    @Override
-    public void visit(True e) {
-        stk.push(tybool);
-    }
-
-    @Override
-    public void visit(False e) {
-        stk.push(tybool);
-    }
-
-    @Override
-    public void visit(Int e) {
-        stk.push(tyint);
-    }
-
-    @Override
-    public void visit(FloatV e) {
-        stk.push(tyfloat);
     }
 
     @Override
     public void visit(CallCmd e) {
         if(funcs.containsKey(e.getName())) {
             ArrayList<STyFunc> lista = funcs.get(e.getName());
-            Expr[] par = e.getExpressions();
+            Expr[] exp = e.getExpressions();
             SType[] param = null;
-            if(par != null) {
-                param = new SType[par.length];
+            if(exp != null) {
+                param = new SType[exp.length];
                 int i = 0;
-                for(Expr p : par) {
+                for(Expr p : exp) {
                     p.accept(this);
                     param[i] = stk.pop();
                     i+=1;
                 }
             }
-            STyFunc aux = selecionaFunc(lista, param);
-            if(aux != null) {
+            STyFunc tyf = selectFunc(lista, param);
+            if(tyf != null) {
                 if(e.getReturn()!=null) {
-                    if(aux.getRetorno()!=null) {
+                    if(tyf.getRetorno()!=null) {
                         SType[] retor = new SType[e.getReturn().length];
                         int i = 0;
                         for(LValue l : e.getReturn()) {
@@ -408,15 +203,15 @@ public class TypeCheckVisitor extends Visitor
                             retor[i] = stk.pop();
                             i+=1;
                         }
-                        if(check(retor, aux.getRetorno())) {
+                        if(compare(retor, tyf.getRetorno())) {
                             i = 0;
                             for(LValue l : e.getReturn()) {
                                 if(retor[i].match(tyvar)) {
-                                    if(aux.getRetorno()[i] instanceof STyNull) {
+                                    if(tyf.getRetorno()[i] instanceof STyNull) {
                                         error( e.getLine(), e.getColumn(), "null return!"  );
                                     }
                                     else {
-                                        env.put(l.getId(),aux.getRetorno()[i]);
+                                        env.put(l.getId(),tyf.getRetorno()[i]);
                                     }
                                     
                                 }
@@ -442,229 +237,6 @@ public class TypeCheckVisitor extends Visitor
     }
 
     @Override
-    public void visit(Attr e) {
-        e.getValue().accept(this);
-        SType auxID = stk.pop();
-        e.getExpression().accept(this);
-        SType aux = stk.pop();
-        if(!aux.match(tyvar)) {
-            if(auxID.match(tyvar)) {
-                if(aux instanceof STyNull) {
-                    error( e.getLine(), e.getColumn(), "null expr for undeclared variable!" );
-                } else {
-                    env.put(e.getValue().getId(), aux);
-                }
-            } else {
-                if(!auxID.match(aux)) {
-                    error( e.getLine(), e.getColumn(), "incompatible type!" );
-                }
-            }
-        }
-        else {
-            error( e.getLine(), e.getColumn(), "undefined variable!" );
-        }
-    }
-
-    @Override
-    public void visit(If e) {
-        e.getExpression().accept(this);
-        if(stk.pop().match(tybool)) {
-            e.getThen().accept(this);
-            if (e.getElse() != null) {
-                e.getElse().accept(this);
-            }
-        } else {
-            error( e.getLine(), e.getColumn(), "IF must have type Bool!");
-        }
-    }
-
-    @Override
-    public void visit(Print e) {
-        e.getExpression().accept(this);
-        if(stk.pop().match(tyvar)) {
-            error( e.getLine(), e.getColumn(), "undefined variable for print!");
-        }
-    }
-
-    private boolean verificaRetornoIf(If cmdIf) {
-        boolean left = false;
-        boolean right = false;
-        StmtList aux = null;
-        If auxIf = null;
-        if(cmdIf.getThen() instanceof Return) {
-            left = true;
-        }
-        else {
-            if(cmdIf.getThen() instanceof StmtList) {
-                aux = (StmtList)cmdIf.getThen();
-                left = verificaRetorno(aux.getList());
-            } 
-            else {
-                if(cmdIf.getThen() instanceof If) {
-                    auxIf = (If) cmdIf.getThen();
-                    if(auxIf.getElse() != null) {
-                        left = verificaRetornoIf(auxIf);
-                    }
-                }
-            }
-        }
-        if(cmdIf.getElse() instanceof Return) {
-            right = true;
-        }
-        else {
-            if(cmdIf.getElse() instanceof StmtList) {
-                aux = (StmtList)cmdIf.getElse();
-                right = verificaRetorno(aux.getList());
-            } 
-            else {
-                if(cmdIf.getElse() instanceof If) {
-                    auxIf = (If) cmdIf.getElse();
-                    if(auxIf.getElse() != null) {
-                        right = verificaRetornoIf(auxIf);
-                    }
-                }
-            }
-        }
-        return left && right;
-    }
-
-    private boolean verificaRetorno(Cmd[] comandos) {
-        boolean resultado = false;
-        StmtList aux = null;
-        If auxIf = null;
-        if(comandos != null) {
-            for(Cmd c : comandos) {
-                if(c instanceof Return) {
-                    resultado = true;
-                }
-                if(c instanceof StmtList) {
-                    aux = (StmtList) c;
-                    resultado = verificaRetorno(aux.getList());
-                }
-            }
-            if(!resultado) {
-                for(Cmd c : comandos) {
-                    if(c instanceof If) {
-                        auxIf = (If) c;
-                        if(auxIf.getElse() != null) {
-                            resultado = verificaRetornoIf(auxIf);
-                        }
-                    }
-                }
-            }
-        }
-        return resultado;
-    }
-
-    @Override
-    public void visit(Func f) { 
-        if(f.getParam()!=null) {
-            int i = 0;
-            for(Param p : f.getParam()) {
-                if(env.containsKey(p.getID())) {
-                    error( f.getLine(), f.getColumn(), "duplicate method declaration");
-                }
-                else {
-                    env.put(p.getID(), tempFunc.getParametro()[i]);
-                }
-                i+=1;
-            }
-        }
-        if(f.getType()!=null) {
-            if(!verificaRetorno(f.getBody())) {
-                error( f.getLine(), f.getColumn(), "wrong return!");
-            }
-        }
-        if(f.getBody()!=null) {
-            for(Cmd c : f.getBody()) {
-                c.accept(this);
-            }
-        }
-    }
-
-    @Override
-    public void visit(Data d) { }
-
-    @Override
-    public void visit(Decl e) { }
-
-    @Override
-    public void visit(Return e) {
-        if(tempFunc.getRetorno() != null) {
-            if(e.getExpressions().length == tempFunc.getRetorno().length) {
-                SType[] aux = new SType[e.getExpressions().length];
-                int i = 0;
-                for(Expr ex : e.getExpressions()) {
-                    ex.accept(this);
-                    aux[i] = stk.pop();
-                    i+=1;
-                }
-                if(!checkReturn(aux, tempFunc.getRetorno())) {
-                    error( e.getLine(), e.getColumn(), "wrong return types!");
-                }
-            }
-            else {
-                error( e.getLine(), e.getColumn(), "wrong return amount!");
-            }
-        }
-        else {
-            error( e.getLine(), e.getColumn(), "function cannot be returned!");
-        }
-    }
-
-    @Override
-    public void visit(Param e) { } 
-
-    @Override
-    public void visit(TyInt t) {
-        stk.push(tyint);
-    }
-
-    @Override
-    public void visit(TyFloat t) {
-        stk.push(tyfloat);
-    }
-
-    @Override
-    public void visit(TyBool t) {
-        stk.push(tybool);
-    }
-
-    @Override
-    public void visit(TyChar t) { 
-        stk.push(tychar);
-    }
-
-    @Override
-    public void visit(TyID t) { 
-        if(datas.containsKey(t.getIdType())) {
-            stk.push(datas.get(t.getIdType()));
-        }
-        else {
-            error( t.getLine(), t.getColumn(), "Data " + t.getIdType() + " nonexistent!");
-        }
-    }
-
-    @Override
-    public void visit(Array e) { 
-        SType aux = stk.pop();
-        e.getIndex().accept(this);
-        if(stk.pop().match(tyint)) {
-            if (aux instanceof STyArr) {
-                STyArr au = (STyArr)aux;
-                aux = au.getArg();
-                stk.push(aux);
-            }
-            else {
-                error( e.getLine(), e.getColumn(), "wrong array access!" );
-            }
-        }
-        else {
-            error( e.getLine(), e.getColumn(), "expected integer type for array access!");
-        }
-    }
-
-    @Override
     public void visit(CallExpr e) { 
         if(funcs.containsKey(e.getName())) {
             ArrayList<STyFunc> lista = funcs.get(e.getName());
@@ -679,7 +251,7 @@ public class TypeCheckVisitor extends Visitor
                     i+=1;
                 }
             }
-            STyFunc aux = selecionaFunc(lista, param);
+            STyFunc aux = selectFunc(lista, param);
             if(aux != null) {
                 e.getReturn().accept(this);
                 if(stk.pop().match(tyint)) {
@@ -716,29 +288,103 @@ public class TypeCheckVisitor extends Visitor
     }
 
     @Override
-    public void visit(StmtList e) { 
-        if(e.getList() != null) {
-            for(Cmd c : e.getList()) {
+    public void visit(Attr e) {
+        e.getValue().accept(this);
+        SType auxID = stk.pop();
+        e.getExpression().accept(this);
+        SType aux = stk.pop();
+        if(!aux.match(tyvar)) {
+            if(auxID.match(tyvar)) {
+                if(aux instanceof STyNull) {
+                    error( e.getLine(), e.getColumn(), "null expr for undeclared variable!" );
+                } else {
+                    env.put(e.getValue().getId(), aux);
+                }
+            } else {
+                if(!auxID.match(aux)) {
+                    error( e.getLine(), e.getColumn(), "incompatible type!" );
+                }
+            }
+        }
+        else {
+            error( e.getLine(), e.getColumn(), "undefined variable!" );
+        }
+    }
+
+    @Override
+    public void visit(Func f) { 
+        if(f.getParam()!=null) {
+            int i = 0;
+            for(Param p : f.getParam()) {
+                if(env.containsKey(p.getID())) {
+                    error( f.getLine(), f.getColumn(), "duplicate method declaration");
+                }
+                else {
+                    env.put(p.getID(), tempFunc.getParametro()[i]);
+                }
+                i+=1;
+            }
+        }
+        if(f.getType()!=null) {
+            if(!checkReturn(f.getBody())) {
+                error( f.getLine(), f.getColumn(), "wrong return!");
+            }
+        }
+        if(f.getBody()!=null) {
+            for(Cmd c : f.getBody()) {
                 c.accept(this);
+            }
+        }
+    }
+    
+    @Override
+    public void visit(Param e) { }
+
+    @Override
+    public void visit(Print e) {
+        e.getExpression().accept(this);
+        if(stk.pop().match(tyvar)) {
+            error( e.getLine(), e.getColumn(), "undefined variable for print!");
+        }
+    }
+
+    @Override
+    public void visit(Read e) { 
+        e.getValue().accept(this);
+        SType ty = stk.pop();
+        if(!ty.match(tyint)) {
+            if(ty.match(tyvar)) {
+                env.put(e.getValue().getId(), tyint);
+            }
+            else {
+                error( e.getLine(), e.getColumn(), "expected int type!" );
             }
         }
     }
 
     @Override
-    public void visit(Iterate e) {
-        e.getExpression().accept(this);
-        if(stk.pop().match(tyint)) {
-            e.getBody().accept(this);
+    public void visit(Return e) {
+        if(tempFunc.getRetorno() != null) {
+            if(e.getExpressions().length == tempFunc.getRetorno().length) {
+                SType[] aux = new SType[e.getExpressions().length];
+                int i = 0;
+                for(Expr ex : e.getExpressions()) {
+                    ex.accept(this);
+                    aux[i] = stk.pop();
+                    i+=1;
+                }
+                if(!checkReturn(aux, tempFunc.getRetorno())) {
+                    error( e.getLine(), e.getColumn(), "wrong return types!");
+                }
+            }
+            else {
+                error( e.getLine(), e.getColumn(), "wrong return amount!");
+            }
         }
         else {
-            error( e.getLine(), e.getColumn(), "expected integer type!");
+            error( e.getLine(), e.getColumn(), "function cannot be returned!");
         }
-    }
-
-    @Override
-    public void visit(Char e) { 
-        stk.push(tychar);
-    }
+    } 
 
     @Override
     public void visit(LValue e) { 
@@ -761,33 +407,28 @@ public class TypeCheckVisitor extends Visitor
     }
 
     @Override
-    public void visit(SMinus e) { 
-        e.getExpression().accept(this);
-        SType tyr = stk.pop();
-        if(tyr.match(tyfloat)) {
-            stk.push(tyfloat);
-        }
-        else {
-            if(tyr.match(tyint)) {
-                stk.push(tyint);
-            }
-            else {
-                error( e.getLine(), e.getColumn(), "operator ! cannot be applied " + tyr.toString() );
-            }
-        }
+    public void visit(Int e) {
+        stk.push(tyint);
     }
 
     @Override
-    public void visit(Neq e) { 
-        e.getLeft().accept(this);
-        e.getRight().accept(this);
-        SType tyr = stk.pop();
-        SType tyl = stk.pop();
-        if(tyr.match(tyl)) {
-            stk.push(tybool);
+    public void visit(FloatV e) {
+        stk.push(tyfloat);
+    }
+
+    @Override
+    public void visit(Char e) { 
+        stk.push(tychar);
+    }
+
+    @Override
+    public void visit(Iterate e) {
+        e.getExpression().accept(this);
+        if(stk.pop().match(tyint)) {
+            e.getBody().accept(this);
         }
         else {
-            error( e.getLine(), e.getColumn(), "Incompatible type for !=" );
+            error( e.getLine(), e.getColumn(), "expected integer type!");
         }
     }
 
@@ -822,22 +463,180 @@ public class TypeCheckVisitor extends Visitor
     }
 
     @Override
-    public void visit(Null e) { 
-        stk.push(tynull);
+    public void visit(Array e) { 
+        SType aux = stk.pop();
+        e.getIndex().accept(this);
+        if(stk.pop().match(tyint)) {
+            if (aux instanceof STyArr) {
+                STyArr au = (STyArr)aux;
+                aux = au.getArg();
+                stk.push(aux);
+            }
+            else {
+                error( e.getLine(), e.getColumn(), "wrong array access!" );
+            }
+        }
+        else {
+            error( e.getLine(), e.getColumn(), "expected integer type for array access!");
+        }
     }
 
     @Override
-    public void visit(Read e) { 
-        e.getValue().accept(this);
-        SType ty = stk.pop();
-        if(!ty.match(tyint)) {
-            if(ty.match(tyvar)) {
-                env.put(e.getValue().getId(), tyint);
+    public void visit(CModule e) {
+        e.getLeft().accept(this);
+        e.getRight().accept(this);
+        SType tyr = stk.pop();
+        SType tyl = stk.pop();
+        if( tyr.match(tyint) && tyl.match(tyint) ) {
+            stk.push(tyint);
+        }
+        else {
+            error( e.getLine(), e.getColumn(), "operator % cannot be applied " + tyl.toString() + " and " + tyr.toString() );
+        }
+    }
+
+    @Override
+    public void visit(Div e) {
+        e.getLeft().accept(this);
+        e.getRight().accept(this);
+        typeArithmeticBinOp(e,"/");
+    }
+
+    @Override
+    public void visit(Mult e) {
+        e.getLeft().accept(this);
+        e.getRight().accept(this);
+        typeArithmeticBinOp(e,"*");
+    }
+
+    @Override
+    public void visit(Add e) {
+        e.getLeft().accept(this);
+        e.getRight().accept(this);
+        typeArithmeticBinOp(e,"+");
+    }
+
+    @Override
+    public void visit(Sub e) {
+        e.getLeft().accept(this);
+        e.getRight().accept(this);
+        typeArithmeticBinOp(e,"-");
+    }
+
+    @Override
+    public void visit(SMinus e) { 
+        e.getExpression().accept(this);
+        SType tyr = stk.pop();
+        if(tyr.match(tyfloat)) {
+            stk.push(tyfloat);
+        }
+        else {
+            if(tyr.match(tyint)) {
+                stk.push(tyint);
             }
             else {
-                error( e.getLine(), e.getColumn(), "expected int type!" );
+                error( e.getLine(), e.getColumn(), "operator ! cannot be applied " + tyr.toString() );
             }
         }
+    }
+
+    @Override
+    public void visit(Not e) {
+        e.getExpression().accept(this);
+        SType tyr = stk.pop();
+        if(tyr.match(tybool)) {
+            stk.push(tybool);
+        }
+        else {
+            error( e.getLine(), e.getColumn(), "operator ! cannot be applied " + tyr.toString() );
+        }
+    }
+
+    @Override
+    public void visit(Neq e) { 
+        e.getLeft().accept(this);
+        e.getRight().accept(this);
+        SType tyr = stk.pop();
+        SType tyl = stk.pop();
+        if(tyr.match(tyl)) {
+            stk.push(tybool);
+        }
+        else {
+            error( e.getLine(), e.getColumn(), "Incompatible type for !=" );
+        }
+    }
+
+    @Override
+    public void visit(And e) {
+        e.getLeft().accept(this);
+        e.getRight().accept(this);
+        SType tyr = stk.pop();
+        SType tyl = stk.pop();
+        if(tyr.match(tybool) && tyl.match(tybool)) {
+            stk.push(tybool);
+        }
+        else {
+            error( e.getLine(), e.getColumn(), "operator & cannot be applied " + tyl.toString() + " and " + tyr.toString() );
+        }
+    }
+
+    @Override
+    public void visit(Eq e) {
+        e.getLeft().accept(this);
+        e.getRight().accept(this);
+        SType tyr = stk.pop();
+        SType tyl = stk.pop();
+        if(tyr.match(tyl)) {
+            stk.push(tybool);
+        }
+        else {
+            error( e.getLine(), e.getColumn(), "Incompatible type for ==" );
+        }
+    }
+
+    @Override
+    public void visit(Lt e) {
+        e.getLeft().accept(this);
+        e.getRight().accept(this);
+        SType tyr = stk.pop();
+        SType tyl = stk.pop();
+        if(tyr.match(tyint) && tyl.match(tyint)) {
+            stk.push(tybool);
+        }
+        else {
+            if(tyr.match(tyfloat) && tyl.match(tyfloat)) {
+                stk.push(tybool);
+            }
+            error( e.getLine(), e.getColumn(), "operator < cannot be applied " + tyl.toString() + " and " + tyr.toString() );
+        }
+    }
+
+    @Override
+    public void visit(If e) {
+        e.getExpression().accept(this);
+        if(stk.pop().match(tybool)) {
+            e.getThen().accept(this);
+            if (e.getElse() != null) {
+                e.getElse().accept(this);
+            }
+        } else {
+            error( e.getLine(), e.getColumn(), "IF must have type Bool!");
+        }
+    }
+
+    @Override
+    public void visit(False e) {
+        stk.push(tybool);
+    }
+
+    @Override
+    public void visit(True e) {
+        stk.push(tybool);
+    }
+
+    @Override
+    public void visit(Null e) { 
+        stk.push(tynull);
     }
 
     @Override
@@ -855,20 +654,220 @@ public class TypeCheckVisitor extends Visitor
     }
 
     @Override
-    public void visit(AccessData e) { 
-        SType aux = stk.pop();
-        if (aux instanceof STyData) {
-            STyData au = (STyData)aux;
-            if(au.elem.containsKey(e.getIndex())) {
-                aux = au.elem.get(e.getIndex());
-                stk.push(aux);
-            }
-            else {
-                error( e.getLine(), e.getColumn(), "wrong access of Data element!" );
-            }
+    public void visit(TyBool t) {
+        stk.push(tybool);
+    }
+
+    @Override
+    public void visit(TyChar t) { 
+        stk.push(tychar);
+    }
+
+    @Override
+    public void visit(TyFloat t) {
+        stk.push(tyfloat);
+    }
+
+    @Override
+    public void visit(TyID t) { 
+        if(datas.containsKey(t.getIdType())) {
+            stk.push(datas.get(t.getIdType()));
         }
         else {
-            error( e.getLine(), e.getColumn(), "wrong access!" );
+            error( t.getLine(), t.getColumn(), "Data " + t.getIdType() + " nonexistent!");
         }
     }
+
+    @Override
+    public void visit(TyInt t) {
+        stk.push(tyint);
+    }
+
+    private boolean compare(SType[] ty, SType[] param) {
+        boolean x = false;
+        if(ty.length == param.length) {
+            x = true;
+            for(int j = 0; j < ty.length; j++) {
+                SType ty1 = ty[j];
+                SType ty2 = param[j];
+                while(ty1 instanceof STyArr && ty2 instanceof STyArr) {
+                    STyArr tyarr1 = (STyArr)ty1;
+                    STyArr tyarr2 = (STyArr)ty2;
+                    ty1 = tyarr1.getArg();
+                    ty2 = tyarr2.getArg();
+                }
+                if(!(ty1.match(tyvar) || ty2.match(tyvar))) {
+                    if(!ty1.match(ty2)) {
+                        x = false;
+                    }
+                }        
+            }
+        }   
+        return x;
+    }
+
+    private boolean checkReturn(SType[] ty, SType[] param) {
+        boolean x = true;
+        for(int j = 0; j < ty.length; j++) {
+            SType ty1 = ty[j];
+            SType ty2 = param[j];
+            while(ty1 instanceof STyArr && ty2 instanceof STyArr) {
+                STyArr tyarr1 = (STyArr)ty1;
+                STyArr tyarr2 = (STyArr)ty2;
+                ty1 = tyarr1.getArg();
+                ty2 = tyarr2.getArg();
+            }
+            if(!ty1.match(ty2)) {
+                x = false;
+            }      
+        } 
+        return x;
+    }
+
+    private boolean containsParamFunc(ArrayList<STyFunc> arrayfunc, SType[] param) {
+        boolean x = false;
+        for(int i = 0; i < arrayfunc.size(); i++) {
+            SType[] ty = arrayfunc.get(i).getParametro();
+            if(param == null && ty == null) {
+                return true;
+            }
+            if(ty.length == param.length) {
+                x = true;
+                for(int j = 0; j < ty.length; j++) {
+                    SType ty1 = ty[j];
+                    SType ty2 = param[j];
+                    while(ty1 instanceof STyArr && ty2 instanceof STyArr) {
+                        STyArr tyarr1 = (STyArr)ty1;
+                        STyArr ytarr2 = (STyArr)ty2;
+                        ty1 = tyarr1.getArg();
+                        ty2 = ytarr2.getArg();
+                    }
+                    if(!ty1.match(ty2)) {
+                        x = false;
+                    }
+                }
+            }
+            if(x) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private STyFunc selectFunc(ArrayList<STyFunc> arrayfunc, SType[] param) {
+        boolean x = false;
+        STyFunc func = null; 
+        for(int i = 0; i < arrayfunc.size(); i++) {
+            SType[] ty = arrayfunc.get(i).getParametro();
+            if(param == null && ty == null) {
+                func = arrayfunc.get(i);
+                return func;
+            }
+            if(param != null && ty != null && ty.length == param.length) {
+                x = true;
+                for(int j = 0; j < ty.length; j++) {
+                    SType ty1 = ty[j];
+                    SType ty2 = param[j];
+                    while(ty1 instanceof STyArr && ty2 instanceof STyArr) {
+                        STyArr tyarr1 = (STyArr)ty1;
+                        STyArr tyarr2 = (STyArr)ty2;
+                        ty1 = tyarr1.getArg();
+                        ty2 = tyarr2.getArg();
+                    }
+                    if(!ty1.match(ty2)) {
+                        x = false;
+                    }
+                }
+            }
+            if(x) {
+                func = arrayfunc.get(i);
+                return func;
+            }
+        }
+        return func;
+    }
+
+    private void typeArithmeticBinOp(SuperNode n, String opName) {
+        SType tyr = stk.pop();
+        SType tyl = stk.pop();
+        if( (tyr.match(tyint) && tyl.match(tyint)) ) {
+            stk.push(tyl);
+        } else if (tyr.match(tyfloat) && tyl.match(tyfloat)) {
+            stk.push(tyr);
+        } else {
+            error( n.getLine(), n.getColumn(), "operator " + opName +" cannot be applied " + tyl.toString() + " and " + tyr.toString() );
+        }
+    }
+
+    private boolean checkReturnIf(If cmdIf) {
+        boolean l = false;
+        boolean r = false;
+        StmtList stmtlist = null;
+        If lIf = null;
+        if(cmdIf.getThen() instanceof Return) {
+            l = true;
+        }
+        else {
+            if(cmdIf.getThen() instanceof StmtList) {
+                stmtlist = (StmtList)cmdIf.getThen();
+                l = checkReturn(stmtlist.getList());
+            } 
+            else {
+                if(cmdIf.getThen() instanceof If) {
+                    lIf = (If) cmdIf.getThen();
+                    if(lIf.getElse() != null) {
+                        l = checkReturnIf(lIf);
+                    }
+                }
+            }
+        }
+        if(cmdIf.getElse() instanceof Return) {
+            r = true;
+        }
+        else {
+            if(cmdIf.getElse() instanceof StmtList) {
+                stmtlist = (StmtList)cmdIf.getElse();
+                r = checkReturn(stmtlist.getList());
+            } 
+            else {
+                if(cmdIf.getElse() instanceof If) {
+                    lIf = (If) cmdIf.getElse();
+                    if(lIf.getElse() != null) {
+                        r = checkReturnIf(lIf);
+                    }
+                }
+            }
+        }
+        return l && r;
+    }
+
+    private boolean checkReturn(Cmd[] cmds) {
+        boolean x = false;
+        StmtList stmtlist = null;
+        If lIf = null;
+        if(cmds != null) {
+            for(Cmd c : cmds) {
+                if(c instanceof Return) {
+                    x = true;
+                }
+                if(c instanceof StmtList) {
+                    stmtlist = (StmtList) c;
+                    x = checkReturn(stmtlist.getList());
+                }
+            }
+            if(!x) {
+                for(Cmd c : cmds) {
+                    if(c instanceof If) {
+                        lIf = (If) c;
+                        if(lIf.getElse() != null) {
+                            x = checkReturnIf(lIf);
+                        }
+                    }
+                }
+            }
+        }
+        return x;
+    }
+
+    
 }
