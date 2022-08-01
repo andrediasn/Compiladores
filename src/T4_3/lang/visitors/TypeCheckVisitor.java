@@ -509,7 +509,7 @@ public class TypeCheckVisitor extends Visitor
             {
                 if(aux instanceof STyNull)
                 {
-                    throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": expr nula para variavel nao declarada" );
+                    throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": null expr for undeclared variable!" );
                 }
                 else
                 {
@@ -521,13 +521,13 @@ public class TypeCheckVisitor extends Visitor
             {
                 if(!auxID.match(aux))
                 {
-                    throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Variavel nao e do tipo da expressao" );
+                    throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": incompatible type!" );
                 }
             }
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Variavel da expressao nao declarada" );
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": undefined variable!" );
         }
 
     }
@@ -546,7 +546,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Expressão de teste do IF deve ter tipo Bool");
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": IF must have type Bool!");
         }
     }
 
@@ -556,7 +556,7 @@ public class TypeCheckVisitor extends Visitor
         e.getExpression().accept(this);
         if(stk.pop().match(tyvar))
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Impressao de variavel nao declarada");
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": undefined variable for print!");
         }
     }
 
@@ -664,7 +664,7 @@ public class TypeCheckVisitor extends Visitor
             {
                 if(localEnv.containsKey(p.getID()))
                 {
-                    throw new RuntimeException( f.getLine() + ", " + f.getColumn() + ": Parametros com identificadores iguais");
+                    throw new RuntimeException( f.getLine() + ", " + f.getColumn() + ": duplicate method declaration");
                 }
                 else
                 {
@@ -677,7 +677,7 @@ public class TypeCheckVisitor extends Visitor
         {
             if(!verificaRetorno(f.getBody()))
             {
-                throw new RuntimeException( f.getLine() + ", " + f.getColumn() + ": Funcao nao retorna o que foi declarado como retorno");
+                throw new RuntimeException( f.getLine() + ", " + f.getColumn() + ": wrong return!");
             }
         }
         if(f.getBody()!=null)
@@ -716,17 +716,17 @@ public class TypeCheckVisitor extends Visitor
                 }
                 if(!comparaRetorno(aux, tempFunc.getRetorno()))
                 {
-                    throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": retorno com tipos diferentes do proposto pela funcao");
+                    throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": wrong return types!");
                 }
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": retorno com numero diferente dos retornos declarados pela funcao");
+                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": wrong return amount!");
             }
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Funcao nao pode ter retorno");
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": function cannot be returned!");
         }
     }
 
@@ -764,7 +764,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( t.getLine() + ", " + t.getColumn() + ": Data " + t.getIdType() + " inexistente");
+            throw new RuntimeException( t.getLine() + ", " + t.getColumn() + ": Data " + t.getIdType() + " nonexistent!");
         }
     }
 
@@ -782,12 +782,12 @@ public class TypeCheckVisitor extends Visitor
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": acesso errado a array" );
+                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": wrong array access!" );
             }
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Expressão de acesso a array deve ter tipo int");
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": expected integer type for array access!");
         }
     }
 
@@ -827,32 +827,32 @@ public class TypeCheckVisitor extends Visitor
                             }
                             else
                             {
-                                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Acesso a um retorno inexistente " );
+                                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": access undefined return!" );
                             }
                         }
                         else
                         {
-                            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": So aceita numeros inteiros no acesso ao retorno " );
+                            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": only integers in return access!" );
                         }
                     }
                     else
                     {
-                        throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Funcao nao tem retorno " );
+                        throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": undefined return!" );
                     }
                 }
                 else
                 {
-                    throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Para selecionar Retorno precisa ser do tipo int " );
+                    throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": expected integer type!" );
                 }
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Funcao com tipos de parametro errados ou numero diferente de parametros" );
+                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": wrong parameter types or different number of parameters!" );
             }
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Funcao nao declarada " );
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": undefined function!" );
         }
     }
 
@@ -877,7 +877,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Expressão de teste do iterate deve ter tipo int");
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": expected integer type!");
         }
     }
 
@@ -907,7 +907,7 @@ public class TypeCheckVisitor extends Visitor
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": variavel array ou data nao declarado");
+                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": undeclared array or date variable!");
             }
         }
     }
@@ -928,7 +928,7 @@ public class TypeCheckVisitor extends Visitor
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Operador ! não se aplica ao tipo " + tyr.toString() );
+                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": operator ! cannot be applied " + tyr.toString() );
             }
         }
     }
@@ -945,7 +945,7 @@ public class TypeCheckVisitor extends Visitor
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Operador != necessita que as duas expressoes sejam do mesmo tipo" );
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Incompatible type for !=" );
         }
     }
 
@@ -971,7 +971,7 @@ public class TypeCheckVisitor extends Visitor
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": Tamanho de vetor deve ser do tipo int" );
+                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": expected int type" );
             }
         }
         else
@@ -1002,7 +1002,7 @@ public class TypeCheckVisitor extends Visitor
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": o comando read so aceita variavel do tipo inteiro" );
+                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": expected int type!" );
             }
         }
     }
@@ -1035,12 +1035,12 @@ public class TypeCheckVisitor extends Visitor
             }
             else
             {
-                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": acesso errado a elemento de data" );
+                throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": wrong access of Data element!" );
             }
         }
         else
         {
-            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": acesso errado a data" );
+            throw new RuntimeException( e.getLine() + ", " + e.getColumn() + ": wrong access!" );
         }
     }
 }
