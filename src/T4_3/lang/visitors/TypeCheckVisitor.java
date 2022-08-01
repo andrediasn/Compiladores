@@ -24,12 +24,14 @@ public class TypeCheckVisitor extends Visitor {
     private STyVar tyvar = STyVar.newSTyVar();
     private STyErr tyerr = STyErr.newSTyErr();
 
-    private HashMap<String, STyData> datas; 
-    private HashMap<String, SType> env; 
+    private HashMap<String, STyData> datas;
+    private TyEnv<LocalEnv<SType>> env; 
+    //private HashMap<String, SType> env; 
     private HashMap<String, ArrayList<STyFunc>> funcs;
 
     private STyFunc tempFunc;
     private Stack<SType> stk;
+    private LocalEnv<SType> temp;
 
     private ArrayList<String> logError;
 
@@ -37,7 +39,8 @@ public class TypeCheckVisitor extends Visitor {
         funcs = new HashMap<String, ArrayList<STyFunc>>();
         tempFunc = null;
         datas = new HashMap<String, STyData>();
-        env = new HashMap<String, SType>();
+        //env = new HashMap<String, SType>();
+        env = new TyEnv<LocalEnv<SType>>();
         stk = new Stack<SType>();
         logError = new ArrayList<String>();
     }
@@ -211,7 +214,7 @@ public class TypeCheckVisitor extends Visitor {
                                         error( e.getLine(), e.getColumn(), "null return!"  );
                                     }
                                     else {
-                                        env.put(l.getId(),tyf.getRetorno()[i]);
+                                        env.set(l.getId(),new LocalEnv<SType>(l.getId(),tyf.getRetorno()[i]));
                                     }
                                     
                                 }
@@ -298,7 +301,7 @@ public class TypeCheckVisitor extends Visitor {
                 if(aux instanceof STyNull) {
                     error( e.getLine(), e.getColumn(), "null expr for undeclared variable!" );
                 } else {
-                    env.put(e.getValue().getId(), aux);
+                    env.set(e.getValue().getId(), new LocalEnv<SType>(e.getValue().getId(),aux));
                 }
             } else {
                 if(!auxID.match(aux)) {
@@ -316,11 +319,11 @@ public class TypeCheckVisitor extends Visitor {
         if(f.getParam()!=null) {
             int i = 0;
             for(Param p : f.getParam()) {
-                if(env.containsKey(p.getID())) {
+                if(env.elem(p.getID())) {
                     error( f.getLine(), f.getColumn(), "duplicate method declaration");
                 }
                 else {
-                    env.put(p.getID(), tempFunc.getParametro()[i]);
+                    env.set(p.getID(), new LocalEnv<SType>(p.getID(),tempFunc.getParametro()[i]));
                 }
                 i+=1;
             }
@@ -354,7 +357,7 @@ public class TypeCheckVisitor extends Visitor {
         SType ty = stk.pop();
         if(!ty.match(tyint)) {
             if(ty.match(tyvar)) {
-                env.put(e.getValue().getId(), tyint);
+                env.set(e.getValue().getId(), new LocalEnv<SType>(e.getValue().getId(),tyint));
             }
             else {
                 error( e.getLine(), e.getColumn(), "expected int type!" );
@@ -388,8 +391,9 @@ public class TypeCheckVisitor extends Visitor {
 
     @Override
     public void visit(LValue e) { 
-        if(env.containsKey(e.getId())) {
-            stk.push(env.get(e.getId()));
+        LocalEnv<SType> le = env.get(e.getId()); 
+        if(env.elem(e.getId())) {
+            stk.push((SType) le.getFuncType());
             if(!e.getAccess().isEmpty()) {
                 for(Access s : e.getAccess()) {
                     s.accept(this);
