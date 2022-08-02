@@ -25,13 +25,11 @@ public class TypeCheckVisitor extends Visitor {
     private STyErr tyerr = STyErr.newSTyErr();
 
     private HashMap<String, STyData> datas;
-    private TyEnv<LocalEnv<SType>> env; 
-    //private HashMap<String, SType> env; 
+    private TyEnv<LocalEnv<SType>> env;  
     private HashMap<String, ArrayList<STyFunc>> funcs;
 
     private STyFunc tempFunc;
     private Stack<SType> stk;
-    private LocalEnv<SType> temp;
 
     private ArrayList<String> logError;
 
@@ -39,7 +37,6 @@ public class TypeCheckVisitor extends Visitor {
         funcs = new HashMap<String, ArrayList<STyFunc>>();
         tempFunc = null;
         datas = new HashMap<String, STyData>();
-        //env = new HashMap<String, SType>();
         env = new TyEnv<LocalEnv<SType>>();
         stk = new Stack<SType>();
         logError = new ArrayList<String>();
