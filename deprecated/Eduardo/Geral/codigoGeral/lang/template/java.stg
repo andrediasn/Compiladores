@@ -1,0 +1,127 @@
+group java;
+
+program(name, funcs, datas) ::= <<
+
+import java.util.ArrayList;
+import java.util.Scanner;
+public class <name> {
+    private static ArrayList\<Object> _retornos = new ArrayList\<Object>();
+
+    <datas; separator="\n\n">
+    <funcs; separator="\n\n">
+  
+    public static void main(String args[]) {
+        main();
+    }
+}
+>>
+data(name, decl) ::= <<
+static class <name> {
+    <decl; separator="\n">
+}
+>>
+decl(type, name) ::= <<
+<type> <name>;
+>>
+func( name, params, decl, stmt, key, retorno) ::= <<
+static void <name>(<params; separator=", ">) {
+    <if(retorno)> ArrayList\<Object> _aux = new ArrayList\<Object>();<endif>
+    <if(decl)><decl; separator=";\n">;<endif>
+    <stmt; separator="\n">
+}
+
+<if(retorno)> 
+static Object <name>(String _i<if(params)>, <endif><params; separator=", ">) {
+    <name>(<key; separator=", ">); 
+    Object _aux = _retornos.get(Integer.parseInt(_i));
+    _retornos.clear();
+    return _aux;
+}
+<endif>
+>>
+decl_func(type, name) ::= <<
+<type.tp> <name> = <type.default>
+>>
+param(type, name) ::= "<type> <name>"
+chave(value) ::= "<value>"
+array_type(type) ::= "<type>[]"
+int_type() ::= "int"
+float_type() ::= "float"
+boolean_type() ::= "boolean"
+char_type() ::= "char"
+id_type(value) ::= "<value>"
+
+print(expr) ::= "System.out.print(<expr>);"
+aux(expr) ::= "_aux.add(<expr>);"
+return(aux) ::= <<
+<aux; separator="\n">
+for(Object o : _aux)
+{
+    _retornos.add(o);
+}
+return;
+>>
+
+iterate(exp, stmt, linhaColuna) ::= <<
+for(int _x<linhaColuna> = <exp>; _x<linhaColuna> > 0; _x<linhaColuna>--) {
+    <stmt>
+}
+>>
+
+if(expr, thn, els) ::= <<
+if(<expr>) {
+    <thn>
+} <if(els)>else {
+    <els>
+}
+<endif>
+>>
+
+stmt_list(stmts) ::= << 
+<stmts; separator="\n">
+>>
+read(var) ::= "<var> = Integer.parseInt((new Scanner(System.in)).next());"
+attr(var, expr) ::= "<var> = <expr>;"
+tipo(type, colchetes) ::= "<type> <colchetes>"
+boolean_expr(value) ::= "<value>"
+float_expr(value) ::= "<value>f"
+int_expr(value) ::= "<value>"
+char_expr(value) ::= "'<value>'"
+null_expr() ::= "null"
+
+
+call(name, args, exp) ::= <<
+<if(exp)>
+<name>(<args; separator=", ">);
+<exp : {exp | <exp.lv> = (<exp.type>) _retornos.get(0);
+_retornos.remove(0);
+}>
+<else>
+<name>(<args; separator=", ">);
+_retornos.clear();
+<endif>
+>>
+call_expr(name, args, expr, type) ::= <<
+((<type>)<name>(String.valueOf(<expr>)<if(args)>, <endif><args; separator=", ">))
+>>
+
+mul_expr(left_expr, right_expr) ::= "(<left_expr> * <right_expr>)"
+div_expr(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
+mod_expr(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
+add_expr(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
+sub_expr(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
+
+lt_expr(left_expr, right_expr) ::= "(<left_expr> \< <right_expr>)"
+equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
+not_equals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
+and_expr(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
+not_expr(expr) ::= "!<expr>"
+neg_expr(expr) ::= "-<expr>"
+
+lvalue(name, array) ::= "<name><array>"
+array_access(expr) ::= "[<expr>]"
+data_access(expr) ::= ".<expr>"
+new_expr_array(type, expr, squares) ::= "new <type>[<expr>]<squares>"
+new_array(type, squares) ::= "new <type>[1]<squares>"
+new_expr_type(type) ::= "new <type>()"
+new_padrao(value) ::= "<value>"

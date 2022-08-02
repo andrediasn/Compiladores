@@ -1,0 +1,6 @@
+main(){
+  x = 10;
+  iterate(10) 
+     x = x - 1;
+  print x;
+}
