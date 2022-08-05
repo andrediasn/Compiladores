@@ -26,7 +26,9 @@ public class TypeCheckVisitor extends Visitor {
 
     private HashMap<String, STyData> datas;
     private TyEnv<LocalEnv<SType>> env;  
+    private ArrayList<TyEnv<LocalEnv<SType>>> envs;
     private HashMap<String, ArrayList<STyFunc>> funcs;
+    private ArrayList<STyFunc> styfuncs;
 
     private STyFunc tempFunc;
     private Stack<SType> stk;
@@ -40,8 +42,17 @@ public class TypeCheckVisitor extends Visitor {
         env = new TyEnv<LocalEnv<SType>>();
         stk = new Stack<SType>();
         logError = new ArrayList<String>();
+        styfuncs = new ArrayList<STyFunc>();
     }
 
+    public ArrayList<TyEnv<LocalEnv<SType>>> getEnvs() {
+        return this.envs;
+    }
+
+    public ArrayList<STyFunc> getfuncs() {
+        return this.styfuncs;
+    }
+    
     public int getNumErrors() { 
         return logError.size(); 
     }
@@ -253,6 +264,7 @@ public class TypeCheckVisitor extends Visitor {
             }
             STyFunc aux = selectFunc(lista, param);
             if(aux != null) {
+                styfuncs.add(aux);
                 e.getReturn().accept(this);
                 if(stk.pop().match(tyint)) {
                     if(aux.getRetorno()!=null) {

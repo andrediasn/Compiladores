@@ -13,8 +13,8 @@ Matrícula: 201435031
 package lang.langUtil;
 
 import java.util.Stack;
-
 import java.util.TreeMap;
+import java.util.Set;
 
 public class TyEnv<A> {
      
@@ -54,6 +54,8 @@ public class TyEnv<A> {
          }
          return s;
      }
+
+     public Set<String> getKeys() {return typeEnv.keySet();}
      
      
 }

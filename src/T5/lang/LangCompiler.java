@@ -53,6 +53,10 @@ public class LangCompiler{
               System.out.println("Executando bateria de testes no interpretador:");
               TestVisitor tp = new TestVisitor(langParser);
               return;
+          } if(args[0].equals("-bgc") ){
+              System.out.println("Executando bateria de testes no gerador:");
+              TestGenerate tp = new TestGenerate(langParser);
+              return;
           }
           if(args.length != 2){
 			  System.out.println("Para usar essa opção, especifique um nome de arquivo");
