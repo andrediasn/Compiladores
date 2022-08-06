@@ -36,7 +36,7 @@ public class JavaVisitor extends Visitor {
 		this.fileName = fileName;
 		file = new FileWriter("codigoGerado/" + this.fileName + ".java");
 		this.envs = envs;
-		System.out.print(envs);
+		//System.out.print(envs);
 		this.styfuncs = f;
 	}
 
@@ -71,7 +71,7 @@ public class JavaVisitor extends Visitor {
 		}
 		template.add("funcs", funcs);
 
-		System.out.println(template.render());
+		//System.out.println(template.render());
 		try {
             criaArquivo(template);
         } catch (IOException e) {
@@ -231,8 +231,8 @@ public class JavaVisitor extends Visitor {
 		{
 			fun.add("retorno", "tem");
 		}
-		LocalEnv<SType> local = env.get(f.getID());
-		Set<String> keys = local.getKeys();
+		
+		Set<String> keys = env.getKeys();
 		ArrayList<ST> chaves = new ArrayList<ST>();
 		params = new ArrayList<ST>();
 		if (f.getParam() != null) {
@@ -250,7 +250,7 @@ public class JavaVisitor extends Visitor {
 		for (String key : keys) {
 			ST decl = groupTemplate.getInstanceOf("decl_func");
 			decl.add("name", key);
-			SType t = local.get(key);
+			SType t = env.get(key).getFuncType();
 			processSType(t); 
 			String defaultVal = getSTypeDefault(t);
             decl.addAggr("type.{tp, default}", type, defaultVal);

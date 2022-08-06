@@ -43,6 +43,7 @@ public class TypeCheckVisitor extends Visitor {
         stk = new Stack<SType>();
         logError = new ArrayList<String>();
         styfuncs = new ArrayList<STyFunc>();
+        envs = new ArrayList<TyEnv<LocalEnv<SType>>>();
     }
 
     public ArrayList<TyEnv<LocalEnv<SType>>> getEnvs() {
@@ -52,7 +53,7 @@ public class TypeCheckVisitor extends Visitor {
     public ArrayList<STyFunc> getfuncs() {
         return this.styfuncs;
     }
-    
+
     public int getNumErrors() { 
         return logError.size(); 
     }
@@ -148,6 +149,13 @@ public class TypeCheckVisitor extends Visitor {
                 }
                 tempFunc = selectFunc(lista, param);
                 f.accept(this);
+
+                TyEnv<LocalEnv<SType>> aux = new TyEnv<LocalEnv<SType>>();
+		        Set<String> keys = env.getKeys();
+                for (String key : keys) {
+                    aux.set(key, env.get(key));
+                }
+                envs.add(aux);
             }
             if (main == null) {
                 error(p.getLine(), p.getColumn(), "could not find the main class!" );

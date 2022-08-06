@@ -63,7 +63,10 @@ public class TestGenerate {
                             System.out.println("Output: ");
                             InterpretVisitor v = new InterpretVisitor();
                             result.accept(v);
-                            String name = "name";
+                            String name = s.getName();
+                            if(name.indexOf('.') > 0) {
+                                name = name.substring(0, name.indexOf('.'));
+                            }
                             JavaVisitor k = new JavaVisitor(name, t.getEnvs(), t.getfuncs());
                             result.accept(k);
                             flips++;
