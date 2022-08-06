@@ -32,9 +32,9 @@ public class JavaVisitor extends Visitor {
     private ArrayList<TyEnv<LocalEnv<SType>>> envs;
 	private FileWriter file;
 	public JavaVisitor(String fileName, ArrayList<TyEnv<LocalEnv<SType>>> envs, ArrayList<STyFunc> f) throws IOException{
-		groupTemplate = new STGroupFile("./template/java.stg");
+		groupTemplate = new STGroupFile("./template/js.stg");
 		this.fileName = fileName;
-		file = new FileWriter("codigoGerado/" + this.fileName + ".java");
+		file = new FileWriter("codigoGerado/" + this.fileName + ".js");
 		this.envs = envs;
 		//System.out.print(envs);
 		this.styfuncs = f;
@@ -227,6 +227,7 @@ public class JavaVisitor extends Visitor {
 	public void visit(Func f) { 
 		ST fun = groupTemplate.getInstanceOf("func");
 		fun.add("name", f.getID());
+
 		if(f.getType()!=null)
 		{
 			fun.add("retorno", "tem");
@@ -284,7 +285,6 @@ public class JavaVisitor extends Visitor {
 	public void visit(Param e) {
 		ST param = groupTemplate.getInstanceOf("param");
 		e.getType().accept(this);
-		param.add("type", type);
 		param.add("name", e.getID());
 		params.add(param);
 	}
@@ -364,11 +364,13 @@ public class JavaVisitor extends Visitor {
             aux.add("args", expr);
 		}
 		if(e.getReturn() != null) {
+			int indexRet = 0;
 			for(LValue lv : e.getReturn()) {
 				lv.accept(this);
 				SType t = env.get(((LValue) lv).getId()).getFuncType();
 				processSType(t);
-				aux.addAggr("exp.{lv, type}", expr, type);
+				aux.addAggr("exp.{id, type, index}", expr, type, indexRet);
+				indexRet++;
 			}
 		}
         stmt = aux;
