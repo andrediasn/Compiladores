@@ -9,7 +9,7 @@ main();
   
 >>
 data(name, decl) ::= <<
-static class <name> {
+let  <name> {
     <decl; separator="\n">
 }
 >>

@@ -1,8 +1,8 @@
 compile: genparser
 	javac -cp .:antlr-4.10.1-complete.jar:ST-4.3.1.jar ast/*.java parser/*.java visitors/*.java langUtil/*.java LangCompiler.java -d .
+	clear
 
 genparser: parser/lang.g4
-	clear
 	java -jar antlr-4.10.1-complete.jar parser/lang.g4 -visitor
 	
 run: 
