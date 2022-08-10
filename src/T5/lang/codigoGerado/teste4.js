@@ -1,7 +1,7 @@
 
 main();
 
-static class Ponto {
+let  Ponto {
     let  x;
     let  y;
 }

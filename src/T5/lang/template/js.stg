@@ -79,7 +79,7 @@ call_cmd(name, args, exp) ::= <<
 <endif>
 >>
 call_expr(name, args, expr, type) ::= <<
-((<type>)<name>(String.valueOf(<expr>)<if(args)>, <endif><args; separator=", ">))
+<name>(<args; separator=", ">)[<expr>]
 >>
 
 mul_expr(left_expr, right_expr) ::= "(<left_expr> * <right_expr>)"
@@ -93,7 +93,7 @@ equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
 not_equals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
 and_expr(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
 not_expr(expr) ::= "!<expr>"
-sminus_expr(expr) ::= "-<expr>"
+sminus_expr(expr) ::= "<expr>--"
 
 lvalue(name, array) ::= "<name><array>"
 array_access(expr) ::= "[<expr>]"

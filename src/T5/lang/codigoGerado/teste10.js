@@ -11,13 +11,13 @@ function fibonacci( n) {
         returns.push(n);
         return returns;
     } 
-    returns.push((((let)fibonacci(String.valueOf(0), (n - 1))) + ((let)fibonacci(String.valueOf(0), (n - 2)))));
+    returns.push((fibonacci((n - 1))[0] + fibonacci((n - 2))[0]));
     return returns;
 }
 
 function main() {
     let v = 0;
-    v = ((let)fibonacci(String.valueOf(0), 5));
+    v = fibonacci(5)[0];
     process.stdout.write(v.toString());
 }
   
