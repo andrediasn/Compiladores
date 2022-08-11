@@ -1,6 +1,4 @@
 
-main();
-
 function main() {
     let i = 0;
     let nlines = 0;
@@ -16,4 +14,4 @@ function main() {
         process.stdout.write('\n'.toString());
     }
 }
-  
+main();  

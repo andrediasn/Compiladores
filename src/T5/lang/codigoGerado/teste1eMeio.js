@@ -1,6 +1,4 @@
 
-main();
-
 function main() {
     let n = 0;
     let q = 0;
@@ -8,7 +6,7 @@ function main() {
     let z = 0;
     n = 13;
     q = 5;
-    w = ((let)divMod(String.valueOf(1), n, q));
+    w = divMod(n, q)[1];
     z = ((2 * w) + 1);
     process.stdout.write('Z'.toString());
     process.stdout.write(':'.toString());
@@ -22,4 +20,4 @@ function divMod( n,  q) {
     returns.push((n % q));
     return returns;
 }
-  
+main();  

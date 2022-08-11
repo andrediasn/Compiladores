@@ -1,6 +1,4 @@
 
-main();
-
 function main() {
     let i = 0;
     let k = 0;
@@ -39,4 +37,4 @@ function main() {
     process.stdout.write('}'.toString());
     process.stdout.write('\n'.toString());
 }
-  
+main();  

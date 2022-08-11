@@ -1,6 +1,4 @@
 
-main();
-
 function fat( n) {
     let returns = [];
     if((n == 0)) {
@@ -8,7 +6,7 @@ function fat( n) {
         returns.push(1);
         return returns;
     } 
-    returns.push((n * ((let)fat(String.valueOf(0), (n - 1)))));
+    returns.push((n * fat((n - 1))[0]));
     return returns;
 }
 
@@ -30,9 +28,9 @@ function spook( n) {
 
 function main() {
     let k = 0;
-    k = ((let)fat(String.valueOf(0), 6));
-    k = ((let)spook(String.valueOf(0), 2));
+    k = fat(6)[0];
+    k = spook(2)[0];
     process.stdout.write(k.toString());
     process.stdout.write('\n'.toString());
 }
-  
+main();  

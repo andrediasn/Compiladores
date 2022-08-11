@@ -1,6 +1,4 @@
 
-main();
-
 function main() {
     let n = 0;
     let q = 0;
@@ -29,4 +27,4 @@ function divMod( n,  q) {
     returns.push((n % q));
     return returns;
 }
-  
+main();  

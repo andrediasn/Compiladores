@@ -1,6 +1,4 @@
 
-main();
-
 let  Ponto = {
     'x': null,
     'y': null,
@@ -21,4 +19,4 @@ function main() {
     }
     process.stdout.write('\n'.toString());
 }
-  
+main();  

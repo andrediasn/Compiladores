@@ -1,6 +1,4 @@
 
-main();
-
 function main() {
     let x = 0;
     x = 0;
@@ -8,4 +6,4 @@ function main() {
     process.stdout.write(x.toString());
     process.stdout.write('\n'.toString());
 }
-  
+main();  
