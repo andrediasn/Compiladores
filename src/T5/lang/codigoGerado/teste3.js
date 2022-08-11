@@ -4,9 +4,9 @@ main();
 function main() {
     let i = 0;
     let k = 0;
-    let[] x = null;
+    let x = null;
     k = 4;
-    x = new let[k];
+    x = [];
     x[0] = 0;
     x[3] = 15;
     process.stdout.write(x[3].toString());

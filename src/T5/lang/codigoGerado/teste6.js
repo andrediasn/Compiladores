@@ -1,9 +1,9 @@
 
 main();
 
-static class Ponto {
-    let  x;
-    let  y;
+let  Ponto = {
+    'x': null,
+    'y': null,
 }
 function printP( p) {
     process.stdout.write('('.toString());
@@ -34,7 +34,7 @@ function printV( v,  n) {
 }
 
 function sort( v,  n) {
-    Ponto aux = null;
+    let aux = null;
     let i = 0;
     let j = 0;
     i = 0;
@@ -58,13 +58,13 @@ function sort( v,  n) {
 function main() {
     let i = 0;
     let k = 0;
-    Ponto[] p = null;
+    let p = null;
     k = 5;
-    p = new Ponto[k];
+    p = [];
     i = 0;
     for(let it60_3 = k; it60_3 > 0; it60_3--) {
 
-        p[i] = new Ponto();
+        p[i] = Ponto;
         p[i].x = (12 + i);
         p[i].y = (12 - i);
         i = (i + 1);

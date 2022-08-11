@@ -25,7 +25,7 @@ public class JavaVisitor extends Visitor {
 
 	private STGroup groupTemplate;
 	private ST type, stmt, expr;
-	private List<ST> funcs, params, datas, decls;
+	private List<ST> funcs, params, datas, decls,decls2;
 	private ArrayList<STyFunc> styfuncs;
 	private String fileName;
 	private TyEnv<LocalEnv<SType>> env;  
@@ -316,10 +316,11 @@ public class JavaVisitor extends Visitor {
 			aux.add("value", ((STyData) t).getId());
 			type = aux; 
 		} else if (t instanceof STyArr) {
-			ST aux = groupTemplate.getInstanceOf("array_type");
-			processSType(((STyArr) t).getArg());
-			aux.add("type", type);
-			type = aux;
+			//ST aux = groupTemplate.getInstanceOf("array_type");
+			//ST aux = groupTemplate.getInstanceOf("id_type");
+			//processSType(((STyArr) t).getArg());
+			//aux.add("value", ((STyData) t).getId());
+			//type = aux;
 		}
 	}
 
@@ -331,7 +332,13 @@ public class JavaVisitor extends Visitor {
         for(Decl dec : d.getTypes()){
             dec.accept(this);
         }
-        aux.add("decl", decls);
+		for(int i =0;i < decls.size();i++){
+			decls.get(i).add("recivedNull",": null");
+			decls.get(i).add("comma",",");
+
+		}
+		
+		aux.add("decl", decls);	
         datas.add(aux);
 	}
 
@@ -341,6 +348,7 @@ public class JavaVisitor extends Visitor {
         e.getType().accept(this);
         dec.add("type", type);
         dec.add("name", e.getId());
+		dec.add("param","'");
         decls.add(dec);
 	}
 

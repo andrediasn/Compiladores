@@ -9,12 +9,12 @@ main();
   
 >>
 data(name, decl) ::= <<
-let  <name> {
+let  <name> = {
     <decl; separator="\n">
 }
 >>
-decl(type, name) ::= <<
-<type> <name>;
+decl(type, name,param,recivedNull,comma) ::= <<
+<param><name><param><recivedNull><comma>
 >>
 func(name, params, decl, stmt, key, retorno, main) ::= <<
 function <name>(<params; separator=", ">) {
@@ -24,11 +24,11 @@ function <name>(<params; separator=", ">) {
 }
 >>
 decl_func(type, name) ::= <<
-<type.tp> <name> = <type.default>
+let <name> = <type.default>
 >>
 param(type, name) ::= "<type> <name>"
 chave(value) ::= "<value>"
-array_type(type) ::= "<type>[]"
+array_type() ::= "[]"
 int_type() ::= "let"
 float_type() ::= "let"
 boolean_type() ::= "let"
@@ -98,7 +98,7 @@ sminus_expr(expr) ::= "-<expr>"
 lvalue(name, array) ::= "<name><array>"
 array_access(expr) ::= "[<expr>]"
 data_access(expr) ::= ".<expr>"
-new_expr_array(type, expr, squares) ::= "new <type>[<expr>]<squares>"
+new_expr_array(type, expr, squares) ::= "[]<squares>"
 new_array(type, squares) ::= "new <type>[1]<squares>"
-new_expr_type(type) ::= "new <type>()"
+new_expr_type(type) ::= "<type>"
 new_padrao(value) ::= "<value>"

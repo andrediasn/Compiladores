@@ -1,13 +1,13 @@
 
 main();
 
-static class Ponto {
-    let  x;
-    let  y;
+let  Ponto = {
+    'x': null,
+    'y': null,
 }
 function main() {
-    Ponto p = null;
-    p = new Ponto();
+    let p = null;
+    p = Ponto;
     p.x = 10.0f;
     p.y = 10.0f;
     process.stdout.write('('.toString());
