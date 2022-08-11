@@ -7,12 +7,14 @@ program(name, funcs, datas) ::= <<
 main();  
 >>
 data(name, decl) ::= <<
-let  <name> = {
-    <decl; separator="\n">
+function  <name> () {
+    return{      
+      <decl; separator="\n">
+    }
 }
 >>
 decl(type, name,param,recivedNull,comma) ::= <<
-<param><name><param><recivedNull><comma>
+'<name>'<recivedNull>,
 >>
 func(name, params, decl, stmt, key, retorno, main) ::= <<
 function <name>(<params; separator=", ">) {
@@ -62,7 +64,7 @@ read(var) ::= "<var> = Integer.parseInt((new Scanner(System.in)).next());"
 attr(var, expr) ::= "<var> = <expr>;"
 ltype(type, colchetes) ::= "<type> <colchetes>"
 boolean_expr(value) ::= "<value>"
-float_expr(value) ::= "<value>f"
+float_expr(value) ::= "<value>"
 int_expr(value) ::= "<value>"
 char_expr(value) ::= "'<value>'"
 null_expr() ::= "null"
@@ -98,5 +100,5 @@ array_access(expr) ::= "[<expr>]"
 data_access(expr) ::= ".<expr>"
 new_expr_array(type, expr, squares) ::= "[]<squares>"
 new_array(type, squares) ::= "new <type>[1]<squares>"
-new_expr_type(type) ::= "<type>"
+new_expr_type(type) ::= "<type>()"
 new_padrao(value) ::= "<value>"

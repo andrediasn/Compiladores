@@ -1,7 +1,9 @@
 
-let  Ponto = {
-    'x': null,
-    'y': null,
+function  Ponto () {
+    return{      
+      'x': null,
+      'y': null,
+    }
 }
 function printP( p) {
     process.stdout.write('('.toString());
@@ -62,7 +64,7 @@ function main() {
     i = 0;
     for(let it60_3 = k; it60_3 > 0; it60_3--) {
 
-        p[i] = Ponto;
+        p[i] = Ponto();
         p[i].x = (12 + i);
         p[i].y = (12 - i);
         i = (i + 1);

@@ -1,13 +1,15 @@
 
-let  Ponto = {
-    'x': null,
-    'y': null,
+function  Ponto () {
+    return{      
+      'x': null,
+      'y': null,
+    }
 }
 function main() {
     let p = null;
-    p = Ponto;
-    p.x = 10.0f;
-    p.y = 10.0f;
+    p = Ponto();
+    p.x = 10.0;
+    p.y = 10.0;
     process.stdout.write('('.toString());
     process.stdout.write(p.x.toString());
     process.stdout.write(','.toString());
