@@ -27,7 +27,7 @@ function spook( n) {
 }
 
 function main() {
-    let k = 0;
+    let k;
     k = fat(6)[0];
     k = spook(2)[0];
     process.stdout.write(k.toString());

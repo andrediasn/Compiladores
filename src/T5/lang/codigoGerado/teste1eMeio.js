@@ -1,9 +1,9 @@
 
 function main() {
-    let n = 0;
-    let q = 0;
-    let w = 0;
-    let z = 0;
+    let n;
+    let q;
+    let w;
+    let z;
     n = 13;
     q = 5;
     w = divMod(n, q)[1];

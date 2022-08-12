@@ -6,9 +6,9 @@ function  Ponto () {
     }
 }
 function main() {
-    let i = 0;
-    let k = 0;
-    let p = null;
+    let i;
+    let k;
+    let p;
     k = 5;
     p = [];
     i = 0;
@@ -20,6 +20,5 @@ function main() {
         i = (i + 1);
     }
     process.stdout.write('\n'.toString());
-    console.log(p)
 }
 main();  

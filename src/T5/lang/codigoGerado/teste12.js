@@ -24,7 +24,7 @@ function odd( n) {
 }
 
 function main() {
-    let r = false;
+    let r;
     r = even(3)[0];
     if(r) {
 

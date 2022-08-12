@@ -316,7 +316,7 @@ public class JavaVisitor extends Visitor {
 			aux.add("value", ((STyData) t).getId());
 			type = aux; 
 		} else if (t instanceof STyArr) {
-			//ST aux = groupTemplate.getInstanceOf("array_type");
+			ST aux = groupTemplate.getInstanceOf("array_type");
 			//ST aux = groupTemplate.getInstanceOf("id_type");
 			//processSType(((STyArr) t).getArg());
 			//aux.add("value", ((STyData) t).getId());
@@ -332,12 +332,6 @@ public class JavaVisitor extends Visitor {
         for(Decl dec : d.getTypes()){
             dec.accept(this);
         }
-		for(int i =0;i < decls.size();i++){
-			decls.get(i).add("recivedNull",": null");
-			decls.get(i).add("comma",",");
-
-		}
-		
 		aux.add("decl", decls);	
         datas.add(aux);
 	}
@@ -346,9 +340,7 @@ public class JavaVisitor extends Visitor {
 	public void visit(Decl e) {
 		ST dec = groupTemplate.getInstanceOf("decl");
         e.getType().accept(this);
-        dec.add("type", type);
         dec.add("name", e.getId());
-		dec.add("param","'");
         decls.add(dec);
 	}
 
@@ -425,8 +417,8 @@ public class JavaVisitor extends Visitor {
 	public void visit(Iterate e) {
 		ST aux = groupTemplate.getInstanceOf("iterate");
         e.getExpression().accept(this);
-        aux.add("exp", expr);
-		aux.add("linhaColuna", e.getLine()+"_"+e.getColumn());
+        aux.add("expr", expr);
+		aux.add("lc", e.getLine()+"_"+e.getColumn());
         e.getBody().accept(this);
         aux.add("stmt", stmt);
         stmt = aux;
@@ -521,38 +513,10 @@ public class JavaVisitor extends Visitor {
 		int n = e.getType().getBraces();
         e.getType().getBtype().accept(this);
         if(e.getExpression() != null){
-            aux = groupTemplate.getInstanceOf("new_expr_array");
-            if(n > 0){
-                for(int i = 0; i < n; i++){
-                    aux.add("squares", "[]");
-                }
-            }
-            aux.add("type", type);
-
-            e.getExpression().accept(this);
-            aux.add("expr", expr);
+        	aux = groupTemplate.getInstanceOf("new_expr_array");
         } else {
-			if(n > 0){
-				aux = groupTemplate.getInstanceOf("new_array");
-                for(int i = 0; i < n-1; i++){
-                    aux.add("squares", "[]");
-				}
-				aux.add("type", type);
-			}
-			else
-			{
-				if(e.getType().getBtype() instanceof TyID)
-				{
-					aux = groupTemplate.getInstanceOf("new_expr_type");
-            		aux.add("type", type);
-				}
-				else
-				{
-					aux = groupTemplate.getInstanceOf("new_padrao");
-					String padrao = getTypeDefaultVal(e.getType().getBtype());
-					aux.add("value", padrao);
-				}
-			}
+			aux = groupTemplate.getInstanceOf("new_expr_type");
+       		aux.add("type", type);	
         }
         expr = aux;
 	}

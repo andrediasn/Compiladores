@@ -13,8 +13,8 @@ function  <name> () {
     }
 }
 >>
-decl(type, name,param,recivedNull,comma) ::= <<
-'<name>'<recivedNull>,
+decl(name) ::= <<
+'<name>': null,
 >>
 func(name, params, decl, stmt, key, retorno, main) ::= <<
 function <name>(<params; separator=", ">) {
@@ -24,7 +24,7 @@ function <name>(<params; separator=", ">) {
 }
 >>
 decl_func(type, name) ::= <<
-let <name> = <type.default>
+let <name>
 >>
 param(type, name) ::= "<type> <name>"
 chave(value) ::= "<value>"
@@ -42,8 +42,8 @@ return(aux) ::= <<
 return returns;
 >>
 
-iterate(exp, stmt, linhaColuna) ::= <<
-for(let it<linhaColuna> = <exp>; it<linhaColuna> > 0; it<linhaColuna>--) {
+iterate(expr, stmt, lc) ::= <<
+for(let it<lc> = <expr>; it<lc> > 0; it<lc>--) {
     <stmt>
 }
 >>
@@ -64,7 +64,7 @@ read(var) ::= "<var> = Integer.parseInt((new Scanner(System.in)).next());"
 attr(var, expr) ::= "<var> = <expr>;"
 ltype(type, colchetes) ::= "<type> <colchetes>"
 boolean_expr(value) ::= "<value>"
-float_expr(value) ::= "<value>"
+float_expr(value) ::= "<value>.toFixed(1)"
 int_expr(value) ::= "<value>"
 char_expr(value) ::= "'<value>'"
 null_expr() ::= "null"
@@ -98,7 +98,5 @@ sminus_expr(expr) ::= "<expr>--"
 lvalue(name, array) ::= "<name><array>"
 array_access(expr) ::= "[<expr>]"
 data_access(expr) ::= ".<expr>"
-new_expr_array(type, expr, squares) ::= "[]<squares>"
-new_array(type, squares) ::= "new <type>[1]<squares>"
+new_expr_array() ::= "[]"
 new_expr_type(type) ::= "<type>()"
-new_padrao(value) ::= "<value>"

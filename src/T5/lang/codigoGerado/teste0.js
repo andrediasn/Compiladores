@@ -1,7 +1,7 @@
 
 function main() {
-    let i = 0;
-    let nlines = 0;
+    let i;
+    let nlines;
     nlines = 5;
     i = nlines;
     for(let it16_3 = nlines; it16_3 > 0; it16_3--) {

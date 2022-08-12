@@ -1,6 +1,6 @@
 
 function main() {
-    let x = 0;
+    let x;
     x = 0;
     process.stdout.write('>'.toString());
     process.stdout.write(x.toString());

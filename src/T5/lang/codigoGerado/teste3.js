@@ -1,8 +1,8 @@
 
 function main() {
-    let i = 0;
-    let k = 0;
-    let x = null;
+    let i;
+    let k;
+    let x;
     k = 4;
     x = [];
     x[0] = 0;

@@ -14,7 +14,7 @@ function fibonacci( n) {
 }
 
 function main() {
-    let v = 0;
+    let v;
     v = fibonacci(5)[0];
     process.stdout.write(v.toString());
 }

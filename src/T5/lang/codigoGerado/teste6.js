@@ -14,7 +14,7 @@ function printP( p) {
 }
 
 function printV( v,  n) {
-    let i = 0;
+    let i;
     process.stdout.write('{'.toString());
     if((0 < n)) {
 
@@ -34,9 +34,9 @@ function printV( v,  n) {
 }
 
 function sort( v,  n) {
-    let aux = null;
-    let i = 0;
-    let j = 0;
+    let aux;
+    let i;
+    let j;
     i = 0;
     for(let it42_4 = (n - 1); it42_4 > 0; it42_4--) {
 
@@ -56,9 +56,9 @@ function sort( v,  n) {
 }
 
 function main() {
-    let i = 0;
-    let k = 0;
-    let p = null;
+    let i;
+    let k;
+    let p;
     k = 5;
     p = [];
     i = 0;
