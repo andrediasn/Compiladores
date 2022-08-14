@@ -1,8 +1,5 @@
 
 function main() {
-    let i;
-    let k;
-    let x;
     k = 4;
     x = [];
     x[0] = 0;
@@ -37,4 +34,5 @@ function main() {
     process.stdout.write('}'.toString());
     process.stdout.write('\n'.toString());
 }
+
 main();  

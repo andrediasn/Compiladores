@@ -1,7 +1,5 @@
 
 function main() {
-    let i;
-    let nlines;
     nlines = 5;
     for(let it15_3 = nlines; it15_3 > 0; it15_3--) {
 
@@ -14,4 +12,5 @@ function main() {
         process.stdout.write('\n'.toString());
     }
 }
+
 main();  

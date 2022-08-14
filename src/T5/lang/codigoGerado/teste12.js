@@ -1,31 +1,24 @@
 
-function even( n) {
-    let returns = [];
+function even(n) {
     if((n == 0)) {
-        returns.push(true);
-        return returns;
+        return [true];
     } else {
-        returns.push(odd((n - 1))[0]);
-        return returns;
+        return [odd((n - 1))[0]];
     }
 
 }
 
-function odd( n) {
-    let returns = [];
+function odd(n) {
     if((n == 0)) {
-        returns.push(false);
-        return returns;
+        return [false];
     } else {
-        returns.push(even((n - 1))[0]);
-        return returns;
+        return [even((n - 1))[0]];
     }
 
 }
 
 function main() {
-    let r;
-    r = even(3)[0];
+    r = even(3654)[0];
     if(r) {
 
         process.stdout.write('P'.toString());
@@ -41,4 +34,5 @@ function main() {
     }
 
 }
+
 main();  

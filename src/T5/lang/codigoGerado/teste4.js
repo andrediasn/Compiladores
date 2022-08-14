@@ -6,7 +6,6 @@ function  Ponto () {
     }
 }
 function main() {
-    let p;
     p = Ponto();
     p.x = 10.0.toFixed(1);
     p.y = 10.0.toFixed(1);
@@ -18,4 +17,5 @@ function main() {
     process.stdout.write(')'.toString());
     process.stdout.write('\n'.toString());
 }
+
 main();  

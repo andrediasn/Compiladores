@@ -1,21 +1,17 @@
 
-function fibonacci( n) {
-    let returns = [];
+function fibonacci(n) {
     if((n < 1)) {
-        returns.push(n);
-        return returns;
+        return [n];
     } 
     if((n == 1)) {
-        returns.push(n);
-        return returns;
+        return [n];
     } 
-    returns.push((fibonacci((n - 1))[0] + fibonacci((n - 2))[0]));
-    return returns;
+    return [(fibonacci((n - 1))[0] + fibonacci((n - 2))[0])];
 }
 
 function main() {
-    let v;
     v = fibonacci(5)[0];
     process.stdout.write(v.toString());
 }
+
 main();  

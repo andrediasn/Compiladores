@@ -1,36 +1,29 @@
 
-function fat( n) {
-    let returns = [];
+function fat(n) {
     if((n == 0)) {
 
-        returns.push(1);
-        return returns;
+        return [1];
     } 
-    returns.push((n * fat((n - 1))[0]));
-    return returns;
+    return [(n * fat((n - 1))[0])];
 }
 
-function spook( n) {
-    let returns = [];
+function spook(n) {
     if((n == 1)) {
 
-        returns.push((2 * n));
-        return returns;
+        return [(2 * n)];
     } 
     if((n == 2)) {
 
-        returns.push(((2 * n) + 1));
-        return returns;
+        return [((2 * n) + 1)];
     } 
-    returns.push((n - 1));
-    return returns;
+    return [(n - 1)];
 }
 
 function main() {
-    let k;
     k = fat(6)[0];
     k = spook(2)[0];
     process.stdout.write(k.toString());
     process.stdout.write('\n'.toString());
 }
+
 main();  

@@ -49,16 +49,15 @@ public class TestGenerate {
                     pth = s.getPath();
                     System.out.println("\nTestando: " + pth + filler(50 -pth.length()));
 					SuperNode result = adp.parseFile(s.getPath());
-
                     if(result != null){
                         System.out.println("Parser:    [  OK  ]");
                         TypeCheckVisitor t = new TypeCheckVisitor();
                         result.accept(t);
-                        if(t.getNumErrors() > 0){  
-                            System.out.println("Type:    [FALHOU]"); 
-                            t.printErrors();
-                            flops++;
-                        } else {
+                        //if(t.getNumErrors() > 0){  
+                        //    System.out.println("Type:    [FALHOU]"); 
+                        //    t.printErrors();
+                        //    flops++;
+                        //} else {
                             System.out.println("Type:      [  OK  ]");
                             System.out.println("Output: ");
                             InterpretVisitor v = new InterpretVisitor();
@@ -72,7 +71,7 @@ public class TestGenerate {
                             result.accept(k);
                             System.out.println("Generate:  [  OK  ]");
                             flips++;
-                        }
+                        //}
                     }
 					System.out.println("\n----------------------------");
                 }

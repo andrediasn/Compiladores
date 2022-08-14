@@ -1,9 +1,5 @@
 
 function main() {
-    let n;
-    let q;
-    let w;
-    let z;
     n = 13;
     q = 5;
     w = divMod(n, q)[1];
@@ -14,10 +10,8 @@ function main() {
     process.stdout.write('\n'.toString());
 }
 
-function divMod( n,  q) {
-    let returns = [];
-    returns.push((n / q));
-    returns.push((n % q));
-    return returns;
+function divMod(n, q) {
+    return [(n / q), (n % q)];
 }
+
 main();  

@@ -25,43 +25,38 @@ public class JavaVisitor extends Visitor {
 
 	private STGroup groupTemplate;
 	private ST type, stmt, expr;
-	private List<ST> funcs, params, datas, decls,decls2;
+	private List<ST> funcs, params, datas, decls;
 	private ArrayList<STyFunc> styfuncs;
 	private String fileName;
 	private TyEnv<LocalEnv<SType>> env;  
     private ArrayList<TyEnv<LocalEnv<SType>>> envs;
 	private FileWriter file;
+	
 	public JavaVisitor(String fileName, ArrayList<TyEnv<LocalEnv<SType>>> envs, ArrayList<STyFunc> f) throws IOException{
 		groupTemplate = new STGroupFile("./template/js.stg");
 		this.fileName = fileName;
 		file = new FileWriter("codigoGerado/" + this.fileName + ".js");
 		this.envs = envs;
-		//System.out.print(envs);
 		this.styfuncs = f;
 	}
 
 	private void criaArquivo(ST template) throws IOException {
-        file.write(template.render()); // newline
+        file.write(template.render()); 
         file.close();
     }
 
 	public void visit(Program p) {
 		ST template = groupTemplate.getInstanceOf("program");
-
 		template.add("name", fileName);
-
 		datas = new ArrayList<ST>();
-		if(p.getDatas()!=null)
-		{
+		if(p.getDatas()!=null) {
 			for (Data d : p.getDatas()) {
 				d.accept(this);
 			}
 		}
 		template.add("datas", datas);
-
 		funcs = new ArrayList<ST>();
-		if(p.getFuncs()!=null)
-		{
+		if(p.getFuncs()!=null) {
 			int i = 0;
 			for (Func f : p.getFuncs()) {
 				env = envs.get(i);
@@ -70,12 +65,10 @@ public class JavaVisitor extends Visitor {
 			}
 		}
 		template.add("funcs", funcs);
-
-		//System.out.println(template.render());
 		try {
             criaArquivo(template);
         } catch (IOException e) {
-            throw new RuntimeException("geracao de codigo falhou.");
+            throw new RuntimeException("Code generate failed!");
         }
 	}
 
@@ -206,67 +199,28 @@ public class JavaVisitor extends Visitor {
 		stmt.add("expr", expr);
 	}
 
-	private String getSTypeDefault(SType t) {
-        if(t instanceof STyInt) {
-            return "0";
-        }else if(t instanceof STyBool) {
-            return "false";
-        }else if(t instanceof STyFloat) {
-            return "0f";
-        }else if(t instanceof STyChar) {
-            return "' '";
-        }else if(t instanceof STyData) {
-            return "null";
-        } else if(t instanceof STyArr) {
-            return "null";
-        } else {
-            return "";
-        }
-    }
-
 	public void visit(Func f) { 
 		ST fun = groupTemplate.getInstanceOf("func");
 		fun.add("name", f.getID());
-
-		if(f.getType()!=null)
-		{
-			fun.add("retorno", "tem");
-		}
-		
 		Set<String> keys = env.getKeys();
-		ArrayList<ST> chaves = new ArrayList<ST>();
 		params = new ArrayList<ST>();
 		if (f.getParam() != null) {
 			for (Param p : f.getParam()) {
-				ST chave = groupTemplate.getInstanceOf("chave");
-				chave.add("value", p.getID());
-				chaves.add(chave);
+				ST key = groupTemplate.getInstanceOf("key");
+				key.add("value", p.getID());
 				keys.remove(p.getID());
 				p.accept(this);
 			}
 		}
-		fun.add("key", chaves);
 		fun.add("params", params);
-
-		for (String key : keys) {
-			ST decl = groupTemplate.getInstanceOf("decl_func");
-			decl.add("name", key);
-			SType t = env.get(key).getFuncType();
-			processSType(t); 
-			String defaultVal = getSTypeDefault(t);
-            decl.addAggr("type.{tp, default}", type, defaultVal);
-			fun.add("decl", decl);
-		}
 		ArrayList<ST> stmts = new ArrayList<ST>();
-		if (f.getBody() != null)
-		{
+		if (f.getBody() != null) {
 			for (Cmd c : f.getBody()) {
 				c.accept(this);
 				stmts.add(stmt);
 			}
 		}
 		fun.add("stmt", stmts);
-
 		funcs.add(fun);
 	}
 
@@ -289,40 +243,11 @@ public class JavaVisitor extends Visitor {
 		params.add(param);
 	}
 
-	public void visit(TyInt t) {
-		type = groupTemplate.getInstanceOf("int_type");
-	}
+	public void visit(TyInt t) { }
 
-	public void visit(TyFloat t) {
-		type = groupTemplate.getInstanceOf("float_type");
-	}
+	public void visit(TyFloat t) { }
 
-	public void visit(TyBool t) {
-		type = groupTemplate.getInstanceOf("boolean_type");
-	}
-
-	////////////// Métodos ///////////
-	private void processSType(SType t) { 
-		if (t instanceof STyInt){
-			type = groupTemplate.getInstanceOf("int_type");
-		}else if (t instanceof STyBool){
-			type = groupTemplate.getInstanceOf("boolean_type");
-		}else if (t instanceof STyFloat){
-			type = groupTemplate.getInstanceOf("float_type");
-		}else if(t instanceof STyChar) {
-			type = groupTemplate.getInstanceOf("char_type");
-		}else if(t instanceof STyData) {
-			ST aux = groupTemplate.getInstanceOf("id_type");
-			aux.add("value", ((STyData) t).getId());
-			type = aux; 
-		} else if (t instanceof STyArr) {
-			ST aux = groupTemplate.getInstanceOf("array_type");
-			//ST aux = groupTemplate.getInstanceOf("id_type");
-			//processSType(((STyArr) t).getArg());
-			//aux.add("value", ((STyData) t).getId());
-			//type = aux;
-		}
-	}
+	public void visit(TyBool t) { }
 
 	@Override
 	public void visit(Data d) {
@@ -345,10 +270,7 @@ public class JavaVisitor extends Visitor {
 	}
 
 	@Override
-	public void visit(TyChar t) {
-		type = groupTemplate.getInstanceOf("char_type");
-
-	}
+	public void visit(TyChar t) { }
 
 	@Override
 	public void visit(TyID t) {
@@ -367,9 +289,7 @@ public class JavaVisitor extends Visitor {
 			int indexRet = 0;
 			for(LValue lv : e.getReturn()) {
 				lv.accept(this);
-				SType t = env.get(((LValue) lv).getId()).getFuncType();
-				processSType(t);
-				aux.addAggr("exp.{id, type, index}", expr, type, indexRet);
+				aux.addAggr("exp.{id, index}", expr, indexRet);
 				indexRet++;
 			}
 		}
@@ -380,19 +300,13 @@ public class JavaVisitor extends Visitor {
 	public void visit(CallExpr e) { 
 		ST aux = groupTemplate.getInstanceOf("call_expr");
 		aux.add("name", e.getName());
-		if(e.getExpressions()!=null)
-		{
+		if(e.getExpressions()!=null) {
 			for(Expr exp : e.getExpressions()) {
 				exp.accept(this);
 				aux.add("args", expr);
 			}
 		}
-		STyFunc auxi = styfuncs.get(0);
 		styfuncs.remove(0);
-		Int n = (Int)e.getReturn();
-		int index = n.getValue();
-		processSType(auxi.getRetorno()[index]);
-		aux.add("type",type);
 		e.getReturn().accept(this);
 		aux.add("expr", expr);
 		expr = aux;
@@ -402,8 +316,7 @@ public class JavaVisitor extends Visitor {
 	public void visit(StmtList e) {
 		ST aux = groupTemplate.getInstanceOf("stmt_list"); 
 		ArrayList<ST> stmts = new ArrayList<ST>();
-		if (e.getList() != null)
-		{
+		if (e.getList() != null) {
 			for (Cmd c : e.getList()) {
 				c.accept(this);
 				stmts.add(stmt);
@@ -430,17 +343,17 @@ public class JavaVisitor extends Visitor {
 		char aux = e.getValue();
 		if (aux == '\n'){
 			expr.add("value", "\\n");
-		}else if (aux == ('\t')){
+		} else if (aux == ('\t')) {
 			expr.add("value", "\\t");
-		}else if (aux == ('\b')){
+		} else if (aux == ('\b')) {
 			expr.add("value", "\\b");
-		}else if (aux == ('\r')){
+		} else if (aux == ('\r')) {
 			expr.add("value", "\\r");
-		}else if (aux == ('\\')){
+		} else if (aux == ('\\')) {
 			expr.add("value","\\\\");
-		}else if (aux == ('\'')){
+		} else if (aux == ('\'')) {
 			expr.add("value", "\\'");
-		}else{
+		} else {
 			expr.add("value", e.getValue());
 		}
 	}
@@ -492,20 +405,6 @@ public class JavaVisitor extends Visitor {
 		expr = aux;
 
 	}
-	
-	private String getTypeDefaultVal(BType t) {
-        if(t instanceof TyInt) {
-            return "0";
-        }else if(t instanceof TyBool) {
-            return "false";
-        }else if(t instanceof TyFloat) {
-            return "0f";
-        }else if(t instanceof TyChar) {
-            return "' '";
-        } else {
-            return "";
-        }
-    }
 
 	@Override
 	public void visit(New e) {
@@ -535,18 +434,6 @@ public class JavaVisitor extends Visitor {
 	}
 
 	@Override
-	public void visit(Type e) {
-		ST aux = groupTemplate.getInstanceOf("ltype");
-		e.getBtype().accept(this);
-		aux.add("type", type);
-		int n = e.getBraces();
-		String x = "";
-		for(int i = 0; i < n; i++)
-		{
-			x = x + "[]";
-		}
-		aux.add("colchetes", x);
-		type = aux;
-	}
+	public void visit(Type e) {}
 
 }

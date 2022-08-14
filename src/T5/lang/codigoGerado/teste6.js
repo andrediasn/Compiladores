@@ -5,7 +5,7 @@ function  Ponto () {
       'y': null,
     }
 }
-function printP( p) {
+function printP(p) {
     process.stdout.write('('.toString());
     process.stdout.write(p.x.toString());
     process.stdout.write(','.toString());
@@ -13,8 +13,7 @@ function printP( p) {
     process.stdout.write(')'.toString());
 }
 
-function printV( v,  n) {
-    let i;
+function printV(v, n) {
     process.stdout.write('{'.toString());
     if((0 < n)) {
 
@@ -33,10 +32,7 @@ function printV( v,  n) {
     process.stdout.write('}'.toString());
 }
 
-function sort( v,  n) {
-    let aux;
-    let i;
-    let j;
+function sort(v, n) {
     i = 0;
     for(let it42_4 = (n - 1); it42_4 > 0; it42_4--) {
 
@@ -56,9 +52,6 @@ function sort( v,  n) {
 }
 
 function main() {
-    let i;
-    let k;
-    let p;
     k = 5;
     p = [];
     i = 0;
@@ -80,4 +73,5 @@ function main() {
 
     process.stdout.write('\n'.toString());
 }
+
 main();  

@@ -4,8 +4,10 @@ program(name, funcs, datas) ::= <<
 
 <datas; separator="\n\n">
 <funcs; separator="\n\n">
+
 main();  
 >>
+
 data(name, decl) ::= <<
 function  <name> () {
     return{      
@@ -16,30 +18,20 @@ function  <name> () {
 decl(name) ::= <<
 '<name>': null,
 >>
-func(name, params, decl, stmt, key, retorno, main) ::= <<
+
+func(name, params, decl, stmt) ::= <<
 function <name>(<params; separator=", ">) {
-    <if(retorno)>let returns = [];<endif>
     <if(decl)><decl; separator=";\n">;<endif>
     <stmt; separator="\n">
 }
 >>
-decl_func(type, name) ::= <<
-let <name>
->>
-param(type, name) ::= "<type> <name>"
-chave(value) ::= "<value>"
-array_type() ::= "[]"
-int_type() ::= "let"
-float_type() ::= "let"
-boolean_type() ::= "let"
-char_type() ::= "let"
+param(name) ::= "<name>"
+key(value) ::= "<value>"
 id_type(value) ::= "<value>"
 
-print(expr) ::= "process.stdout.write(<expr>.toString());"
-aux(expr) ::= "returns.push(<expr>);"
+aux(expr) ::= "<expr>"
 return(aux) ::= <<
-<aux; separator="\n">
-return returns;
+return [<aux; separator=", ">];
 >>
 
 iterate(expr, stmt, lc) ::= <<
@@ -60,15 +52,15 @@ if(<expr>) {
 stmt_list(stmts) ::= << 
 <stmts; separator="\n">
 >>
+
+print(expr) ::= "process.stdout.write(<expr>.toString());"
 read(var) ::= "<var> = Integer.parseInt((new Scanner(System.in)).next());"
 attr(var, expr) ::= "<var> = <expr>;"
-ltype(type, colchetes) ::= "<type> <colchetes>"
 boolean_expr(value) ::= "<value>"
 float_expr(value) ::= "<value>.toFixed(1)"
 int_expr(value) ::= "<value>"
 char_expr(value) ::= "'<value>'"
 null_expr() ::= "null"
-
 
 call_cmd(name, args, exp) ::= <<
 <if(exp)>
@@ -78,7 +70,7 @@ call_cmd(name, args, exp) ::= <<
 <name>(<args; separator=", ">);
 <endif>
 >>
-call_expr(name, args, expr, type) ::= <<
+call_expr(name, args, expr) ::= <<
 <name>(<args; separator=", ">)[<expr>]
 >>
 
@@ -87,7 +79,6 @@ div_expr(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
 cmodule_expr(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
 add_expr(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
 sub_expr(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
-
 lt_expr(left_expr, right_expr) ::= "(<left_expr> \< <right_expr>)"
 equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
 not_equals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
