@@ -45,12 +45,12 @@ public class LangCompiler{
               System.out.println("Executando bateria de testes sintáticos:");
               TestParser tp = new TestParser(langParser);
               return;
-          }if(args[0].equals("-byt") ){
-              System.out.println("Executando bateria de testes sintáticos:");
-              // TestParser tp = new TestParser(langParser); ;
+          }if(args[0].equals("-bty") ){
+              System.out.println("Executando bateria de testes no sistemas de tipos:");
+              TestType tp = new TestType(langParser); ;
               return;
           } if(args[0].equals("-bsm") ){
-              System.out.println("Executando bateria de testes sintáticos:");
+              System.out.println("Executando bateria de testes no interpretador:");
               TestVisitor tp = new TestVisitor(langParser);
               return;
           }
