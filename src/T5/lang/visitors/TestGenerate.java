@@ -53,25 +53,25 @@ public class TestGenerate {
                         System.out.println("Parser:    [  OK  ]");
                         TypeCheckVisitor t = new TypeCheckVisitor();
                         result.accept(t);
-                        //if(t.getNumErrors() > 0){  
-                        //    System.out.println("Type:    [FALHOU]"); 
-                        //    t.printErrors();
-                        //    flops++;
-                        //} else {
+                        if(t.getNumErrors() > 0){  
+                           System.out.println("Type:    [FALHOU]"); 
+                           t.printErrors();
+                           flops++;
+                        } else {
                             System.out.println("Type:      [  OK  ]");
                             System.out.println("Output: ");
                             InterpretVisitor v = new InterpretVisitor();
                             result.accept(v);
-                            System.out.println("Interpret: [  OK  ]");
+                            System.out.println("\nInterpret: [  OK  ]");
                             String name = s.getName();
                             if(name.indexOf('.') > 0) {
                                 name = name.substring(0, name.indexOf('.'));
                             }
                             JavaVisitor k = new JavaVisitor(name, t.getEnvs(), t.getfuncs());
                             result.accept(k);
-                            System.out.println("Generate:  [  OK  ]");
+                            System.out.println("Translator:  [  OK  ]");
                             flips++;
-                        //}
+                        }
                     }
 					System.out.println("\n----------------------------");
                 }

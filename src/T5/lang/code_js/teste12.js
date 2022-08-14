@@ -18,7 +18,7 @@ function odd(n) {
 }
 
 function main() {
-    r = even(3654)[0];
+    r = even(3)[0];
     if(r) {
 
         process.stdout.write('P'.toString());

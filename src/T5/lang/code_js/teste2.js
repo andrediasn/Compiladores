@@ -2,7 +2,8 @@
 function main() {
     x = 0;
     process.stdout.write('>'.toString());
-    x = process.stdin.read();
+    input = require('prompt-sync')();
+    x = input();
     process.stdout.write(x.toString());
     process.stdout.write('\n'.toString());
 }

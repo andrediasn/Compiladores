@@ -19,9 +19,8 @@ decl(name) ::= <<
 '<name>': null,
 >>
 
-func(name, params, decl, stmt) ::= <<
+func(name, params, stmt) ::= <<
 function <name>(<params; separator=", ">) {
-    <if(decl)><decl; separator=";\n">;<endif>
     <stmt; separator="\n">
 }
 >>
@@ -54,8 +53,11 @@ stmt_list(stmts) ::= <<
 >>
 
 print(expr) ::= "process.stdout.write(<expr>.toString());"
-read(var) ::= "<var> = Integer.parseInt((new Scanner(System.in)).next());"
-attr(var, expr) ::= "<var> = <expr>;"
+read(expr) ::= <<
+input = require('prompt-sync')();
+<expr> = input();
+>>
+attr(expr, value) ::= "<expr> = <value>;"
 boolean_expr(value) ::= "<value>"
 float_expr(value) ::= "<value>.toFixed(1)"
 int_expr(value) ::= "<value>"
