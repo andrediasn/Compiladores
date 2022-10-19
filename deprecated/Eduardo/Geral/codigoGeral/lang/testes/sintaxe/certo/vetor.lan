@@ -1,9 +1,0 @@
-data Ponto{
-  x :: Float;
-  y :: Float;
-}
-main(){
-  x = new Ponto [][][][][3];
-  y = new Ponto [][][][][];
-  print x == y;
-}

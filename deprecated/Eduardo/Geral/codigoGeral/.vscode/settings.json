@@ -1,7 +1,0 @@
-{
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "c:\\Javalib\\antlr-4.8-complete.jar",
-        "lang/ST-4.3.1.jar"
-    ]
-}

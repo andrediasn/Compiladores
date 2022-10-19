@@ -1,4 +1,0 @@
-main(){
-  x = null;
-  print x;
-}
