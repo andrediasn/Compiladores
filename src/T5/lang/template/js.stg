@@ -2,48 +2,39 @@ group js;
 
 program(name, funcs, datas) ::= <<
 
-main();
-
 <datas; separator="\n\n">
 <funcs; separator="\n\n">
-  
+
+main();  
 >>
+
 data(name, decl) ::= <<
-let  <name> {
-    <decl; separator="\n">
+function  <name> () {
+    return{      
+      <decl; separator="\n">
+    }
 }
 >>
-decl(type, name) ::= <<
-<type> <name>;
+decl(name) ::= <<
+'<name>': null,
 >>
-func(name, params, decl, stmt, key, retorno, main) ::= <<
+
+func(name, params, stmt) ::= <<
 function <name>(<params; separator=", ">) {
-    <if(retorno)>let returns = [];<endif>
-    <if(decl)><decl; separator=";\n">;<endif>
     <stmt; separator="\n">
 }
 >>
-decl_func(type, name) ::= <<
-<type.tp> <name> = <type.default>
->>
-param(type, name) ::= "<type> <name>"
-chave(value) ::= "<value>"
-array_type(type) ::= "<type>[]"
-int_type() ::= "let"
-float_type() ::= "let"
-boolean_type() ::= "let"
-char_type() ::= "let"
+param(name) ::= "<name>"
+key(value) ::= "<value>"
 id_type(value) ::= "<value>"
 
-print(expr) ::= "process.stdout.write(<expr>.toString());"
-aux(expr) ::= "returns.push(<expr>);"
+aux(expr) ::= "<expr>"
 return(aux) ::= <<
-<aux; separator="\n">
-return returns;
+return [<aux; separator=", ">];
 >>
 
-iterate(exp, stmt, linhaColuna) ::= <<
-for(let it<linhaColuna> = <exp>; it<linhaColuna> > 0; it<linhaColuna>--) {
+iterate(expr, stmt, lc) ::= <<
+for(let it<lc> = <expr>; it<lc> > 0; it<lc>--) {
     <stmt>
 }
 >>
@@ -60,15 +51,18 @@ if(<expr>) {
 stmt_list(stmts) ::= << 
 <stmts; separator="\n">
 >>
-read(var) ::= "<var> = Integer.parseInt((new Scanner(System.in)).next());"
-attr(var, expr) ::= "<var> = <expr>;"
-ltype(type, colchetes) ::= "<type> <colchetes>"
+
+print(expr) ::= "process.stdout.write(<expr>.toString());"
+read(expr) ::= <<
+input = require('prompt-sync')();
+<expr> = input();
+>>
+attr(expr, value) ::= "<expr> = <value>;"
 boolean_expr(value) ::= "<value>"
-float_expr(value) ::= "<value>f"
+float_expr(value) ::= "<value>.toFixed(1)"
 int_expr(value) ::= "<value>"
 char_expr(value) ::= "'<value>'"
 null_expr() ::= "null"
-
 
 call_cmd(name, args, exp) ::= <<
 <if(exp)>
@@ -78,7 +72,7 @@ call_cmd(name, args, exp) ::= <<
 <name>(<args; separator=", ">);
 <endif>
 >>
-call_expr(name, args, expr, type) ::= <<
+call_expr(name, args, expr) ::= <<
 <name>(<args; separator=", ">)[<expr>]
 >>
 
@@ -87,7 +81,6 @@ div_expr(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
 cmodule_expr(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
 add_expr(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
 sub_expr(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
-
 lt_expr(left_expr, right_expr) ::= "(<left_expr> \< <right_expr>)"
 equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
 not_equals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
@@ -98,7 +91,5 @@ sminus_expr(expr) ::= "<expr>--"
 lvalue(name, array) ::= "<name><array>"
 array_access(expr) ::= "[<expr>]"
 data_access(expr) ::= ".<expr>"
-new_expr_array(type, expr, squares) ::= "new <type>[<expr>]<squares>"
-new_array(type, squares) ::= "new <type>[1]<squares>"
-new_expr_type(type) ::= "new <type>()"
-new_padrao(value) ::= "<value>"
+new_expr_array() ::= "[]"
+new_expr_type(type) ::= "<type>()"

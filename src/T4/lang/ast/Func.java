@@ -43,7 +43,7 @@ public class Func extends SuperNode {
     return id;
   }
 
-  public Type[] getTypeReturn() {
+  public Type[] getType() {
     return ret;
   }
 

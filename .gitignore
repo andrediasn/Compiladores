@@ -1,3 +1,5 @@
 *.class
 *.rar
 *.zip
+*.json
+node_modules

@@ -48,14 +48,24 @@ public class TestVisitor {
                 for(File s : inst){
                     pth = s.getPath();
                     System.out.println("\nTestando: " + pth + filler(50 -pth.length()));
-					SuperNode node = adp.parseFile(s.getPath());
-                    if(node != null){
-                        System.out.println("Output: ");
-					    Visitor v = new InterpretVisitor();
-					    node.accept(v);
-                       	flips++;
+					SuperNode result = adp.parseFile(s.getPath());
+                    if(result != null){
+                        System.out.println("Parser: [  OK  ]");
+                        TypeCheckVisitor t = new TypeCheckVisitor();
+                        result.accept(t);
+                        if(t.getNumErrors() > 0){  
+                            System.out.println("Type: [FALHOU]"); 
+                            t.printErrors();
+                            flops++;
+                        } else {
+                            System.out.println("Type:   [  OK  ]");
+                            System.out.println("Output: ");
+                            InterpretVisitor v = new InterpretVisitor();
+                            result.accept(v);
+                            flips++;
+                        }
                     }
-					System.out.println("----------------------------");
+					System.out.println("\n----------------------------");
                 }
                 System.out.println("Total de acertos: " + flips );
                 System.out.println("Total de erros: " + flops );

@@ -1,5 +1,5 @@
 compile: genparser
-	javac -cp .:antlr-4.10.1-complete.jar ast/*.java parser/*.java visitors/*.java type/*.java LangCompiler.java -d .
+	javac -cp .:antlr-4.10.1-complete.jar ast/*.java parser/*.java visitors/*.java langUtil/*.java LangCompiler.java -d .
 
 genparser: parser/lang.g4
 	java -jar antlr-4.10.1-complete.jar parser/lang.g4 -visitor

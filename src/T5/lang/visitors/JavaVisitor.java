@@ -31,37 +31,32 @@ public class JavaVisitor extends Visitor {
 	private TyEnv<LocalEnv<SType>> env;  
     private ArrayList<TyEnv<LocalEnv<SType>>> envs;
 	private FileWriter file;
+	
 	public JavaVisitor(String fileName, ArrayList<TyEnv<LocalEnv<SType>>> envs, ArrayList<STyFunc> f) throws IOException{
 		groupTemplate = new STGroupFile("./template/js.stg");
 		this.fileName = fileName;
-		file = new FileWriter("codigoGerado/" + this.fileName + ".js");
+		file = new FileWriter("code_js/" + this.fileName + ".js");
 		this.envs = envs;
-		//System.out.print(envs);
 		this.styfuncs = f;
 	}
 
 	private void criaArquivo(ST template) throws IOException {
-        file.write(template.render()); // newline
+        file.write(template.render()); 
         file.close();
     }
 
 	public void visit(Program p) {
 		ST template = groupTemplate.getInstanceOf("program");
-
 		template.add("name", fileName);
-
 		datas = new ArrayList<ST>();
-		if(p.getDatas()!=null)
-		{
+		if(p.getDatas()!=null) {
 			for (Data d : p.getDatas()) {
 				d.accept(this);
 			}
 		}
 		template.add("datas", datas);
-
 		funcs = new ArrayList<ST>();
-		if(p.getFuncs()!=null)
-		{
+		if(p.getFuncs()!=null) {
 			int i = 0;
 			for (Func f : p.getFuncs()) {
 				env = envs.get(i);
@@ -70,13 +65,119 @@ public class JavaVisitor extends Visitor {
 			}
 		}
 		template.add("funcs", funcs);
-
-		//System.out.println(template.render());
 		try {
             criaArquivo(template);
         } catch (IOException e) {
-            throw new RuntimeException("geracao de codigo falhou.");
+            throw new RuntimeException("Code generate failed!");
         }
+	}
+	
+	@Override
+	public void visit(Data d) {
+		ST aux = groupTemplate.getInstanceOf("data");
+        aux.add("name", d.getId());
+        decls = new ArrayList<ST>();
+        for(Decl dec : d.getTypes()){
+            dec.accept(this);
+        }
+		aux.add("decl", decls);	
+        datas.add(aux);
+	}
+
+	@Override
+	public void visit(Decl e) {
+		ST dec = groupTemplate.getInstanceOf("decl");
+        e.getType().accept(this);
+        dec.add("name", e.getId());
+        decls.add(dec);
+	}
+
+	@Override
+	public void visit(AccessData e) {
+		ST aux = groupTemplate.getInstanceOf("data_access");
+        aux.add("expr", e.getIndex());
+        expr = aux;
+	}
+
+	@Override
+	public void visit(StmtList e) {
+		ST aux = groupTemplate.getInstanceOf("stmt_list"); 
+		ArrayList<ST> stmts = new ArrayList<ST>();
+		if (e.getList() != null) {
+			for (Cmd c : e.getList()) {
+				c.accept(this);
+				stmts.add(stmt);
+			}
+		}
+		aux.add("stmts", stmts);
+		stmt = aux; 
+	}
+
+	public void visit(CallCmd e) { 
+		ST aux = groupTemplate.getInstanceOf("call_cmd");
+		aux.add("name", e.getName());
+        for(Expr exp : e.getExpressions()) {
+            exp.accept(this);
+            aux.add("args", expr);
+		}
+		if(e.getReturn() != null) {
+			int indexRet = 0;
+			for(LValue lv : e.getReturn()) {
+				lv.accept(this);
+				aux.addAggr("exp.{id, index}", expr, indexRet);
+				indexRet++;
+			}
+		}
+        stmt = aux;
+	}
+
+	@Override
+	public void visit(CallExpr e) { 
+		ST aux = groupTemplate.getInstanceOf("call_expr");
+		aux.add("name", e.getName());
+		if(e.getExpressions()!=null) {
+			for(Expr exp : e.getExpressions()) {
+				exp.accept(this);
+				aux.add("args", expr);
+			}
+		}
+		styfuncs.remove(0);
+		e.getReturn().accept(this);
+		aux.add("expr", expr);
+		expr = aux;
+	}
+
+	public void visit(Attr e) {
+		stmt = groupTemplate.getInstanceOf("attr");
+		e.getValue().accept(this);
+		stmt.add("expr", expr);
+		e.getExpression().accept(this);
+		stmt.add("value", expr);
+	}
+
+	public void visit(Func f) { 
+		ST fun = groupTemplate.getInstanceOf("func");
+		fun.add("name", f.getID());
+		Set<String> keys = env.getKeys();
+		params = new ArrayList<ST>();
+		if (f.getParam() != null) {
+			for (Param p : f.getParam()) {
+				ST key = groupTemplate.getInstanceOf("key");
+				key.add("value", p.getID());
+				keys.remove(p.getID());
+				p.accept(this);
+			}
+		}
+		fun.add("params", params);
+		ArrayList<ST> stmts = new ArrayList<ST>();
+		if (f.getBody() != null) {
+			for (Cmd c : f.getBody()) {
+				c.accept(this);
+				stmts.add(stmt);
+			}
+		}
+		fun.add("stmt", stmts);
+		funcs.add(fun);
 	}
 
 	public void visit(Add e) {
@@ -178,14 +279,6 @@ public class JavaVisitor extends Visitor {
 		expr.add("value", e.getValue());
 	}
 
-	public void visit(Attr e) {
-		stmt = groupTemplate.getInstanceOf("attr");
-		e.getValue().accept(this);
-		stmt.add("var", expr);
-		e.getExpression().accept(this);
-		stmt.add("expr", expr);
-	}
-
 	public void visit(If e) { 
 		ST aux = groupTemplate.getInstanceOf("if");
 		e.getExpression().accept(this);
@@ -204,70 +297,6 @@ public class JavaVisitor extends Visitor {
 		stmt = groupTemplate.getInstanceOf("print");
 		e.getExpression().accept(this);
 		stmt.add("expr", expr);
-	}
-
-	private String getSTypeDefault(SType t) {
-        if(t instanceof STyInt) {
-            return "0";
-        }else if(t instanceof STyBool) {
-            return "false";
-        }else if(t instanceof STyFloat) {
-            return "0f";
-        }else if(t instanceof STyChar) {
-            return "' '";
-        }else if(t instanceof STyData) {
-            return "null";
-        } else if(t instanceof STyArr) {
-            return "null";
-        } else {
-            return "";
-        }
-    }
-
-	public void visit(Func f) { 
-		ST fun = groupTemplate.getInstanceOf("func");
-		fun.add("name", f.getID());
-
-		if(f.getType()!=null)
-		{
-			fun.add("retorno", "tem");
-		}
-		
-		Set<String> keys = env.getKeys();
-		ArrayList<ST> chaves = new ArrayList<ST>();
-		params = new ArrayList<ST>();
-		if (f.getParam() != null) {
-			for (Param p : f.getParam()) {
-				ST chave = groupTemplate.getInstanceOf("chave");
-				chave.add("value", p.getID());
-				chaves.add(chave);
-				keys.remove(p.getID());
-				p.accept(this);
-			}
-		}
-		fun.add("key", chaves);
-		fun.add("params", params);
-
-		for (String key : keys) {
-			ST decl = groupTemplate.getInstanceOf("decl_func");
-			decl.add("name", key);
-			SType t = env.get(key).getFuncType();
-			processSType(t); 
-			String defaultVal = getSTypeDefault(t);
-            decl.addAggr("type.{tp, default}", type, defaultVal);
-			fun.add("decl", decl);
-		}
-		ArrayList<ST> stmts = new ArrayList<ST>();
-		if (f.getBody() != null)
-		{
-			for (Cmd c : f.getBody()) {
-				c.accept(this);
-				stmts.add(stmt);
-			}
-		}
-		fun.add("stmt", stmts);
-
-		funcs.add(fun);
 	}
 
 	public void visit(Return e) {
@@ -289,66 +318,18 @@ public class JavaVisitor extends Visitor {
 		params.add(param);
 	}
 
-	public void visit(TyInt t) {
-		type = groupTemplate.getInstanceOf("int_type");
-	}
+	public void visit(TyInt t) { }
 
-	public void visit(TyFloat t) {
-		type = groupTemplate.getInstanceOf("float_type");
-	}
+	public void visit(TyFloat t) { }
 
-	public void visit(TyBool t) {
-		type = groupTemplate.getInstanceOf("boolean_type");
-	}
+	public void visit(TyBool t) { }
 
-	////////////// Métodos ///////////
-	private void processSType(SType t) { 
-		if (t instanceof STyInt){
-			type = groupTemplate.getInstanceOf("int_type");
-		}else if (t instanceof STyBool){
-			type = groupTemplate.getInstanceOf("boolean_type");
-		}else if (t instanceof STyFloat){
-			type = groupTemplate.getInstanceOf("float_type");
-		}else if(t instanceof STyChar) {
-			type = groupTemplate.getInstanceOf("char_type");
-		}else if(t instanceof STyData) {
-			ST aux = groupTemplate.getInstanceOf("id_type");
-			aux.add("value", ((STyData) t).getId());
-			type = aux; 
-		} else if (t instanceof STyArr) {
-			ST aux = groupTemplate.getInstanceOf("array_type");
-			processSType(((STyArr) t).getArg());
-			aux.add("type", type);
-			type = aux;
-		}
-	}
+	
+
+	
 
 	@Override
-	public void visit(Data d) {
-		ST aux = groupTemplate.getInstanceOf("data");
-        aux.add("name", d.getId());
-        decls = new ArrayList<ST>();
-        for(Decl dec : d.getTypes()){
-            dec.accept(this);
-        }
-        aux.add("decl", decls);
-        datas.add(aux);
-	}
-
-	@Override
-	public void visit(Decl e) {
-		ST dec = groupTemplate.getInstanceOf("decl");
-        e.getType().accept(this);
-        dec.add("type", type);
-        dec.add("name", e.getId());
-        decls.add(dec);
-	}
-
-	@Override
-	public void visit(TyChar t) {
-		type = groupTemplate.getInstanceOf("char_type");
-
-	}
+	public void visit(TyChar t) { }
 
 	@Override
 	public void visit(TyID t) {
@@ -356,69 +337,12 @@ public class JavaVisitor extends Visitor {
 		type.add("value", t.getIdType());
 	}
 
-	public void visit(CallCmd e) { 
-		ST aux = groupTemplate.getInstanceOf("call_cmd");
-		aux.add("name", e.getName());
-        for(Expr exp : e.getExpressions()) {
-            exp.accept(this);
-            aux.add("args", expr);
-		}
-		if(e.getReturn() != null) {
-			int indexRet = 0;
-			for(LValue lv : e.getReturn()) {
-				lv.accept(this);
-				SType t = env.get(((LValue) lv).getId()).getFuncType();
-				processSType(t);
-				aux.addAggr("exp.{id, type, index}", expr, type, indexRet);
-				indexRet++;
-			}
-		}
-        stmt = aux;
-	}
-
-	@Override
-	public void visit(CallExpr e) { 
-		ST aux = groupTemplate.getInstanceOf("call_expr");
-		aux.add("name", e.getName());
-		if(e.getExpressions()!=null)
-		{
-			for(Expr exp : e.getExpressions()) {
-				exp.accept(this);
-				aux.add("args", expr);
-			}
-		}
-		STyFunc auxi = styfuncs.get(0);
-		styfuncs.remove(0);
-		Int n = (Int)e.getReturn();
-		int index = n.getValue();
-		processSType(auxi.getRetorno()[index]);
-		aux.add("type",type);
-		e.getReturn().accept(this);
-		aux.add("expr", expr);
-		expr = aux;
-	}
-
-	@Override
-	public void visit(StmtList e) {
-		ST aux = groupTemplate.getInstanceOf("stmt_list"); 
-		ArrayList<ST> stmts = new ArrayList<ST>();
-		if (e.getList() != null)
-		{
-			for (Cmd c : e.getList()) {
-				c.accept(this);
-				stmts.add(stmt);
-			}
-		}
-		aux.add("stmts", stmts);
-		stmt = aux; 
-	}
-
 	@Override
 	public void visit(Iterate e) {
 		ST aux = groupTemplate.getInstanceOf("iterate");
         e.getExpression().accept(this);
-        aux.add("exp", expr);
-		aux.add("linhaColuna", e.getLine()+"_"+e.getColumn());
+        aux.add("expr", expr);
+		aux.add("lc", e.getLine()+"_"+e.getColumn());
         e.getBody().accept(this);
         aux.add("stmt", stmt);
         stmt = aux;
@@ -430,17 +354,17 @@ public class JavaVisitor extends Visitor {
 		char aux = e.getValue();
 		if (aux == '\n'){
 			expr.add("value", "\\n");
-		}else if (aux == ('\t')){
+		} else if (aux == ('\t')) {
 			expr.add("value", "\\t");
-		}else if (aux == ('\b')){
+		} else if (aux == ('\b')) {
 			expr.add("value", "\\b");
-		}else if (aux == ('\r')){
+		} else if (aux == ('\r')) {
 			expr.add("value", "\\r");
-		}else if (aux == ('\\')){
+		} else if (aux == ('\\')) {
 			expr.add("value","\\\\");
-		}else if (aux == ('\'')){
+		} else if (aux == ('\'')) {
 			expr.add("value", "\\'");
-		}else{
+		} else {
 			expr.add("value", e.getValue());
 		}
 	}
@@ -455,13 +379,6 @@ public class JavaVisitor extends Visitor {
 				aux.add("array", expr);
 			}
 		}
-        expr = aux;
-	}
-
-	@Override
-	public void visit(AccessData e) {
-		ST aux = groupTemplate.getInstanceOf("data_access");
-        aux.add("expr", e.getIndex());
         expr = aux;
 	}
 
@@ -492,20 +409,6 @@ public class JavaVisitor extends Visitor {
 		expr = aux;
 
 	}
-	
-	private String getTypeDefaultVal(BType t) {
-        if(t instanceof TyInt) {
-            return "0";
-        }else if(t instanceof TyBool) {
-            return "false";
-        }else if(t instanceof TyFloat) {
-            return "0f";
-        }else if(t instanceof TyChar) {
-            return "' '";
-        } else {
-            return "";
-        }
-    }
 
 	@Override
 	public void visit(New e) {
@@ -513,38 +416,10 @@ public class JavaVisitor extends Visitor {
 		int n = e.getType().getBraces();
         e.getType().getBtype().accept(this);
         if(e.getExpression() != null){
-            aux = groupTemplate.getInstanceOf("new_expr_array");
-            if(n > 0){
-                for(int i = 0; i < n; i++){
-                    aux.add("squares", "[]");
-                }
-            }
-            aux.add("type", type);
-
-            e.getExpression().accept(this);
-            aux.add("expr", expr);
+        	aux = groupTemplate.getInstanceOf("new_expr_array");
         } else {
-			if(n > 0){
-				aux = groupTemplate.getInstanceOf("new_array");
-                for(int i = 0; i < n-1; i++){
-                    aux.add("squares", "[]");
-				}
-				aux.add("type", type);
-			}
-			else
-			{
-				if(e.getType().getBtype() instanceof TyID)
-				{
-					aux = groupTemplate.getInstanceOf("new_expr_type");
-            		aux.add("type", type);
-				}
-				else
-				{
-					aux = groupTemplate.getInstanceOf("new_padrao");
-					String padrao = getTypeDefaultVal(e.getType().getBtype());
-					aux.add("value", padrao);
-				}
-			}
+			aux = groupTemplate.getInstanceOf("new_expr_type");
+       		aux.add("type", type);	
         }
         expr = aux;
 	}
@@ -558,23 +433,11 @@ public class JavaVisitor extends Visitor {
 	public void visit(Read e) {
 		ST aux = groupTemplate.getInstanceOf("read");
         e.getValue().accept(this);
-        aux.add("var", expr);
+        aux.add("expr", expr);
         stmt = aux;
 	}
 
 	@Override
-	public void visit(Type e) {
-		ST aux = groupTemplate.getInstanceOf("ltype");
-		e.getBtype().accept(this);
-		aux.add("type", type);
-		int n = e.getBraces();
-		String x = "";
-		for(int i = 0; i < n; i++)
-		{
-			x = x + "[]";
-		}
-		aux.add("colchetes", x);
-		type = aux;
-	}
+	public void visit(Type e) {}
 
 }
